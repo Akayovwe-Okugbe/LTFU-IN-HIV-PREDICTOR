@@ -169,7 +169,7 @@ def save_processed_dataset(df: pd.DataFrame):
     data folder.
     """
 
-    output_file = PROCESSED_DATA / "01_dates_converted.csv"
+    output_file = PROCESSED_DATA / "01_dates_converted.parquet"
 
     save_dataframe(df, output_file)
 

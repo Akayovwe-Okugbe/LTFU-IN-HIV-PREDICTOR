@@ -339,11 +339,15 @@ def date_range(
 # =====================================================
 
 def save_dataframe(
+        
     df: pd.DataFrame,
     filepath: str | Path
 ) -> None:
     """
-    Save a DataFrame as a CSV file.
+    Saves a dataframe.
+
+    Automatically detects whether the output
+    should be CSV or Parquet.
 
     Parameters
     ----------
@@ -359,10 +363,22 @@ def save_dataframe(
         exist_ok=True
     )
 
-    df.to_csv(
-        path,
-        index=False
-    )
+    if path.suffix == ".csv":
+
+        df.to_csv(path, index=False)
+
+    elif path.suffix == ".parquet":
+
+        df.to_parquet(
+            path,
+            index=False
+        )
+
+    else:
+
+        raise ValueError(
+            "Unsupported file format."
+        )
 
     print("\nDataset successfully saved.")
 
