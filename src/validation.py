@@ -5,22 +5,13 @@ Dataset Validation
 LTFU Prediction in HIV Treatment Programmes
 Rome Business School Capstone Project
 
-File:
-    validation.py
-
 Purpose:
-    Performs data quality validation before
+    Performs integrity checks on the raw dataset before
     preprocessing and feature engineering.
 
-    The module checks:
-
-    • Missing columns
-    • Duplicate patient IDs
-    • Invalid dates
-    • Impossible ages
-    • Future dates
-    • Negative refill values
-    • Data consistency
+    These checks help identify inconsistencies,
+    impossible values and data quality issues that may
+    negatively affect model performance.
 
 Author:
     Akayovwe Okugbe
@@ -28,10 +19,13 @@ Author:
 =========================================================
 """
 
+# =====================================================
+# IMPORT REQUIRED LIBRARIES
+# =====================================================
+
 import pandas as pd
 
 from src.logger import logger
-from src.config import DATE_COLUMNS
 
 
 # =====================================================
@@ -41,25 +35,29 @@ from src.config import DATE_COLUMNS
 REQUIRED_COLUMNS = [
 
     "Patient Number",
-
+    "State",
+    "LGA",
     "Sex",
-
-    "Current Age",
-
     "Age at ART Initiation",
-
+    "Current Age",
     "ART Start Date",
-
+    "Last Drug Pickup date",
     "Current Status (90 Days)"
 
 ]
 
 
 # =====================================================
-# CHECK REQUIRED COLUMNS
+# VALIDATE REQUIRED COLUMNS
 # =====================================================
 
-def check_required_columns(df):
+def validate_required_columns(df):
+
+    """
+    Checks that all required columns exist.
+    """
+
+    logger.info("Checking required columns...")
 
     missing = [
 
@@ -73,42 +71,175 @@ def check_required_columns(df):
 
     if missing:
 
-        logger.error(f"Missing columns: {missing}")
-
         raise ValueError(
-            f"Dataset missing required columns: {missing}"
+
+            f"Missing required columns:\n{missing}"
+
         )
 
     logger.info("Required columns verified.")
 
 
 # =====================================================
-# DUPLICATE PATIENT CHECK
+# DUPLICATE PATIENTS
 # =====================================================
 
-def check_duplicates(df):
+def check_duplicate_patients(df):
+
+    """
+    Checks duplicate patient numbers.
+    """
 
     duplicates = df["Patient Number"].duplicated().sum()
 
-    logger.info(f"Duplicate Patient IDs: {duplicates:,}")
+    logger.info(
+
+        f"Duplicate Patient Numbers: {duplicates:,}"
+
+    )
 
     return duplicates
 
 
 # =====================================================
-# INVALID AGE CHECK
+# NEGATIVE AGES
 # =====================================================
 
-def check_age(df):
+def check_negative_age(df):
+
+    """
+    Detects impossible ages.
+    """
+
+    negative = (
+
+        df["Age at ART Initiation"] < 0
+
+    ).sum()
+
+    logger.info(
+
+        f"Negative ART initiation ages: {negative:,}"
+
+    )
+
+    return negative
+
+
+# =====================================================
+# EXTREME AGES
+# =====================================================
+
+def check_extreme_age(df):
+
+    """
+    Identifies patients older than 100 years.
+    """
+
+    extreme = (
+
+        df["Current Age"] > 100
+
+    ).sum()
+
+    logger.info(
+
+        f"Patients older than 100 years: {extreme:,}"
+
+    )
+
+    return extreme
+
+
+# =====================================================
+# INVALID PREGNANCY RECORDS
+# =====================================================
+
+def check_invalid_pregnancy(df):
+
+    """
+    Detects pregnancy values recorded for males.
+    """
 
     invalid = df[
-        (df["Current Age"] < 0) |
-        (df["Current Age"] > 120)
+
+        (df["Sex"] == "Male")
+
+        &
+
+        (
+
+            df["Pregnancy Status"]
+
+            .isin(["Pregnant", "Breastfeeding"])
+
+        )
+
     ]
 
     logger.info(
 
-        f"Invalid Current Age records: {len(invalid):,}"
+        f"Invalid pregnancy records: {len(invalid):,}"
+
+    )
+
+    return invalid
+
+
+# =====================================================
+# TRANSFER VALIDATION
+# =====================================================
+
+def check_transfer_dates(df):
+
+    """
+    Checks transferred-out patients with
+    missing transfer dates.
+    """
+
+    invalid = df[
+
+        (df["Patient Transferred Out"] == "Yes")
+
+        &
+
+        (df["Transferred Out Date"].isna())
+
+    ]
+
+    logger.info(
+
+        f"Transferred Out without date: {len(invalid):,}"
+
+    )
+
+    return invalid
+
+
+# =====================================================
+# DEATH VALIDATION
+# =====================================================
+
+def check_deceased_dates(df):
+
+    """
+    Checks deceased patients with
+    missing death dates.
+    """
+
+    invalid = df[
+
+        (df["Patient Has Died"] == "Yes")
+
+        &
+
+        (df["Patient Deceased Date"].isna())
+
+    ]
+
+    logger.info(
+
+        f"Missing deceased dates: {len(invalid):,}"
 
     )
 
@@ -139,54 +270,89 @@ def check_refill_days(df):
 
 
 # =====================================================
-# FUTURE DATE CHECK
+# ART START DATE VALIDATION
 # =====================================================
 
-def check_future_dates(df):
+def check_art_dates(df):
 
-    today = pd.Timestamp.today()
+    """
+    Detects missing ART start dates.
+    """
 
-    results = {}
+    missing = df["ART Start Date"].isna().sum()
 
-    for col in DATE_COLUMNS:
+    logger.info(
 
-        if col in df.columns:
-
-            future = (df[col] > today).sum()
-
-            results[col] = future
-
-    logger.info("Future date validation completed.")
-
-    return pd.DataFrame.from_dict(
-
-        results,
-
-        orient="index",
-
-        columns=["Future Dates"]
+        f"Missing ART Start Dates: {missing:,}"
 
     )
 
+    return missing
+
 
 # =====================================================
-# RUN ALL VALIDATIONS
+# TARGET VARIABLE
+# =====================================================
+
+def check_target_variable(df):
+
+    """
+    Displays class balance.
+    """
+
+    counts = (
+
+        df["Current Status (90 Days)"]
+
+        .value_counts(dropna=False)
+
+    )
+
+    logger.info(
+
+        "\nCurrent Status (90 Days):\n"
+
+        + str(counts)
+
+    )
+
+    return counts
+
+
+# =====================================================
+# MASTER VALIDATION FUNCTION
 # =====================================================
 
 def validate_dataset(df):
 
-    logger.info("Starting dataset validation...")
+    """
+    Runs every validation routine.
+    """
 
-    check_required_columns(df)
+    logger.info("=" * 60)
 
-    check_duplicates(df)
+    logger.info("RUNNING DATASET VALIDATION")
 
-    check_age(df)
+    logger.info("=" * 60)
+
+    validate_required_columns(df)
+
+    check_duplicate_patients(df)
+
+    check_negative_age(df)
+
+    check_extreme_age(df)
+
+    check_invalid_pregnancy(df)
+
+    check_transfer_dates(df)
+
+    check_deceased_dates(df)
 
     check_refill_days(df)
 
-    future_dates = check_future_dates(df)
+    check_art_dates(df)
 
-    logger.info("Validation completed.")
+    check_target_variable(df)
 
-    return future_dates
+    logger.info("Validation completed successfully.")
