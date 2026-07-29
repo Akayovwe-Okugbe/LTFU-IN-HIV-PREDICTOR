@@ -141,6 +141,8 @@ DATE_COLUMNS = [
 
     "Last Drug Pickup date Q2",
 
+    "Last Drug Pickup date Q3",
+
     "Last Drug Pickup date Q4",
 
     "Last Clinic Visit Date",
@@ -150,6 +152,8 @@ DATE_COLUMNS = [
     "Date Of Current Viral Load Q1",
 
     "Date Of Current Viral Load Q2",
+
+    "Date Of Current Viral Load Q3",
 
     "Date Of Current Viral Load Q4",
 
@@ -205,4 +209,4 @@ NUMERICAL_COLUMNS = [
 # LOGGING
 # =========================================================
 
-LOG_FILE = REPORTS / "project.log"
+LOG_FILE = REPORTS / "logs" / "project.log"

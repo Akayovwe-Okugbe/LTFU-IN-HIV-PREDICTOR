@@ -1,0 +1,322 @@
+2026-07-29 03:15:53,778 | INFO | ============================================================
+2026-07-29 03:15:53,779 | INFO | STARTING DATA PREPROCESSING
+2026-07-29 03:15:53,779 | INFO | ============================================================
+2026-07-29 03:15:53,779 | INFO | Loading dataset...
+2026-07-29 03:15:53,779 | INFO | Source: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\raw\LTFU in HIV DataSet NDR.xlsx
+2026-07-29 03:17:24,910 | INFO | Dataset loaded successfully (304,273 rows × 43 columns).
+2026-07-29 03:17:24,910 | INFO | ============================================================
+2026-07-29 03:17:24,911 | INFO | RUNNING DATASET VALIDATION
+2026-07-29 03:17:24,911 | INFO | ============================================================
+2026-07-29 03:17:24,919 | INFO | Checking required columns...
+2026-07-29 10:45:31,858 | INFO | ============================================================
+2026-07-29 10:45:31,859 | INFO | STARTING DATA PREPROCESSING
+2026-07-29 10:45:31,859 | INFO | ============================================================
+2026-07-29 10:45:31,859 | INFO | Loading dataset...
+2026-07-29 10:45:31,859 | INFO | Source: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\raw\LTFU in HIV DataSet NDR.xlsx
+2026-07-29 10:46:59,092 | INFO | Dataset loaded successfully (304,273 rows × 43 columns).
+2026-07-29 10:46:59,092 | INFO | ============================================================
+2026-07-29 10:46:59,092 | INFO | RUNNING DATASET VALIDATION
+2026-07-29 10:46:59,093 | INFO | ============================================================
+2026-07-29 10:46:59,093 | INFO | Checking required columns...
+2026-07-29 11:10:32,133 | INFO | ============================================================
+2026-07-29 11:10:32,133 | INFO | STARTING DATA PREPROCESSING
+2026-07-29 11:10:32,133 | INFO | ============================================================
+2026-07-29 11:10:32,134 | INFO | Loading dataset...
+2026-07-29 11:10:32,134 | INFO | Source: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\raw\LTFU in HIV DataSet NDR.xlsx
+2026-07-29 11:11:59,310 | INFO | Dataset columns after cleaning:
+2026-07-29 11:11:59,311 | INFO | 'State'
+2026-07-29 11:11:59,311 | INFO | 'LGA'
+2026-07-29 11:11:59,311 | INFO | 'Sex'
+2026-07-29 11:11:59,311 | INFO | 'Patient Number'
+2026-07-29 11:11:59,311 | INFO | 'Date Of Birth'
+2026-07-29 11:11:59,312 | INFO | 'Age at ART Initiation'
+2026-07-29 11:11:59,312 | INFO | 'Current Age'
+2026-07-29 11:11:59,312 | INFO | 'ART Start Date'
+2026-07-29 11:11:59,312 | INFO | 'Last Drug Pickup date'
+2026-07-29 11:11:59,312 | INFO | 'Last Drug Pickup date Q1'
+2026-07-29 11:11:59,312 | INFO | 'Last Drug Pickup date Q2'
+2026-07-29 11:11:59,312 | INFO | 'Last Drug Pickup date Q3'
+2026-07-29 11:11:59,312 | INFO | 'Last Drug Pickup date Q4'
+2026-07-29 11:11:59,313 | INFO | 'Last Regimen'
+2026-07-29 11:11:59,313 | INFO | 'Last Clinic Visit Date'
+2026-07-29 11:11:59,313 | INFO | 'Days Of ARV Refill'
+2026-07-29 11:11:59,313 | INFO | 'Pregnancy Status'
+2026-07-29 11:11:59,313 | INFO | 'Current Viral Load'
+2026-07-29 11:11:59,313 | INFO | 'Date Of Current Viral Load'
+2026-07-29 11:11:59,314 | INFO | 'Current Viral Load Q1'
+2026-07-29 11:11:59,314 | INFO | 'Date Of Current Viral Load Q1'
+2026-07-29 11:11:59,314 | INFO | 'Current Viral Load Q2'
+2026-07-29 11:11:59,314 | INFO | 'Date Of Current Viral Load Q2'
+2026-07-29 11:11:59,314 | INFO | 'Current Viral Load Q3'
+2026-07-29 11:11:59,314 | INFO | 'Date Of Current Viral Load Q3'
+2026-07-29 11:11:59,314 | INFO | 'Current Viral Load Q4'
+2026-07-29 11:11:59,314 | INFO | 'Date Of Current Viral Load Q4'
+2026-07-29 11:11:59,314 | INFO | 'Current Status (28 Days)'
+2026-07-29 11:11:59,315 | INFO | 'Current Status (90 Days)'
+2026-07-29 11:11:59,315 | INFO | 'Current Status Q1 (28 Days)'
+2026-07-29 11:11:59,315 | INFO | 'Current Status Q1 (90 Days)'
+2026-07-29 11:11:59,315 | INFO | 'Current Status Q2 (28 Days)'
+2026-07-29 11:11:59,315 | INFO | 'Current Status Q2 (90 Days)'
+2026-07-29 11:11:59,315 | INFO | 'Current Status Q3 (28 Days)'
+2026-07-29 11:11:59,315 | INFO | 'Current Status Q3 (90 Days)'
+2026-07-29 11:11:59,315 | INFO | 'Current Status Q4 (28 Days)'
+2026-07-29 11:11:59,315 | INFO | 'Current Status Q4 (90 Days)'
+2026-07-29 11:11:59,315 | INFO | 'Patient Has Died'
+2026-07-29 11:11:59,316 | INFO | 'Patient Deceased Date'
+2026-07-29 11:11:59,316 | INFO | 'Patient Transferred Out'
+2026-07-29 11:11:59,316 | INFO | 'Transferred Out Date'
+2026-07-29 11:11:59,316 | INFO | 'Patient Transferred In'
+2026-07-29 11:11:59,316 | INFO | 'Transferred In Date'
+2026-07-29 11:11:59,316 | INFO | Dataset loaded successfully (304,273 rows × 43 columns).
+2026-07-29 11:11:59,316 | INFO | ============================================================
+2026-07-29 11:11:59,316 | INFO | RUNNING DATASET VALIDATION
+2026-07-29 11:11:59,316 | INFO | ============================================================
+2026-07-29 11:11:59,316 | INFO | Checking required columns...
+2026-07-29 11:11:59,317 | INFO | Required columns verified.
+2026-07-29 11:11:59,322 | INFO | Duplicate Patient Numbers: 0
+2026-07-29 11:27:51,773 | INFO | ============================================================
+2026-07-29 11:27:51,773 | INFO | STARTING DATA PREPROCESSING
+2026-07-29 11:27:51,773 | INFO | ============================================================
+2026-07-29 11:27:51,773 | INFO | Loading dataset...
+2026-07-29 11:27:51,773 | INFO | Source: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\raw\LTFU in HIV DataSet NDR.xlsx
+2026-07-29 11:29:17,787 | INFO | 
+RAW COLUMN NAMES:
+2026-07-29 11:29:17,787 | INFO | 0: 'State'
+2026-07-29 11:29:17,788 | INFO | 1: 'LGA'
+2026-07-29 11:29:17,788 | INFO | 2: 'Sex'
+2026-07-29 11:29:17,788 | INFO | 3: 'Patient Number '
+2026-07-29 11:29:17,788 | INFO | 4: 'Date Of Birth'
+2026-07-29 11:29:17,788 | INFO | 5: 'Age at ART Initiation'
+2026-07-29 11:29:17,788 | INFO | 6: 'Current Age'
+2026-07-29 11:29:17,789 | INFO | 7: 'ART Start Date'
+2026-07-29 11:29:17,789 | INFO | 8: 'Last Drug Pickup date'
+2026-07-29 11:29:17,789 | INFO | 9: 'Last Drug Pickup date Q1'
+2026-07-29 11:29:17,789 | INFO | 10: 'Last Drug Pickup date Q2'
+2026-07-29 11:29:17,789 | INFO | 11: 'Last Drug Pickup date Q3'
+2026-07-29 11:29:17,789 | INFO | 12: 'Last Drug Pickup date Q4'
+2026-07-29 11:29:17,789 | INFO | 13: 'Last Regimen'
+2026-07-29 11:29:17,789 | INFO | 14: 'Last Clinic Visit Date'
+2026-07-29 11:29:17,789 | INFO | 15: 'Days Of ARV Refill'
+2026-07-29 11:29:17,789 | INFO | 16: 'Pregnancy Status'
+2026-07-29 11:29:17,789 | INFO | 17: 'Current Viral Load'
+2026-07-29 11:29:17,790 | INFO | 18: 'Date Of Current Viral Load'
+2026-07-29 11:29:17,790 | INFO | 19: 'Current Viral Load Q1'
+2026-07-29 11:29:17,790 | INFO | 20: 'Date Of Current Viral Load Q1'
+2026-07-29 11:29:17,790 | INFO | 21: 'Current Viral Load Q2'
+2026-07-29 11:29:17,791 | INFO | 22: 'Date Of Current Viral Load Q2'
+2026-07-29 11:29:17,791 | INFO | 23: 'Current Viral Load Q3'
+2026-07-29 11:29:17,791 | INFO | 24: 'Date Of Current Viral Load Q3'
+2026-07-29 11:29:17,791 | INFO | 25: 'Current Viral Load Q4'
+2026-07-29 11:29:17,791 | INFO | 26: 'Date Of Current Viral Load Q4'
+2026-07-29 11:29:17,791 | INFO | 27: 'Current Status (28 Days)'
+2026-07-29 11:29:17,791 | INFO | 28: 'Current Status (90 Days)'
+2026-07-29 11:29:17,791 | INFO | 29: 'Current Status Q1 (28 Days)'
+2026-07-29 11:29:17,792 | INFO | 30: 'Current Status Q1 (90 Days)'
+2026-07-29 11:29:17,792 | INFO | 31: 'Current Status Q2 (28 Days)'
+2026-07-29 11:29:17,792 | INFO | 32: 'Current Status Q2 (90 Days)'
+2026-07-29 11:29:17,792 | INFO | 33: 'Current Status Q3 (28 Days)'
+2026-07-29 11:29:17,792 | INFO | 34: 'Current Status Q3 (90 Days)'
+2026-07-29 11:29:17,792 | INFO | 35: 'Current Status Q4 (28 Days)'
+2026-07-29 11:29:17,792 | INFO | 36: 'Current Status Q4 (90 Days)'
+2026-07-29 11:29:17,792 | INFO | 37: 'Patient Has Died'
+2026-07-29 11:29:17,793 | INFO | 38: 'Patient Deceased Date'
+2026-07-29 11:29:17,793 | INFO | 39: 'Patient Transferred Out'
+2026-07-29 11:29:17,793 | INFO | 40: 'Transferred Out Date'
+2026-07-29 11:29:17,793 | INFO | 41: 'Patient Transferred In'
+2026-07-29 11:29:17,793 | INFO | 42: 'Transferred In Date'
+2026-07-29 11:29:17,793 | INFO | Cleaning data columns...
+2026-07-29 11:29:17,796 | INFO | Dataset columns after cleaning:
+2026-07-29 11:29:17,796 | INFO | 'State'
+2026-07-29 11:29:17,796 | INFO | 'LGA'
+2026-07-29 11:29:17,797 | INFO | 'Sex'
+2026-07-29 11:29:17,797 | INFO | 'Patient Number'
+2026-07-29 11:29:17,797 | INFO | 'Date Of Birth'
+2026-07-29 11:29:17,797 | INFO | 'Age at ART Initiation'
+2026-07-29 11:29:17,797 | INFO | 'Current Age'
+2026-07-29 11:29:17,797 | INFO | 'ART Start Date'
+2026-07-29 11:29:17,798 | INFO | 'Last Drug Pickup date'
+2026-07-29 11:29:17,798 | INFO | 'Last Drug Pickup date Q1'
+2026-07-29 11:29:17,798 | INFO | 'Last Drug Pickup date Q2'
+2026-07-29 11:29:17,798 | INFO | 'Last Drug Pickup date Q3'
+2026-07-29 11:29:17,798 | INFO | 'Last Drug Pickup date Q4'
+2026-07-29 11:29:17,798 | INFO | 'Last Regimen'
+2026-07-29 11:29:17,799 | INFO | 'Last Clinic Visit Date'
+2026-07-29 11:29:17,799 | INFO | 'Days Of ARV Refill'
+2026-07-29 11:29:17,799 | INFO | 'Pregnancy Status'
+2026-07-29 11:29:17,799 | INFO | 'Current Viral Load'
+2026-07-29 11:29:17,799 | INFO | 'Date Of Current Viral Load'
+2026-07-29 11:29:17,799 | INFO | 'Current Viral Load Q1'
+2026-07-29 11:29:17,799 | INFO | 'Date Of Current Viral Load Q1'
+2026-07-29 11:29:17,800 | INFO | 'Current Viral Load Q2'
+2026-07-29 11:29:17,800 | INFO | 'Date Of Current Viral Load Q2'
+2026-07-29 11:29:17,800 | INFO | 'Current Viral Load Q3'
+2026-07-29 11:29:17,800 | INFO | 'Date Of Current Viral Load Q3'
+2026-07-29 11:29:17,800 | INFO | 'Current Viral Load Q4'
+2026-07-29 11:29:17,800 | INFO | 'Date Of Current Viral Load Q4'
+2026-07-29 11:29:17,800 | INFO | 'Current Status (28 Days)'
+2026-07-29 11:29:17,800 | INFO | 'Current Status (90 Days)'
+2026-07-29 11:29:17,800 | INFO | 'Current Status Q1 (28 Days)'
+2026-07-29 11:29:17,800 | INFO | 'Current Status Q1 (90 Days)'
+2026-07-29 11:29:17,801 | INFO | 'Current Status Q2 (28 Days)'
+2026-07-29 11:29:17,801 | INFO | 'Current Status Q2 (90 Days)'
+2026-07-29 11:29:17,801 | INFO | 'Current Status Q3 (28 Days)'
+2026-07-29 11:29:17,801 | INFO | 'Current Status Q3 (90 Days)'
+2026-07-29 11:29:17,801 | INFO | 'Current Status Q4 (28 Days)'
+2026-07-29 11:29:17,801 | INFO | 'Current Status Q4 (90 Days)'
+2026-07-29 11:29:17,802 | INFO | 'Patient Has Died'
+2026-07-29 11:29:17,802 | INFO | 'Patient Deceased Date'
+2026-07-29 11:29:17,802 | INFO | 'Patient Transferred Out'
+2026-07-29 11:29:17,802 | INFO | 'Transferred Out Date'
+2026-07-29 11:29:17,802 | INFO | 'Patient Transferred In'
+2026-07-29 11:29:17,802 | INFO | 'Transferred In Date'
+2026-07-29 11:29:17,802 | INFO | Dataset loaded successfully (304,273 rows × 43 columns).
+2026-07-29 11:29:17,803 | INFO | ============================================================
+2026-07-29 11:29:17,803 | INFO | RUNNING DATASET VALIDATION
+2026-07-29 11:29:17,803 | INFO | ============================================================
+2026-07-29 11:29:17,803 | INFO | Checking required columns...
+2026-07-29 11:29:17,803 | INFO | Required columns verified.
+2026-07-29 11:29:17,808 | INFO | Duplicate Patient Numbers: 0
+2026-07-29 11:29:17,873 | INFO | Negative Age at ART Initiation values: 50
+2026-07-29 11:29:17,874 | INFO | Patients older than 100 years: 10
+2026-07-29 11:29:17,882 | INFO | Invalid pregnancy records: 0
+2026-07-29 11:29:17,885 | INFO | Transferred Out without date: 0
+2026-07-29 11:29:17,887 | INFO | Missing deceased dates: 0
+2026-07-29 11:29:17,889 | INFO | Negative refill records: 0
+2026-07-29 11:29:17,908 | INFO | Missing ART Start Dates: 0
+2026-07-29 11:29:17,915 | INFO | 
+Current Status (90 Days):
+Current Status (90 Days)
+Active      157404
+Inactive    146869
+Name: count, dtype: int64
+2026-07-29 11:29:17,915 | INFO | Validation completed successfully.
+2026-07-29 11:29:18,595 | INFO | Converting date columns...
+2026-07-29 11:29:18,991 | INFO | Date conversion completed.
+2026-07-29 11:51:46,070 | INFO | ============================================================
+2026-07-29 11:51:46,070 | INFO | STARTING DATA PREPROCESSING
+2026-07-29 11:51:46,070 | INFO | ============================================================
+2026-07-29 11:51:46,070 | INFO | Loading dataset...
+2026-07-29 11:51:46,070 | INFO | Source: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\raw\LTFU in HIV DataSet NDR.xlsx
+2026-07-29 11:53:21,961 | INFO | 
+RAW COLUMN NAMES:
+2026-07-29 11:53:21,961 | INFO | 0: 'State'
+2026-07-29 11:53:21,961 | INFO | 1: 'LGA'
+2026-07-29 11:53:21,961 | INFO | 2: 'Sex'
+2026-07-29 11:53:21,961 | INFO | 3: 'Patient Number '
+2026-07-29 11:53:21,961 | INFO | 4: 'Date Of Birth'
+2026-07-29 11:53:21,961 | INFO | 5: 'Age at ART Initiation'
+2026-07-29 11:53:21,962 | INFO | 6: 'Current Age'
+2026-07-29 11:53:21,962 | INFO | 7: 'ART Start Date'
+2026-07-29 11:53:21,962 | INFO | 8: 'Last Drug Pickup date'
+2026-07-29 11:53:21,962 | INFO | 9: 'Last Drug Pickup date Q1'
+2026-07-29 11:53:21,962 | INFO | 10: 'Last Drug Pickup date Q2'
+2026-07-29 11:53:21,962 | INFO | 11: 'Last Drug Pickup date Q3'
+2026-07-29 11:53:21,963 | INFO | 12: 'Last Drug Pickup date Q4'
+2026-07-29 11:53:21,963 | INFO | 13: 'Last Regimen'
+2026-07-29 11:53:21,963 | INFO | 14: 'Last Clinic Visit Date'
+2026-07-29 11:53:21,963 | INFO | 15: 'Days Of ARV Refill'
+2026-07-29 11:53:21,963 | INFO | 16: 'Pregnancy Status'
+2026-07-29 11:53:21,963 | INFO | 17: 'Current Viral Load'
+2026-07-29 11:53:21,963 | INFO | 18: 'Date Of Current Viral Load'
+2026-07-29 11:53:21,963 | INFO | 19: 'Current Viral Load Q1'
+2026-07-29 11:53:21,964 | INFO | 20: 'Date Of Current Viral Load Q1'
+2026-07-29 11:53:21,964 | INFO | 21: 'Current Viral Load Q2'
+2026-07-29 11:53:21,964 | INFO | 22: 'Date Of Current Viral Load Q2'
+2026-07-29 11:53:21,964 | INFO | 23: 'Current Viral Load Q3'
+2026-07-29 11:53:21,965 | INFO | 24: 'Date Of Current Viral Load Q3'
+2026-07-29 11:53:21,965 | INFO | 25: 'Current Viral Load Q4'
+2026-07-29 11:53:21,965 | INFO | 26: 'Date Of Current Viral Load Q4'
+2026-07-29 11:53:21,965 | INFO | 27: 'Current Status (28 Days)'
+2026-07-29 11:53:21,965 | INFO | 28: 'Current Status (90 Days)'
+2026-07-29 11:53:21,965 | INFO | 29: 'Current Status Q1 (28 Days)'
+2026-07-29 11:53:21,965 | INFO | 30: 'Current Status Q1 (90 Days)'
+2026-07-29 11:53:21,965 | INFO | 31: 'Current Status Q2 (28 Days)'
+2026-07-29 11:53:21,966 | INFO | 32: 'Current Status Q2 (90 Days)'
+2026-07-29 11:53:21,966 | INFO | 33: 'Current Status Q3 (28 Days)'
+2026-07-29 11:53:21,966 | INFO | 34: 'Current Status Q3 (90 Days)'
+2026-07-29 11:53:21,966 | INFO | 35: 'Current Status Q4 (28 Days)'
+2026-07-29 11:53:21,966 | INFO | 36: 'Current Status Q4 (90 Days)'
+2026-07-29 11:53:21,966 | INFO | 37: 'Patient Has Died'
+2026-07-29 11:53:21,966 | INFO | 38: 'Patient Deceased Date'
+2026-07-29 11:53:21,967 | INFO | 39: 'Patient Transferred Out'
+2026-07-29 11:53:21,967 | INFO | 40: 'Transferred Out Date'
+2026-07-29 11:53:21,967 | INFO | 41: 'Patient Transferred In'
+2026-07-29 11:53:21,967 | INFO | 42: 'Transferred In Date'
+2026-07-29 11:53:21,967 | INFO | Cleaning data columns...
+2026-07-29 11:53:21,970 | INFO | Dataset columns after cleaning:
+2026-07-29 11:53:21,970 | INFO | 'State'
+2026-07-29 11:53:21,971 | INFO | 'LGA'
+2026-07-29 11:53:21,971 | INFO | 'Sex'
+2026-07-29 11:53:21,971 | INFO | 'Patient Number'
+2026-07-29 11:53:21,971 | INFO | 'Date Of Birth'
+2026-07-29 11:53:21,971 | INFO | 'Age at ART Initiation'
+2026-07-29 11:53:21,972 | INFO | 'Current Age'
+2026-07-29 11:53:21,972 | INFO | 'ART Start Date'
+2026-07-29 11:53:21,972 | INFO | 'Last Drug Pickup date'
+2026-07-29 11:53:21,972 | INFO | 'Last Drug Pickup date Q1'
+2026-07-29 11:53:21,973 | INFO | 'Last Drug Pickup date Q2'
+2026-07-29 11:53:21,973 | INFO | 'Last Drug Pickup date Q3'
+2026-07-29 11:53:21,973 | INFO | 'Last Drug Pickup date Q4'
+2026-07-29 11:53:21,973 | INFO | 'Last Regimen'
+2026-07-29 11:53:21,973 | INFO | 'Last Clinic Visit Date'
+2026-07-29 11:53:21,973 | INFO | 'Days Of ARV Refill'
+2026-07-29 11:53:21,974 | INFO | 'Pregnancy Status'
+2026-07-29 11:53:21,974 | INFO | 'Current Viral Load'
+2026-07-29 11:53:21,974 | INFO | 'Date Of Current Viral Load'
+2026-07-29 11:53:21,974 | INFO | 'Current Viral Load Q1'
+2026-07-29 11:53:21,974 | INFO | 'Date Of Current Viral Load Q1'
+2026-07-29 11:53:21,974 | INFO | 'Current Viral Load Q2'
+2026-07-29 11:53:21,975 | INFO | 'Date Of Current Viral Load Q2'
+2026-07-29 11:53:21,975 | INFO | 'Current Viral Load Q3'
+2026-07-29 11:53:21,975 | INFO | 'Date Of Current Viral Load Q3'
+2026-07-29 11:53:21,975 | INFO | 'Current Viral Load Q4'
+2026-07-29 11:53:21,975 | INFO | 'Date Of Current Viral Load Q4'
+2026-07-29 11:53:21,975 | INFO | 'Current Status (28 Days)'
+2026-07-29 11:53:21,976 | INFO | 'Current Status (90 Days)'
+2026-07-29 11:53:21,976 | INFO | 'Current Status Q1 (28 Days)'
+2026-07-29 11:53:21,976 | INFO | 'Current Status Q1 (90 Days)'
+2026-07-29 11:53:21,976 | INFO | 'Current Status Q2 (28 Days)'
+2026-07-29 11:53:21,976 | INFO | 'Current Status Q2 (90 Days)'
+2026-07-29 11:53:21,976 | INFO | 'Current Status Q3 (28 Days)'
+2026-07-29 11:53:21,977 | INFO | 'Current Status Q3 (90 Days)'
+2026-07-29 11:53:21,977 | INFO | 'Current Status Q4 (28 Days)'
+2026-07-29 11:53:21,977 | INFO | 'Current Status Q4 (90 Days)'
+2026-07-29 11:53:21,977 | INFO | 'Patient Has Died'
+2026-07-29 11:53:21,977 | INFO | 'Patient Deceased Date'
+2026-07-29 11:53:21,977 | INFO | 'Patient Transferred Out'
+2026-07-29 11:53:21,978 | INFO | 'Transferred Out Date'
+2026-07-29 11:53:21,978 | INFO | 'Patient Transferred In'
+2026-07-29 11:53:21,978 | INFO | 'Transferred In Date'
+2026-07-29 11:53:21,978 | INFO | Dataset loaded successfully (304,273 rows × 43 columns).
+2026-07-29 11:53:21,978 | INFO | ============================================================
+2026-07-29 11:53:21,978 | INFO | RUNNING DATASET VALIDATION
+2026-07-29 11:53:21,978 | INFO | ============================================================
+2026-07-29 11:53:21,978 | INFO | Checking required columns...
+2026-07-29 11:53:21,979 | INFO | Required columns verified.
+2026-07-29 11:53:21,985 | INFO | Duplicate Patient Numbers: 0
+2026-07-29 11:53:22,080 | INFO | Negative Age at ART Initiation values: 50
+2026-07-29 11:53:22,084 | INFO | Patients older than 100 years: 10
+2026-07-29 11:53:22,108 | INFO | Invalid pregnancy records: 0
+2026-07-29 11:53:22,110 | INFO | Transferred Out without date: 0
+2026-07-29 11:53:22,115 | INFO | Missing deceased dates: 0
+2026-07-29 11:53:22,122 | INFO | Negative refill records: 0
+2026-07-29 11:53:22,149 | INFO | Missing ART Start Dates: 0
+2026-07-29 11:53:22,159 | INFO | 
+Current Status (90 Days):
+Current Status (90 Days)
+Active      157404
+Inactive    146869
+Name: count, dtype: int64
+2026-07-29 11:53:22,159 | INFO | Validation completed successfully.
+2026-07-29 11:53:22,869 | INFO | Converting date columns...
+2026-07-29 11:53:23,395 | INFO | Date conversion completed.
+2026-07-29 11:53:23,395 | INFO | Cleaning Age at ART Initiation...
+2026-07-29 11:53:23,553 | WARNING | Converting 50 negative Age at ART Initiation values to missing.
+2026-07-29 11:53:23,555 | WARNING | Converting 2 Age at ART Initiation values above 100 to missing.
+2026-07-29 11:53:23,556 | INFO | Age at ART Initiation cleaning completed.
+2026-07-29 11:53:23,558 | INFO | Valid numeric ages remaining: 304,197
+2026-07-29 11:53:23,559 | INFO | Missing / invalid ages: 76
+2026-07-29 11:53:24,120 | INFO | Processed dataset saved to C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\01_dates_converted.parquet
+2026-07-29 11:53:24,120 | INFO | ============================================================
+2026-07-29 11:53:24,120 | INFO | PREPROCESSING COMPLETED SUCCESSFULLY
+2026-07-29 11:53:24,121 | INFO | ============================================================

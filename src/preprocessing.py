@@ -24,6 +24,7 @@ Author:
 # =====================================================
 
 import pandas as pd
+import numpy as np
 
 from src.config import (
     RAW_DATA,
@@ -76,6 +77,28 @@ def load_dataset(filename: str) -> pd.DataFrame:
     logger.info(f"Source: {filepath}")
 
     df = pd.read_excel(filepath)
+
+    logger.info("\nRAW COLUMN NAMES:")
+    for i, col in enumerate(df.columns):
+        logger.info(f"{i}: {repr(col)}")
+
+    # -----------------------------------------------------
+    # Clean column names
+    # -----------------------------------------------------
+    logger.info("Cleaning data columns...")
+    df.columns = (
+        df.columns
+        .astype(str)
+        .str.replace("\xa0", " ", regex=False)
+        .str.replace("\n", " ", regex=False)
+        .str.replace("\r", " ", regex=False)
+        .str.replace(r"\s+", " ", regex=True)
+        .str.strip()
+    )
+
+    logger.info("Dataset columns after cleaning:")
+    for col in df.columns:
+        logger.info(repr(col))
 
     logger.info(
         f"Dataset loaded successfully "
@@ -160,6 +183,132 @@ def date_validation_summary(df: pd.DataFrame):
 
 
 # =====================================================
+# CLEAN AGE AT ART INITIATION
+# =====================================================
+
+def clean_age_at_art_initiation(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Cleans the Age at ART Initiation column.
+
+    The source dataset contains a small number of
+    inconsistent values, including:
+
+        - Negative ages
+        - Dates stored in the age column
+        - Other non-numeric values
+
+    These values cannot be treated as valid ages.
+    They are therefore converted to missing values
+    rather than being replaced with an assumed value.
+
+    This preserves the integrity of the original data
+    while preventing invalid values from entering the
+    modelling pipeline.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Dataset to clean.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Dataset with a validated numeric age column.
+    """
+
+    column = "Age at ART Initiation"
+
+    if column not in df.columns:
+        logger.warning(
+            f"Column '{column}' not found. "
+            "Age cleaning skipped."
+        )
+        return df
+
+    logger.info(
+        "Cleaning Age at ART Initiation..."
+    )
+
+    # -------------------------------------------------
+    # Convert valid numeric values to numbers.
+    #
+    # Dates and other non-numeric values become NaN.
+    # -------------------------------------------------
+
+    df[column] = pd.to_numeric(
+        df[column],
+        errors="coerce"
+    )
+
+    # -------------------------------------------------
+    # Identify negative ages.
+    #
+    # Negative ages are impossible and therefore
+    # treated as invalid observations.
+    # -------------------------------------------------
+
+    negative_mask = df[column] < 0
+
+    negative_count = negative_mask.sum()
+
+    if negative_count > 0:
+
+        logger.warning(
+            f"Converting {negative_count:,} "
+            "negative Age at ART Initiation values "
+            "to missing."
+        )
+
+        df.loc[negative_mask, column] = np.nan
+
+    # -------------------------------------------------
+    # Identify implausibly high ages.
+    #
+    # Ages above 100 are treated as invalid for
+    # this project.
+    # -------------------------------------------------
+
+    extreme_mask = df[column] > 100
+
+    extreme_count = extreme_mask.sum()
+
+    if extreme_count > 0:
+
+        logger.warning(
+            f"Converting {extreme_count:,} "
+            "Age at ART Initiation values above "
+            "100 to missing."
+        )
+
+        df.loc[extreme_mask, column] = np.nan
+
+    # -------------------------------------------------
+    # Ensure a numeric dtype for Parquet compatibility.
+    # -------------------------------------------------
+
+    df[column] = pd.to_numeric(
+        df[column],
+        errors="coerce"
+    )
+
+    logger.info(
+        "Age at ART Initiation cleaning completed."
+    )
+
+    logger.info(
+        f"Valid numeric ages remaining: "
+        f"{df[column].notna().sum():,}"
+    )
+
+    logger.info(
+        f"Missing / invalid ages: "
+        f"{df[column].isna().sum():,}"
+    )
+
+    return df
+
+
+# =====================================================
 # SAVE CLEAN DATASET
 # =====================================================
 
@@ -207,10 +356,16 @@ def main():
     dataset_summary(df)
 
     # -------------------------------------------------
-    # Convert Dates
+    # Convert Dates Columns
     # -------------------------------------------------
 
     df = convert_dates(df)
+
+    # =====================================================
+    # CLEAN AGE AT ART INITIATION
+    # =====================================================
+
+    df = clean_age_at_art_initiation(df)
 
     # -------------------------------------------------
     # Date Validation

@@ -102,28 +102,70 @@ def check_duplicate_patients(df):
 
 
 # =====================================================
-# NEGATIVE AGES
+# CHECK NEGATIVE AGE AT ART INITIATION
 # =====================================================
 
 def check_negative_age(df):
-
     """
-    Detects impossible ages.
+    Identifies negative values in Age at ART Initiation.
+
+    The source dataset contains mixed data types in this
+    column, including numeric ages and date-formatted
+    values. Values are therefore converted to numeric
+    temporarily using errors="coerce".
+
+    Non-numeric values are not treated as negative ages;
+    they are handled separately by the mixed-type validation
+    check.
     """
 
-    negative = (
-
-        df["Age at ART Initiation"] < 0
-
-    ).sum()
-
-    logger.info(
-
-        f"Negative ART initiation ages: {negative:,}"
-
+    age_numeric = pd.to_numeric(
+        df["Age at ART Initiation"],
+        errors="coerce"
     )
 
-    return negative
+    negative_count = (age_numeric < 0).sum()
+
+    logger.info(
+        f"Negative Age at ART Initiation values: "
+        f"{negative_count:,}"
+    )
+
+    return negative_count
+
+
+# =====================================================
+# CHECK NON-NUMERIC AGE VALUES
+# =====================================================
+
+def check_non_numeric_age(df):
+    """
+    Identifies Age at ART Initiation values that cannot
+    be interpreted as numeric ages.
+
+    These may include incorrectly formatted dates or
+    other malformed values originating from the source
+    dataset.
+    """
+
+    age_numeric = pd.to_numeric(
+        df["Age at ART Initiation"],
+        errors="coerce"
+    )
+
+    non_numeric_mask = (
+        df["Age at ART Initiation"].notna()
+        & age_numeric.isna()
+    )
+
+    non_numeric_count = non_numeric_mask.sum()
+
+    logger.info(
+        f"Non-numeric Age at ART Initiation values: "
+        f"{non_numeric_count:,}"
+    )
+
+    return non_numeric_count
 
 
 # =====================================================

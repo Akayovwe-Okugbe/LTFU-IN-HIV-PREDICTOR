@@ -35,7 +35,8 @@ REPORTS.mkdir(parents=True, exist_ok=True)
 # LOG FILE LOCATION
 # =====================================================
 
-LOG_FILE = REPORTS / "project.log"
+LOG_FILE = REPORTS / "logs" / "project.log"
+LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
 
 
 # =====================================================
@@ -53,7 +54,7 @@ logging.basicConfig(
         logging.FileHandler(
             LOG_FILE,
             encoding="utf-8"
-        ),      
+        ),
 
         logging.StreamHandler()
 
