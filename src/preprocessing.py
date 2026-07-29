@@ -76,6 +76,7 @@ def load_dataset(filename: str) -> pd.DataFrame:
     logger.info("Loading dataset...")
     logger.info(f"Source: {filepath}")
 
+    logger.info("Reading dataset...")
     df = pd.read_excel(filepath)
 
     logger.info("\nRAW COLUMN NAMES:")
