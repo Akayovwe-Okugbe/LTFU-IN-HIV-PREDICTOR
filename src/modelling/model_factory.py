@@ -14,6 +14,9 @@ Each function returns an unfitted scikit-learn Pipeline
 containing model-specific preprocessing followed by the
 classifier.
 
+Author:
+    Akayovwe Okugbe
+
 =========================================================
 """
 

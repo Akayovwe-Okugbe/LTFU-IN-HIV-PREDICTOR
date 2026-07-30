@@ -4,6 +4,9 @@ Model Persistence
 
 Saves trained model pipelines and training metadata.
 
+Author:
+    Akayovwe Okugbe
+
 =========================================================
 """
 

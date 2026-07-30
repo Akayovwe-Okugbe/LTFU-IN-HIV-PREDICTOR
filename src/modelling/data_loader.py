@@ -5,6 +5,9 @@ Modelling Data Loader
 Loads the prepared train and test datasets and performs
 the final structural checks required before model fitting.
 
+Author:
+    Akayovwe Okugbe
+
 =========================================================
 """
 

@@ -45,6 +45,50 @@ API = PROJECT_ROOT / "api"
 DASHBOARD = PROJECT_ROOT / "dashboard"
 
 # =========================================================
+# EVALUATION PATHS
+# =========================================================
+
+EVALUATION_DIR = REPORTS / "evaluation"
+
+EVALUATION_METRICS_DIR = EVALUATION_DIR / "metrics"
+
+EVALUATION_PREDICTIONS_DIR = (
+    EVALUATION_DIR / "predictions"
+)
+
+EVALUATION_PLOTS_DIR = EVALUATION_DIR / "plots"
+
+FEATURE_IMPORTANCE_DIR = (
+    EVALUATION_DIR / "feature_importance"
+)
+
+MODEL_COMPARISON_CSV_PATH = (
+    EVALUATION_METRICS_DIR / "model_comparison.csv"
+)
+
+MODEL_COMPARISON_JSON_PATH = (
+    EVALUATION_METRICS_DIR / "model_comparison.json"
+)
+
+TEST_PREDICTIONS_PATH = (
+    EVALUATION_PREDICTIONS_DIR
+    / "test_predictions.parquet"
+)
+
+EVALUATION_METADATA_PATH = (
+    EVALUATION_DIR / "evaluation_metadata.json"
+)
+
+
+# =========================================================
+# EVALUATION SETTINGS
+# =========================================================
+
+CLASSIFICATION_THRESHOLD = 0.50
+
+TOP_FEATURES_TO_PLOT = 20
+
+# =========================================================
 # DATASET
 # =========================================================
 

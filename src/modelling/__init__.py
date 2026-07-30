@@ -1,6 +1,10 @@
 """
 Reusable utilities for model loading, preprocessing,
 construction and persistence.
+
+Author:
+    Akayovwe Okugbe
+
 """
 
 from .data_loader import (

@@ -20,6 +20,9 @@ All preprocessing is fitted inside each model pipeline.
 This prevents information from the held-out test set from
 being used during imputation or scaling.
 
+Author:
+    Akayovwe Okugbe
+
 =========================================================
 """
 

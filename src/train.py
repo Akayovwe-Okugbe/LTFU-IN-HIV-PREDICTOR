@@ -30,6 +30,9 @@ Run from the project root with:
 
     python -m src.train
 
+Author:
+    Akayovwe Okugbe
+
 =========================================================
 """
 
