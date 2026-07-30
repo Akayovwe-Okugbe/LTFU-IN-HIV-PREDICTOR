@@ -210,3 +210,48 @@ NUMERICAL_COLUMNS = [
 # =========================================================
 
 LOG_FILE = REPORTS / "logs" / "project.log"
+
+
+# =====================================================
+# MODEL-TRAINING CONFIGURATION
+# =====================================================
+
+# Name of the binary target variable.
+TARGET_COLUMN = "Target"
+
+# Random seed used across all models.
+RANDOM_STATE = 42
+
+# Number of CPU cores used by compatible estimators.
+# -1 instructs the estimator to use all available cores.
+N_JOBS = -1
+
+# Folder used to store trained model pipelines.
+TRAINED_MODELS_DIR = PROJECT_ROOT / "models" / "trained"
+
+# Feature-engineered training and testing datasets.
+TRAIN_DATA_PATH = PROCESSED_DATA / "03_train.parquet"
+TEST_DATA_PATH = PROCESSED_DATA / "03_test.parquet"
+
+# Individual model output paths.
+LOGISTIC_REGRESSION_MODEL_PATH = (
+    TRAINED_MODELS_DIR / "logistic_regression_pipeline.joblib"
+)
+
+RANDOM_FOREST_MODEL_PATH = (
+    TRAINED_MODELS_DIR / "random_forest_pipeline.joblib"
+)
+
+ADABOOST_MODEL_PATH = (
+    TRAINED_MODELS_DIR / "adaboost_pipeline.joblib"
+)
+
+XGBOOST_MODEL_PATH = (
+    TRAINED_MODELS_DIR / "xgboost_pipeline.joblib"
+)
+
+# Stores information about the training run, feature names,
+# class balance and package versions.
+TRAINING_METADATA_PATH = (
+    TRAINED_MODELS_DIR / "training_metadata.json"
+)
