@@ -346,3 +346,60 @@ Name: count, dtype: int64
 2026-07-30 09:08:44,547 | INFO | ============================================================
 2026-07-30 09:08:44,548 | INFO | FEATURE ENGINEERING COMPLETED
 2026-07-30 09:08:44,548 | INFO | ============================================================
+2026-07-30 09:45:16,061 | INFO | ============================================================
+2026-07-30 09:45:16,062 | INFO | STARTING FEATURE ENGINEERING
+2026-07-30 09:45:16,062 | INFO | ============================================================
+2026-07-30 09:45:16,062 | INFO | Loading preprocessed dataset...
+2026-07-30 09:45:16,062 | INFO | Source: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\01_dates_converted.parquet
+2026-07-30 09:45:16,188 | INFO | Dataset loaded successfully (304,273 rows × 43 columns).
+2026-07-30 09:45:16,188 | INFO | Beginning feature engineering...
+2026-07-30 09:45:16,213 | INFO | Demographic features created.
+2026-07-30 09:45:16,277 | INFO | Temporal features created.
+2026-07-30 09:45:16,331 | INFO | Clinical features created.
+2026-07-30 09:45:16,372 | INFO | Treatment features created.
+2026-07-30 09:45:16,410 | INFO | Target variable created.
+2026-07-30 09:45:16,486 | INFO | Categorical encoding completed.
+2026-07-30 09:45:16,958 | INFO | Feature engineered dataset saved.
+2026-07-30 09:45:17,818 | INFO | Training dataset saved.
+2026-07-30 09:45:17,819 | INFO | C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\03_train.parquet
+2026-07-30 09:45:17,819 | INFO | Testing dataset saved.
+2026-07-30 09:45:17,819 | INFO | C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\03_test.parquet
+2026-07-30 09:45:17,823 | INFO | Dataset successfully split.
+2026-07-30 09:45:17,831 | INFO | ============================================================
+2026-07-30 09:45:17,832 | INFO | FEATURE ENGINEERING COMPLETED
+2026-07-30 09:45:17,832 | INFO | ============================================================
+2026-07-30 09:49:11,831 | INFO | ============================================================
+2026-07-30 09:49:11,831 | INFO | STARTING FEATURE ENGINEERING
+2026-07-30 09:49:11,831 | INFO | ============================================================
+2026-07-30 09:49:11,832 | INFO | Loading preprocessed dataset...
+2026-07-30 09:49:11,832 | INFO | Source: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\01_dates_converted.parquet
+2026-07-30 09:49:11,965 | INFO | Dataset loaded successfully (304,273 rows × 43 columns).
+2026-07-30 09:49:11,965 | INFO | Beginning feature engineering...
+2026-07-30 09:49:11,991 | INFO | Demographic features created.
+2026-07-30 09:49:12,058 | INFO | Temporal features created.
+2026-07-30 09:49:12,110 | INFO | Clinical features created.
+2026-07-30 09:49:12,144 | INFO | Treatment features created.
+2026-07-30 09:49:12,181 | INFO | Target variable created.
+2026-07-30 09:49:12,256 | INFO | Categorical encoding completed.
+2026-07-30 09:49:12,740 | INFO | Feature engineered dataset saved.
+2026-07-30 09:49:13,562 | INFO | Training dataset saved.
+2026-07-30 09:49:13,562 | INFO | C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\03_train.parquet
+2026-07-30 09:49:13,562 | INFO | Testing dataset saved.
+2026-07-30 09:49:13,562 | INFO | C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\03_test.parquet
+2026-07-30 09:49:13,568 | INFO | Dataset successfully split.
+2026-07-30 09:49:13,568 | INFO | Training dataset information:
+2026-07-30 09:49:13,568 | INFO | Patient Number                               int64
+Date Of Birth                       datetime64[ns]
+Age at ART Initiation                      float64
+Current Age                                  int64
+ART Start Date                      datetime64[ns]
+                                         ...      
+Pregnancy Status_NP                           bool
+Pregnancy Status_P                            bool
+Pregnancy Status_Unknown                      bool
+Viral Load Category_Unknown                   bool
+Viral Load Category_Unsuppressed              bool
+Length: 106, dtype: object
+2026-07-30 09:49:13,588 | INFO | ============================================================
+2026-07-30 09:49:13,589 | INFO | FEATURE ENGINEERING COMPLETED
+2026-07-30 09:49:13,589 | INFO | ============================================================

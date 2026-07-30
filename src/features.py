@@ -48,7 +48,7 @@ from src.feature_builders import *
 from src.encoder import one_hot_encode
 
 # Dataset Splitter
-from src.splitter import split_data
+from src.splitter import save_split_data, split_data
 
 
 # =====================================================
@@ -261,11 +261,21 @@ def create_train_test(df):
 
     X_train, X_test, y_train, y_test = split_data(df)
 
+    save_split_data(
+        X_train,
+        X_test,
+        y_train,
+        y_test
+    )
+
     logger.info("Dataset successfully split.")
 
     print(f"\nTraining Records : {len(X_train):,}")
 
     print(f"Testing Records  : {len(X_test):,}")
+
+    logger.info("Training dataset information:")
+    logger.info(X_train.dtypes)
 
     return (
 
