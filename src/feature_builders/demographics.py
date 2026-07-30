@@ -64,6 +64,85 @@ def create_age_flags(df: pd.DataFrame) -> pd.DataFrame:
 
 
 # =====================================================
+# AGE AT ART INITIATION GROUP
+# =====================================================
+
+def create_art_initiation_age_group(
+    df: pd.DataFrame
+) -> pd.DataFrame:
+    """
+    Categorises patient age at ART initiation.
+
+    Categories
+    ----------
+    Child:
+        Younger than 15 years.
+
+    Adolescent/Young Adult:
+        15 to 24 years.
+
+    Adult:
+        25 to 44 years.
+
+    Older Adult:
+        45 years and above.
+
+    Unknown:
+        Missing or invalid age at ART initiation.
+    """
+
+    age_column = "Age at ART Initiation"
+
+    if age_column not in df.columns:
+        raise KeyError(
+            f"Required column '{age_column}' was not found."
+        )
+
+    df[age_column] = pd.to_numeric(
+        df[age_column],
+        errors="coerce"
+    )
+
+    # Values outside the accepted age range are invalid.
+    df.loc[
+        (df[age_column] < 0)
+        |
+        (df[age_column] > 100),
+        age_column
+    ] = pd.NA
+
+    bins = [
+        0,
+        15,
+        25,
+        45,
+        101
+    ]
+
+    labels = [
+        "Child",
+        "Adolescent/Young Adult",
+        "Adult",
+        "Older Adult"
+    ]
+
+    df["ART Initiation Age Group"] = pd.cut(
+        df[age_column],
+        bins=bins,
+        labels=labels,
+        right=False
+    )
+
+    df["ART Initiation Age Group"] = (
+        df["ART Initiation Age Group"]
+        .astype("object")
+        .fillna("Unknown")
+    )
+
+    return df
+
+
+# =====================================================
 # PREGNANCY FEATURE
 # =====================================================
 

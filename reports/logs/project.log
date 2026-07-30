@@ -403,3 +403,71 @@ Length: 106, dtype: object
 2026-07-30 09:49:13,588 | INFO | ============================================================
 2026-07-30 09:49:13,589 | INFO | FEATURE ENGINEERING COMPLETED
 2026-07-30 09:49:13,589 | INFO | ============================================================
+2026-07-30 15:00:25,854 | INFO | ============================================================
+2026-07-30 15:00:25,855 | INFO | STARTING FEATURE ENGINEERING
+2026-07-30 15:00:25,855 | INFO | ============================================================
+2026-07-30 15:00:25,855 | INFO | Loading preprocessed dataset...
+2026-07-30 15:00:25,855 | INFO | Source: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\01_dates_converted.parquet
+2026-07-30 15:00:26,072 | INFO | Dataset loaded successfully (304,273 rows × 43 columns).
+2026-07-30 15:00:26,072 | INFO | Beginning feature engineering...
+2026-07-30 15:00:26,115 | INFO | Demographic features created.
+2026-07-30 15:00:26,182 | INFO | Temporal features created.
+2026-07-30 15:00:26,237 | INFO | Clinical features created.
+2026-07-30 15:00:26,292 | INFO | Treatment features created.
+2026-07-30 15:00:26,331 | INFO | Target variable created.
+2026-07-30 15:00:26,338 | INFO | Removed 5 redundant columns.
+2026-07-30 15:00:26,424 | INFO | Categorical encoding completed.
+2026-07-30 15:00:26,859 | INFO | Feature engineered dataset saved.
+2026-07-30 15:00:27,687 | INFO | Training dataset saved.
+2026-07-30 15:00:27,687 | INFO | C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\03_train.parquet
+2026-07-30 15:00:27,688 | INFO | Testing dataset saved.
+2026-07-30 15:00:27,688 | INFO | C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\03_test.parquet
+2026-07-30 15:00:27,695 | INFO | Dataset successfully split.
+2026-07-30 15:00:27,696 | INFO | Training dataset information:
+2026-07-30 15:00:27,696 | INFO | Age at ART Initiation                      float64
+Current Age                                  int64
+Last Drug Pickup date Q1            datetime64[us]
+Last Drug Pickup date Q2            datetime64[us]
+Last Drug Pickup date Q3            datetime64[ms]
+                                         ...      
+Pregnancy Status_NP                           bool
+Pregnancy Status_P                            bool
+Pregnancy Status_Unknown                      bool
+Viral Load Category_Unknown                   bool
+Viral Load Category_Unsuppressed              bool
+Length: 101, dtype: object
+2026-07-30 15:00:27,719 | INFO | ============================================================
+2026-07-30 15:00:27,719 | INFO | FEATURE ENGINEERING COMPLETED
+2026-07-30 15:00:27,720 | INFO | ============================================================
+2026-07-30 17:25:51,347 | INFO | ============================================================
+2026-07-30 17:25:51,348 | INFO | STARTING FEATURE ENGINEERING
+2026-07-30 17:25:51,348 | INFO | ============================================================
+2026-07-30 17:25:51,348 | INFO | Loading preprocessed dataset...
+2026-07-30 17:25:51,348 | INFO | Source: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\01_dates_converted.parquet
+2026-07-30 17:25:51,468 | INFO | Dataset loaded successfully (304,273 rows × 43 columns).
+2026-07-30 17:25:51,469 | INFO | Beginning feature engineering...
+2026-07-30 17:25:51,535 | INFO | Demographic features created.
+2026-07-30 17:25:51,609 | INFO | Temporal features created.
+2026-07-30 17:25:51,665 | INFO | Clinical features created.
+2026-07-30 17:25:51,724 | INFO | Treatment features created.
+2026-07-30 17:25:51,763 | INFO | Target variable created.
+2026-07-30 17:25:51,764 | INFO | Removing Redundant Columns...
+2026-07-30 17:25:51,767 | INFO | 28 identifier, raw, quarterly or leakage-prone columns removed.
+2026-07-30 17:25:51,767 | INFO | Removed columns: ['Patient Number', 'Date Of Birth', 'ART Start Date', 'Last Drug Pickup date', 'Last Clinic Visit Date', 'Date Of Current Viral Load', 'Visit Gap', 'Visit Year', 'Visit Month', 'Last Drug Pickup date Q1', 'Last Drug Pickup date Q2', 'Last Drug Pickup date Q3', 'Last Drug Pickup date Q4', 'Current Viral Load Q1', 'Current Viral Load Q2', 'Current Viral Load Q3', 'Current Viral Load Q4', 'Date Of Current Viral Load Q1', 'Date Of Current Viral Load Q2', 'Date Of Current Viral Load Q3', 'Date Of Current Viral Load Q4', 'Patient Has Died', 'Patient Deceased Date', 'Mortality', 'Patient Transferred Out', 'Transferred Out Date', 'Transfer Status', 'Transferred In Date']
+2026-07-30 17:25:51,767 | INFO | Model features finalised.
+2026-07-30 17:25:51,920 | INFO | Categorical encoding completed.
+2026-07-30 17:25:52,352 | INFO | Feature engineered dataset saved.
+2026-07-30 17:25:52,365 | INFO | Target validation completed successfully.
+2026-07-30 17:25:53,133 | INFO | Training dataset saved.
+2026-07-30 17:25:53,133 | INFO | C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\03_train.parquet
+2026-07-30 17:25:53,133 | INFO | Testing dataset saved.
+2026-07-30 17:25:53,134 | INFO | C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\03_test.parquet
+2026-07-30 17:25:53,140 | INFO | Dataset successfully split.
+2026-07-30 17:25:53,140 | INFO | Auditing training feature data types...
+2026-07-30 17:25:53,156 | INFO | Numeric feature columns: 11
+2026-07-30 17:25:53,156 | INFO | Boolean feature columns: 130
+2026-07-30 17:25:53,157 | INFO | Remaining datetime columns: []
+2026-07-30 17:25:53,157 | INFO | Remaining unencoded categorical columns: []
+2026-07-30 17:25:53,163 | INFO | ============================================================
+2026-07-30 17:25:53,164 | INFO | FEATURE ENGINEERING COMPLETED
+2026-07-30 17:25:53,164 | INFO | ============================================================

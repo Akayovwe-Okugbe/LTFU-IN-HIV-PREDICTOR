@@ -111,6 +111,8 @@ def engineer_features(df):
 
     df = create_age_flags(df)
 
+    df = create_art_initiation_age_group(df)
+
     df = clean_pregnancy_status(df)
 
     logger.info("Demographic features created.")
@@ -153,6 +155,8 @@ def engineer_features(df):
 
     df = create_mortality_flag(df)
 
+    df = create_arv_refill_category(df)
+
     logger.info("Treatment features created.")
 
     # -------------------------------------------------
@@ -166,6 +170,18 @@ def engineer_features(df):
     df = remove_leakage(df)
 
     logger.info("Target variable created.")
+
+    # -------------------------------------------------
+    # FINALISE MODEL FEATURES
+    # -------------------------------------------------
+
+    print_subheader("Finalising Model Features")
+
+    df = finalise_model_features(df)
+
+    logger.info(
+        "Model features finalised."
+    )
 
     return df
 
@@ -192,9 +208,15 @@ def encode_dataset(df):
 
         "Age Group",
 
+        "ART Initiation Age Group",
+
         "Pregnancy Status",
 
-        "Transfer Status",
+        "ARV Refill Category",
+
+        "Last Regimen",
+
+        "Patient Transferred In",
 
         "Viral Load Category"
 
@@ -259,6 +281,33 @@ def create_train_test(df):
 
     print_subheader("Train-Test Split")
 
+    if "Target" not in df.columns:
+        raise KeyError(
+            "The Target column was not found."
+        )
+
+    missing_target = df["Target"].isna().sum()
+
+    if missing_target > 0:
+        raise ValueError(
+            f"The Target column contains "
+            f"{missing_target:,} missing values."
+        )
+
+    invalid_target_values = set(
+        df["Target"].dropna().unique()
+    ) - {0, 1}
+
+    if invalid_target_values:
+        raise ValueError(
+            "Unexpected target values found: "
+            f"{invalid_target_values}"
+        )
+
+    logger.info(
+        "Target validation completed successfully."
+    )
+
     X_train, X_test, y_train, y_test = split_data(df)
 
     save_split_data(
@@ -274,8 +323,62 @@ def create_train_test(df):
 
     print(f"Testing Records  : {len(X_test):,}")
 
-    logger.info("Training dataset information:")
-    logger.info(X_train.dtypes)
+    logger.info("Auditing training feature data types...")
+
+    datetime_columns = X_train.select_dtypes(
+        include=[
+            "datetime",
+            "datetimetz"
+        ]
+    ).columns.tolist()
+
+    object_columns = X_train.select_dtypes(
+        include=[
+            "object",
+            "string",
+            "category"
+        ]
+    ).columns.tolist()
+
+    boolean_columns = X_train.select_dtypes(
+        include=["bool"]
+    ).columns.tolist()
+
+    numeric_columns = X_train.select_dtypes(
+        include=["number"]
+    ).columns.tolist()
+
+    logger.info(
+        "Numeric feature columns: %s",
+        len(numeric_columns)
+    )
+
+    logger.info(
+        "Boolean feature columns: %s",
+        len(boolean_columns)
+    )
+
+    logger.info(
+        "Remaining datetime columns: %s",
+        datetime_columns
+    )
+
+    logger.info(
+        "Remaining unencoded categorical columns: %s",
+        object_columns
+    )
+
+    if datetime_columns:
+        raise TypeError(
+            "Datetime columns remain in the model dataset: "
+            f"{datetime_columns}"
+        )
+
+    if object_columns:
+        raise TypeError(
+            "Unencoded categorical columns remain in the "
+            f"model dataset: {object_columns}"
+        )
 
     return (
 
