@@ -740,3 +740,46 @@ RuntimeError: Unable to train Logistic Regression.
 2026-07-30 19:57:11,238 | INFO | ============================================================
 2026-07-30 19:57:11,238 | INFO | MODEL TRAINING COMPLETED
 2026-07-30 19:57:11,238 | INFO | ============================================================
+2026-07-30 21:13:17,151 | INFO | ============================================================
+2026-07-30 21:13:17,151 | INFO | STARTING FINAL MODEL EVALUATION
+2026-07-30 21:13:17,151 | INFO | ============================================================
+2026-07-30 21:13:17,153 | INFO | Loading locked held-out test dataset...
+2026-07-30 21:13:17,153 | INFO | Source: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\03_test.parquet
+2026-07-30 21:13:17,226 | INFO | Test dataset loaded successfully (60,855 rows × 142 columns).
+2026-07-30 21:13:17,228 | INFO | Held-out predictor matrix: 60,855 rows × 141 features.
+2026-07-30 21:13:17,228 | INFO | Held-out class 0 records: 31,481
+2026-07-30 21:13:17,229 | INFO | Held-out class 1 records: 29,374
+2026-07-30 21:13:17,229 | INFO | ------------------------------------------------------------
+2026-07-30 21:13:17,230 | INFO | Evaluating Logistic Regression
+2026-07-30 21:13:17,230 | INFO | Loading Logistic Regression...
+2026-07-30 21:13:17,334 | INFO | Logistic Regression loaded successfully.
+2026-07-30 21:13:17,578 | INFO | Logistic Regression evaluation completed in 0.17 seconds.
+2026-07-30 21:13:17,578 | INFO | Logistic Regression — Recall: 0.9824 | Precision: 0.9864 | F1: 0.9844 | ROC-AUC: 0.9983 | PR-AUC: 0.9985
+2026-07-30 21:13:18,841 | INFO | Logistic Regression feature importance saved.
+2026-07-30 21:13:18,842 | INFO | ------------------------------------------------------------
+2026-07-30 21:13:18,842 | INFO | Evaluating Random Forest
+2026-07-30 21:13:18,842 | INFO | Loading Random Forest...
+2026-07-30 21:13:19,368 | INFO | Random Forest loaded successfully.
+2026-07-30 21:13:20,194 | INFO | Random Forest evaluation completed in 0.75 seconds.
+2026-07-30 21:13:20,194 | INFO | Random Forest — Recall: 0.9644 | Precision: 0.9586 | F1: 0.9615 | ROC-AUC: 0.9937 | PR-AUC: 0.9935
+2026-07-30 21:13:21,148 | INFO | Random Forest feature importance saved.
+2026-07-30 21:13:21,149 | INFO | ------------------------------------------------------------
+2026-07-30 21:13:21,149 | INFO | Evaluating AdaBoost
+2026-07-30 21:13:21,149 | INFO | Loading AdaBoost...
+2026-07-30 21:13:21,174 | INFO | AdaBoost loaded successfully.
+2026-07-30 21:13:24,153 | INFO | AdaBoost evaluation completed in 2.92 seconds.
+2026-07-30 21:13:24,153 | INFO | AdaBoost — Recall: 0.9781 | Precision: 0.8037 | F1: 0.8823 | ROC-AUC: 0.9717 | PR-AUC: 0.9596
+2026-07-30 21:13:24,991 | INFO | AdaBoost feature importance saved.
+2026-07-30 21:13:24,991 | INFO | ------------------------------------------------------------
+2026-07-30 21:13:24,992 | INFO | Evaluating XGBoost
+2026-07-30 21:13:24,992 | INFO | Loading XGBoost...
+2026-07-30 21:13:25,005 | INFO | XGBoost loaded successfully.
+2026-07-30 21:13:25,352 | INFO | XGBoost evaluation completed in 0.24 seconds.
+2026-07-30 21:13:25,353 | INFO | XGBoost — Recall: 0.9696 | Precision: 0.9712 | F1: 0.9704 | ROC-AUC: 0.9965 | PR-AUC: 0.9965
+2026-07-30 21:13:26,220 | INFO | XGBoost feature importance saved.
+2026-07-30 21:13:26,262 | INFO | Test predictions saved successfully.
+2026-07-30 21:13:26,263 | INFO | Location: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\reports\evaluation\predictions\test_predictions.parquet
+2026-07-30 21:13:27,915 | INFO | Evaluation metadata saved successfully.
+2026-07-30 21:13:27,931 | INFO | ============================================================
+2026-07-30 21:13:27,931 | INFO | FINAL MODEL EVALUATION COMPLETED
+2026-07-30 21:13:27,931 | INFO | ============================================================

@@ -1,0 +1,142 @@
+rank,model,feature,importance,raw_value,importance_type
+1,Random Forest,Last Regimen_TDF+3TC+DTG,0.2964931717252411,0.2964931717252411,estimator_feature_importance
+2,Random Forest,Months on ART,0.17858732077735298,0.17858732077735298,estimator_feature_importance
+3,Random Forest,Last Regimen_TDF-3TC-DTG,0.09873557127236385,0.09873557127236385,estimator_feature_importance
+4,Random Forest,Days Of ARV Refill,0.0628184850931471,0.0628184850931471,estimator_feature_importance
+5,Random Forest,Missing Viral Load,0.05482747827343168,0.05482747827343168,estimator_feature_importance
+6,Random Forest,Viral Load Category_Unknown,0.05415987349190882,0.05415987349190882,estimator_feature_importance
+7,Random Forest,Pregnancy Status_Unknown,0.04480448139926254,0.04480448139926254,estimator_feature_importance
+8,Random Forest,Current Viral Load,0.03441082996368557,0.03441082996368557,estimator_feature_importance
+9,Random Forest,Pregnancy Status_NP,0.028975381492417258,0.028975381492417258,estimator_feature_importance
+10,Random Forest,ARV Refill Category_Unknown,0.012607016610363302,0.012607016610363302,estimator_feature_importance
+11,Random Forest,ARV Refill Category_Medium Refill,0.010835776572909035,0.010835776572909035,estimator_feature_importance
+12,Random Forest,Last Regimen_TDF-3TC-EFV,0.010125832201508663,0.010125832201508663,estimator_feature_importance
+13,Random Forest,ARV Refill Category_Short Refill,0.008715338144829547,0.008715338144829547,estimator_feature_importance
+14,Random Forest,Current Age,0.00839663910889522,0.00839663910889522,estimator_feature_importance
+15,Random Forest,Age at ART Initiation,0.007866803187805431,0.007866803187805431,estimator_feature_importance
+16,Random Forest,Last Regimen_ABC+3TC+DTG,0.006094088291227544,0.006094088291227544,estimator_feature_importance
+17,Random Forest,State_Imo,0.005389287960174438,0.005389287960174438,estimator_feature_importance
+18,Random Forest,LGA_Nkanu West,0.005124316623692599,0.005124316623692599,estimator_feature_importance
+19,Random Forest,State_Enugu,0.0043616564042787305,0.0043616564042787305,estimator_feature_importance
+20,Random Forest,LGA_Osisioma,0.003651169866963344,0.003651169866963344,estimator_feature_importance
+21,Random Forest,Last Regimen_TDF+3TC+ATV/r,0.003412145713081311,0.003412145713081311,estimator_feature_importance
+22,Random Forest,Last Regimen_AZT-3TC-NVP,0.0030680077033806703,0.0030680077033806703,estimator_feature_importance
+23,Random Forest,LGA_Okigwe,0.0030028915145413923,0.0030028915145413923,estimator_feature_importance
+24,Random Forest,LGA_Enugu North,0.002747753219327151,0.002747753219327151,estimator_feature_importance
+25,Random Forest,LGA_Ukwa East,0.002281031419867711,0.002281031419867711,estimator_feature_importance
+26,Random Forest,LGA_Igbo Eze North,0.002151466581562492,0.002151466581562492,estimator_feature_importance
+27,Random Forest,LGA_Owerri Municipal,0.002108659219149516,0.002108659219149516,estimator_feature_importance
+28,Random Forest,Last Regimen_ABC-3TC-DTG,0.0020979831776208714,0.0020979831776208714,estimator_feature_importance
+29,Random Forest,LGA_Awgu,0.002033501308151991,0.002033501308151991,estimator_feature_importance
+30,Random Forest,Viral Load Category_Unsuppressed,0.0020193255836074018,0.0020193255836074018,estimator_feature_importance
+31,Random Forest,Sex_M,0.001866061018418868,0.001866061018418868,estimator_feature_importance
+32,Random Forest,Age Group_25-34,0.0018268922306836706,0.0018268922306836706,estimator_feature_importance
+33,Random Forest,LGA_Owerri North,0.001813973604803625,0.001813973604803625,estimator_feature_importance
+34,Random Forest,LGA_Umuahia North,0.0017566903074821083,0.0017566903074821083,estimator_feature_importance
+35,Random Forest,LGA_Isiala Ngwa North,0.0016816793010648993,0.0016816793010648993,estimator_feature_importance
+36,Random Forest,LGA_Ohaji/Egbema,0.0016093839727444532,0.0016093839727444532,estimator_feature_importance
+37,Random Forest,LGA_Enugu East,0.001512859357211639,0.001512859357211639,estimator_feature_importance
+38,Random Forest,Patient Transferred In_True,0.0014855539960004062,0.0014855539960004062,estimator_feature_importance
+39,Random Forest,LGA_Orlu,0.0013115338814178757,0.0013115338814178757,estimator_feature_importance
+40,Random Forest,LGA_Oru East,0.0011005920700202796,0.0011005920700202796,estimator_feature_importance
+41,Random Forest,ART Initiation Age Group_Adult,0.0010280942455425494,0.0010280942455425494,estimator_feature_importance
+42,Random Forest,LGA_Nsukka,0.0010199454148601729,0.0010199454148601729,estimator_feature_importance
+43,Random Forest,LGA_Obowo,0.001008852136539927,0.001008852136539927,estimator_feature_importance
+44,Random Forest,Last Regimen_TDF-3TC-NVP,0.0009284792027237021,0.0009284792027237021,estimator_feature_importance
+45,Random Forest,LGA_Obi Ngwa,0.0008948389705828016,0.0008948389705828016,estimator_feature_importance
+46,Random Forest,LGA_Aba South,0.0008190709351129872,0.0008190709351129872,estimator_feature_importance
+47,Random Forest,Age Group_45-54,0.0008124500569879966,0.0008124500569879966,estimator_feature_importance
+48,Random Forest,LGA_Arochukwu,0.0007747673026789723,0.0007747673026789723,estimator_feature_importance
+49,Random Forest,Age Group_35-44,0.0007701654635765279,0.0007701654635765279,estimator_feature_importance
+50,Random Forest,ART Initiation Age Group_Older Adult,0.0007361961191120248,0.0007361961191120248,estimator_feature_importance
+51,Random Forest,ART Initiation Age Group_Child,0.0007335415783103298,0.0007335415783103298,estimator_feature_importance
+52,Random Forest,LGA_Enugu South,0.0006703604204681267,0.0006703604204681267,estimator_feature_importance
+53,Random Forest,LGA_Umu Nneochi,0.0006516142053162075,0.0006516142053162075,estimator_feature_importance
+54,Random Forest,Age Group_15-24,0.0006454333189389704,0.0006454333189389704,estimator_feature_importance
+55,Random Forest,LGA_Ohafia,0.0006371999390773064,0.0006371999390773064,estimator_feature_importance
+56,Random Forest,LGA_Oji River,0.0006273432749816262,0.0006273432749816262,estimator_feature_importance
+57,Random Forest,Is Child,0.0006107461270663443,0.0006107461270663443,estimator_feature_importance
+58,Random Forest,LGA_Isiala Ngwa South,0.0005571363832982621,0.0005571363832982621,estimator_feature_importance
+59,Random Forest,LGA_Mbaitoli,0.0005569073688635987,0.0005569073688635987,estimator_feature_importance
+60,Random Forest,Last Regimen_TDF-3TC-ATV/r,0.0005123349419952429,0.0005123349419952429,estimator_feature_importance
+61,Random Forest,Is Adult,0.0004702313921134918,0.0004702313921134918,estimator_feature_importance
+62,Random Forest,Age Group_55-64,0.0004330213089124027,0.0004330213089124027,estimator_feature_importance
+63,Random Forest,Last Regimen_AZT+3TC+ATV/r,0.00043144500321672704,0.00043144500321672704,estimator_feature_importance
+64,Random Forest,Last Regimen_AZT+3TC+NVP,0.00041666114458373287,0.00041666114458373287,estimator_feature_importance
+65,Random Forest,LGA_aboh mbaise,0.00039647678299670094,0.00039647678299670094,estimator_feature_importance
+66,Random Forest,LGA_Umuahia South,0.00038124047473190854,0.00038124047473190854,estimator_feature_importance
+67,Random Forest,LGA_Udi,0.0003514339261801167,0.0003514339261801167,estimator_feature_importance
+68,Random Forest,LGA_isi uzo,0.0003380514347344947,0.0003380514347344947,estimator_feature_importance
+69,Random Forest,LGA_Ukwa West,0.0003064342987733635,0.0003064342987733635,estimator_feature_importance
+70,Random Forest,Age Group_65+,0.00030181006680922396,0.00030181006680922396,estimator_feature_importance
+71,Random Forest,LGA_Udenu,0.0002903367275235702,0.0002903367275235702,estimator_feature_importance
+72,Random Forest,LGA_Isiala Mbano,0.0002823589546394487,0.0002823589546394487,estimator_feature_importance
+73,Random Forest,Is Elderly,0.0002721940124549376,0.0002721940124549376,estimator_feature_importance
+74,Random Forest,LGA_Ngor Okpala,0.00022672454553984413,0.00022672454553984413,estimator_feature_importance
+75,Random Forest,LGA_Bende,0.0002159868297342758,0.0002159868297342758,estimator_feature_importance
+76,Random Forest,LGA_Aninri,0.0001892791229317133,0.0001892791229317133,estimator_feature_importance
+77,Random Forest,Last Regimen_TDF-FTC-EFV,0.00016959729321861723,0.00016959729321861723,estimator_feature_importance
+78,Random Forest,LGA_Nwangele,0.0001672406700046503,0.0001672406700046503,estimator_feature_importance
+79,Random Forest,LGA_Isuikwuato,0.00015728459298376292,0.00015728459298376292,estimator_feature_importance
+80,Random Forest,Last Regimen_TDF-3TC-LPV/r,0.00015670415270726876,0.00015670415270726876,estimator_feature_importance
+81,Random Forest,Pregnancy Status_P,0.0001517466152440614,0.0001517466152440614,estimator_feature_importance
+82,Random Forest,LGA_Igbo Etiti,0.00010307840103735897,0.00010307840103735897,estimator_feature_importance
+83,Random Forest,Last Regimen_TDF+3TC+EFV,9.974380245590679e-05,9.974380245590679e-05,estimator_feature_importance
+84,Random Forest,LGA_Ehime Mbano,8.799512935431997e-05,8.799512935431997e-05,estimator_feature_importance
+85,Random Forest,Last Regimen_AZT-3TC-ATV/r,8.666878135257409e-05,8.666878135257409e-05,estimator_feature_importance
+86,Random Forest,Last Regimen_d4T-3TC-NVP,7.886589922345007e-05,7.886589922345007e-05,estimator_feature_importance
+87,Random Forest,LGA_Ideato North,6.573513864639878e-05,6.573513864639878e-05,estimator_feature_importance
+88,Random Forest,LGA_Ikeduru,6.421749914181055e-05,6.421749914181055e-05,estimator_feature_importance
+89,Random Forest,Last Regimen_TDF+FTC+DTG,6.308554032780315e-05,6.308554032780315e-05,estimator_feature_importance
+90,Random Forest,Last Regimen_ABC-3TC-ATV/r,6.118173966784909e-05,6.118173966784909e-05,estimator_feature_importance
+91,Random Forest,LGA_Nkwerre,5.101949642807009e-05,5.101949642807009e-05,estimator_feature_importance
+92,Random Forest,Last Regimen_TDF+3TC+NVP,4.8501488349193354e-05,4.8501488349193354e-05,estimator_feature_importance
+93,Random Forest,Last Regimen_AZT-3TC-EFV,3.410089488789903e-05,3.410089488789903e-05,estimator_feature_importance
+94,Random Forest,LGA_Njaba,2.839267745619025e-05,2.839267745619025e-05,estimator_feature_importance
+95,Random Forest,LGA_Uzo Uwani,2.2313273275128795e-05,2.2313273275128795e-05,estimator_feature_importance
+96,Random Forest,Last Regimen_ABC-3TC-LPV/r,2.2136571840485394e-05,2.2136571840485394e-05,estimator_feature_importance
+97,Random Forest,LGA_Ugwunagbo,2.203539354963581e-05,2.203539354963581e-05,estimator_feature_importance
+98,Random Forest,Last Regimen_AZT-3TC-LPV/r,1.978102667554567e-05,1.978102667554567e-05,estimator_feature_importance
+99,Random Forest,LGA_Oguta,1.828370302472653e-05,1.828370302472653e-05,estimator_feature_importance
+100,Random Forest,Last Regimen_TDF-FTC-DTG,1.0300176176415222e-05,1.0300176176415222e-05,estimator_feature_importance
+101,Random Forest,LGA_Ikwuano,1.029407432127758e-05,1.029407432127758e-05,estimator_feature_importance
+102,Random Forest,LGA_Isu,8.3248330179273e-06,8.3248330179273e-06,estimator_feature_importance
+103,Random Forest,LGA_Ezinihitte,3.3853326114062644e-06,3.3853326114062644e-06,estimator_feature_importance
+104,Random Forest,Last Regimen_d4T+3TC+NVP,3.200639223042994e-06,3.200639223042994e-06,estimator_feature_importance
+105,Random Forest,Last Regimen_TDF+3TC+LPV/r,2.8314703821135675e-06,2.8314703821135675e-06,estimator_feature_importance
+106,Random Forest,LGA_Orsu,2.748548971348431e-06,2.748548971348431e-06,estimator_feature_importance
+107,Random Forest,LGA_Igbo Eze South,2.3008849814659193e-06,2.3008849814659193e-06,estimator_feature_importance
+108,Random Forest,Last Regimen_ABC-3TC-NVP,1.9767232512566597e-06,1.9767232512566597e-06,estimator_feature_importance
+109,Random Forest,Last Regimen_ABC-3TC-EFV,1.740027353680785e-06,1.740027353680785e-06,estimator_feature_importance
+110,Random Forest,ART Initiation Age Group_Unknown,1.4958856148592457e-06,1.4958856148592457e-06,estimator_feature_importance
+111,Random Forest,Last Regimen_D4T-3TC-EFV,1.4527193756867548e-06,1.4527193756867548e-06,estimator_feature_importance
+112,Random Forest,Last Regimen_AZT-3TC-TDF,9.953191534310482e-07,9.953191534310482e-07,estimator_feature_importance
+113,Random Forest,Last Regimen_AZT+3TC+LPV/r,7.928596351362104e-07,7.928596351362104e-07,estimator_feature_importance
+114,Random Forest,Last Regimen_TDF-FTC-NVP,2.9885031770201036e-07,2.9885031770201036e-07,estimator_feature_importance
+115,Random Forest,Last Regimen_AZT+3TC+TDF,2.8884237876488884e-07,2.8884237876488884e-07,estimator_feature_importance
+116,Random Forest,Last Regimen_ABC+3TC+EFV,1.267068054924682e-07,1.267068054924682e-07,estimator_feature_importance
+117,Random Forest,Last Regimen_TDF+FTC+EFV,5.8962843290667895e-08,5.8962843290667895e-08,estimator_feature_importance
+118,Random Forest,Last Regimen_TDF-FTC-LPV/r,1.0289226234648925e-08,1.0289226234648925e-08,estimator_feature_importance
+119,Random Forest,Current Status Q3 (28 Days),0.0,0.0,estimator_feature_importance
+120,Random Forest,Current Status Q3 (90 Days),0.0,0.0,estimator_feature_importance
+121,Random Forest,Last Regimen_ABC-3TC-TDF,0.0,0.0,estimator_feature_importance
+122,Random Forest,Last Regimen_ABC+3TC+LPV/r,0.0,0.0,estimator_feature_importance
+123,Random Forest,Last Regimen_ABC+FTC+DTG,0.0,0.0,estimator_feature_importance
+124,Random Forest,Last Regimen_ABC+3TC+NVP,0.0,0.0,estimator_feature_importance
+125,Random Forest,Last Regimen_ABC+3TC+TDF,0.0,0.0,estimator_feature_importance
+126,Random Forest,Last Regimen_AZT-3TC-DTG,0.0,0.0,estimator_feature_importance
+127,Random Forest,Last Regimen_AZT-3TC-ABC,0.0,0.0,estimator_feature_importance
+128,Random Forest,Last Regimen_ABC-DDI-LPV/r,0.0,0.0,estimator_feature_importance
+129,Random Forest,Last Regimen_ABC-3TC-ddi,0.0,0.0,estimator_feature_importance
+130,Random Forest,Last Regimen_ABC-FTC-EFV,0.0,0.0,estimator_feature_importance
+131,Random Forest,Last Regimen_AZT+3TC+ABC,0.0,0.0,estimator_feature_importance
+132,Random Forest,Last Regimen_AZT+3TC+DTG,0.0,0.0,estimator_feature_importance
+133,Random Forest,Last Regimen_AZT+3TC+EFV,0.0,0.0,estimator_feature_importance
+134,Random Forest,Last Regimen_TDF+FTC+NVP,0.0,0.0,estimator_feature_importance
+135,Random Forest,Last Regimen_TDF+FTC+LPV/r,0.0,0.0,estimator_feature_importance
+136,Random Forest,Last Regimen_D4T+3TC+EFV,0.0,0.0,estimator_feature_importance
+137,Random Forest,Last Regimen_DDI-3TC-EFV,0.0,0.0,estimator_feature_importance
+138,Random Forest,Last Regimen_AZT-TDF-NVP,0.0,0.0,estimator_feature_importance
+139,Random Forest,Last Regimen_AZT-TDF-3TC-LPV/r,0.0,0.0,estimator_feature_importance
+140,Random Forest,Last Regimen_TDF-FTC-ATV/r,0.0,0.0,estimator_feature_importance
+141,Random Forest,Last Regimen_d4T-3TC-LPV/r,0.0,0.0,estimator_feature_importance

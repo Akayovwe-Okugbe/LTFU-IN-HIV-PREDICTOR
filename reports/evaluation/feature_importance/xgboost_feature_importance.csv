@@ -1,0 +1,142 @@
+rank,model,feature,importance,raw_value,importance_type
+1,XGBoost,Last Regimen_TDF+3TC+DTG,0.42433667182922363,0.42433667182922363,estimator_feature_importance
+2,XGBoost,Missing Viral Load,0.0653066411614418,0.0653066411614418,estimator_feature_importance
+3,XGBoost,Viral Load Category_Unknown,0.04840538650751114,0.04840538650751114,estimator_feature_importance
+4,XGBoost,Pregnancy Status_Unknown,0.03749803081154823,0.03749803081154823,estimator_feature_importance
+5,XGBoost,Last Regimen_TDF+3TC+ATV/r,0.024823592975735664,0.024823592975735664,estimator_feature_importance
+6,XGBoost,Last Regimen_ABC+3TC+DTG,0.023093711584806442,0.023093711584806442,estimator_feature_importance
+7,XGBoost,Days Of ARV Refill,0.019082695245742798,0.019082695245742798,estimator_feature_importance
+8,XGBoost,LGA_Ukwa East,0.01705542393028736,0.01705542393028736,estimator_feature_importance
+9,XGBoost,Pregnancy Status_NP,0.015417386777698994,0.015417386777698994,estimator_feature_importance
+10,XGBoost,Months on ART,0.015113732777535915,0.015113732777535915,estimator_feature_importance
+11,XGBoost,LGA_Awgu,0.01410156674683094,0.01410156674683094,estimator_feature_importance
+12,XGBoost,Last Regimen_TDF-3TC-DTG,0.013502130284905434,0.013502130284905434,estimator_feature_importance
+13,XGBoost,ARV Refill Category_Short Refill,0.012526487000286579,0.012526487000286579,estimator_feature_importance
+14,XGBoost,ARV Refill Category_Unknown,0.011510470882058144,0.011510470882058144,estimator_feature_importance
+15,XGBoost,LGA_Okigwe,0.010978122241795063,0.010978122241795063,estimator_feature_importance
+16,XGBoost,State_Enugu,0.010917267762124538,0.010917267762124538,estimator_feature_importance
+17,XGBoost,State_Imo,0.010296818800270557,0.010296818800270557,estimator_feature_importance
+18,XGBoost,ARV Refill Category_Medium Refill,0.009720179252326488,0.009720179252326488,estimator_feature_importance
+19,XGBoost,LGA_Osisioma,0.009509215131402016,0.009509215131402016,estimator_feature_importance
+20,XGBoost,Current Viral Load,0.00890994630753994,0.00890994630753994,estimator_feature_importance
+21,XGBoost,LGA_Isiala Ngwa North,0.00853243749588728,0.00853243749588728,estimator_feature_importance
+22,XGBoost,Last Regimen_AZT+3TC+ATV/r,0.0079085323959589,0.0079085323959589,estimator_feature_importance
+23,XGBoost,Is Child,0.0074330647476017475,0.0074330647476017475,estimator_feature_importance
+24,XGBoost,LGA_Enugu North,0.007365880999714136,0.007365880999714136,estimator_feature_importance
+25,XGBoost,LGA_Ohaji/Egbema,0.006808056961745024,0.006808056961745024,estimator_feature_importance
+26,XGBoost,Last Regimen_TDF-3TC-ATV/r,0.006756316404789686,0.006756316404789686,estimator_feature_importance
+27,XGBoost,LGA_Arochukwu,0.006351003423333168,0.006351003423333168,estimator_feature_importance
+28,XGBoost,LGA_Nkanu West,0.006227913778275251,0.006227913778275251,estimator_feature_importance
+29,XGBoost,Last Regimen_TDF+FTC+DTG,0.005998710170388222,0.005998710170388222,estimator_feature_importance
+30,XGBoost,LGA_Isiala Ngwa South,0.005966580472886562,0.005966580472886562,estimator_feature_importance
+31,XGBoost,LGA_Oji River,0.005376075394451618,0.005376075394451618,estimator_feature_importance
+32,XGBoost,LGA_Obi Ngwa,0.005350676365196705,0.005350676365196705,estimator_feature_importance
+33,XGBoost,Last Regimen_TDF-3TC-EFV,0.005308864638209343,0.005308864638209343,estimator_feature_importance
+34,XGBoost,LGA_Ohafia,0.004959456622600555,0.004959456622600555,estimator_feature_importance
+35,XGBoost,Last Regimen_ABC-3TC-DTG,0.004868521820753813,0.004868521820753813,estimator_feature_importance
+36,XGBoost,LGA_Umu Nneochi,0.004796610213816166,0.004796610213816166,estimator_feature_importance
+37,XGBoost,LGA_Enugu East,0.004396042320877314,0.004396042320877314,estimator_feature_importance
+38,XGBoost,LGA_Owerri Municipal,0.004148184787482023,0.004148184787482023,estimator_feature_importance
+39,XGBoost,LGA_Umuahia North,0.004010605625808239,0.004010605625808239,estimator_feature_importance
+40,XGBoost,Age Group_25-34,0.003787216730415821,0.003787216730415821,estimator_feature_importance
+41,XGBoost,LGA_Aba South,0.0035571663174778223,0.0035571663174778223,estimator_feature_importance
+42,XGBoost,LGA_Oru East,0.003453715704381466,0.003453715704381466,estimator_feature_importance
+43,XGBoost,LGA_Enugu South,0.00332243787124753,0.00332243787124753,estimator_feature_importance
+44,XGBoost,LGA_Orlu,0.003321254625916481,0.003321254625916481,estimator_feature_importance
+45,XGBoost,ART Initiation Age Group_Older Adult,0.0030312056187540293,0.0030312056187540293,estimator_feature_importance
+46,XGBoost,Current Age,0.0029498205985873938,0.0029498205985873938,estimator_feature_importance
+47,XGBoost,Age at ART Initiation,0.0028949405532330275,0.0028949405532330275,estimator_feature_importance
+48,XGBoost,LGA_Nsukka,0.002823753049597144,0.002823753049597144,estimator_feature_importance
+49,XGBoost,LGA_Owerri North,0.0026984496507793665,0.0026984496507793665,estimator_feature_importance
+50,XGBoost,LGA_isi uzo,0.002625857014209032,0.002625857014209032,estimator_feature_importance
+51,XGBoost,LGA_Ngor Okpala,0.00257110595703125,0.00257110595703125,estimator_feature_importance
+52,XGBoost,Age Group_15-24,0.0024240086786448956,0.0024240086786448956,estimator_feature_importance
+53,XGBoost,Age Group_45-54,0.0024034245871007442,0.0024034245871007442,estimator_feature_importance
+54,XGBoost,LGA_Nwangele,0.0023871869780123234,0.0023871869780123234,estimator_feature_importance
+55,XGBoost,LGA_Igbo Eze North,0.0023861490190029144,0.0023861490190029144,estimator_feature_importance
+56,XGBoost,LGA_Mbaitoli,0.0023418350610882044,0.0023418350610882044,estimator_feature_importance
+57,XGBoost,LGA_Obowo,0.002275737002491951,0.002275737002491951,estimator_feature_importance
+58,XGBoost,LGA_Umuahia South,0.0021574189886450768,0.0021574189886450768,estimator_feature_importance
+59,XGBoost,LGA_Aninri,0.0020406439434736967,0.0020406439434736967,estimator_feature_importance
+60,XGBoost,Patient Transferred In_True,0.0019843080081045628,0.0019843080081045628,estimator_feature_importance
+61,XGBoost,Age Group_35-44,0.0019629974849522114,0.0019629974849522114,estimator_feature_importance
+62,XGBoost,LGA_Ehime Mbano,0.0019245264120399952,0.0019245264120399952,estimator_feature_importance
+63,XGBoost,LGA_aboh mbaise,0.0018510877853259444,0.0018510877853259444,estimator_feature_importance
+64,XGBoost,Is Elderly,0.001838996890000999,0.001838996890000999,estimator_feature_importance
+65,XGBoost,ART Initiation Age Group_Child,0.0018324349075555801,0.0018324349075555801,estimator_feature_importance
+66,XGBoost,ART Initiation Age Group_Adult,0.0017713328124955297,0.0017713328124955297,estimator_feature_importance
+67,XGBoost,Last Regimen_AZT-3TC-NVP,0.0016619456000626087,0.0016619456000626087,estimator_feature_importance
+68,XGBoost,LGA_Igbo Etiti,0.0016481822822242975,0.0016481822822242975,estimator_feature_importance
+69,XGBoost,LGA_Udi,0.0016443541971966624,0.0016443541971966624,estimator_feature_importance
+70,XGBoost,Sex_M,0.0015928413486108184,0.0015928413486108184,estimator_feature_importance
+71,XGBoost,Is Adult,0.0013949779095128179,0.0013949779095128179,estimator_feature_importance
+72,XGBoost,LGA_Ugwunagbo,0.0013027980457991362,0.0013027980457991362,estimator_feature_importance
+73,XGBoost,LGA_Bende,0.00128779630176723,0.00128779630176723,estimator_feature_importance
+74,XGBoost,Age Group_65+,0.001182815176434815,0.001182815176434815,estimator_feature_importance
+75,XGBoost,Viral Load Category_Unsuppressed,0.001156327431090176,0.001156327431090176,estimator_feature_importance
+76,XGBoost,LGA_Isuikwuato,0.0010983432875946164,0.0010983432875946164,estimator_feature_importance
+77,XGBoost,LGA_Uzo Uwani,0.001028702943585813,0.001028702943585813,estimator_feature_importance
+78,XGBoost,LGA_Isiala Mbano,0.0009676576009951532,0.0009676576009951532,estimator_feature_importance
+79,XGBoost,Age Group_55-64,0.0006499473820440471,0.0006499473820440471,estimator_feature_importance
+80,XGBoost,LGA_Ukwa West,9.535484423395246e-05,9.535484423395246e-05,estimator_feature_importance
+81,XGBoost,Current Status Q3 (28 Days),0.0,0.0,estimator_feature_importance
+82,XGBoost,Current Status Q3 (90 Days),0.0,0.0,estimator_feature_importance
+83,XGBoost,LGA_Udenu,0.0,0.0,estimator_feature_importance
+84,XGBoost,LGA_Orsu,0.0,0.0,estimator_feature_importance
+85,XGBoost,LGA_Ideato North,0.0,0.0,estimator_feature_importance
+86,XGBoost,LGA_Ikwuano,0.0,0.0,estimator_feature_importance
+87,XGBoost,LGA_Ikeduru,0.0,0.0,estimator_feature_importance
+88,XGBoost,LGA_Igbo Eze South,0.0,0.0,estimator_feature_importance
+89,XGBoost,LGA_Oguta,0.0,0.0,estimator_feature_importance
+90,XGBoost,LGA_Njaba,0.0,0.0,estimator_feature_importance
+91,XGBoost,LGA_Isu,0.0,0.0,estimator_feature_importance
+92,XGBoost,LGA_Nkwerre,0.0,0.0,estimator_feature_importance
+93,XGBoost,LGA_Ezinihitte,0.0,0.0,estimator_feature_importance
+94,XGBoost,ART Initiation Age Group_Unknown,0.0,0.0,estimator_feature_importance
+95,XGBoost,Last Regimen_ABC-3TC-TDF,0.0,0.0,estimator_feature_importance
+96,XGBoost,Last Regimen_ABC-3TC-NVP,0.0,0.0,estimator_feature_importance
+97,XGBoost,Last Regimen_ABC-3TC-ddi,0.0,0.0,estimator_feature_importance
+98,XGBoost,Last Regimen_ABC-FTC-EFV,0.0,0.0,estimator_feature_importance
+99,XGBoost,Last Regimen_AZT+3TC+ABC,0.0,0.0,estimator_feature_importance
+100,XGBoost,Last Regimen_ABC-DDI-LPV/r,0.0,0.0,estimator_feature_importance
+101,XGBoost,Last Regimen_ABC+3TC+EFV,0.0,0.0,estimator_feature_importance
+102,XGBoost,Last Regimen_ABC+3TC+LPV/r,0.0,0.0,estimator_feature_importance
+103,XGBoost,Last Regimen_ABC+3TC+NVP,0.0,0.0,estimator_feature_importance
+104,XGBoost,Last Regimen_ABC+FTC+DTG,0.0,0.0,estimator_feature_importance
+105,XGBoost,Last Regimen_ABC+3TC+TDF,0.0,0.0,estimator_feature_importance
+106,XGBoost,Last Regimen_ABC-3TC-ATV/r,0.0,0.0,estimator_feature_importance
+107,XGBoost,Last Regimen_ABC-3TC-EFV,0.0,0.0,estimator_feature_importance
+108,XGBoost,Last Regimen_ABC-3TC-LPV/r,0.0,0.0,estimator_feature_importance
+109,XGBoost,Pregnancy Status_P,0.0,0.0,estimator_feature_importance
+110,XGBoost,Last Regimen_AZT-3TC-LPV/r,0.0,0.0,estimator_feature_importance
+111,XGBoost,Last Regimen_AZT-3TC-EFV,0.0,0.0,estimator_feature_importance
+112,XGBoost,Last Regimen_AZT-3TC-DTG,0.0,0.0,estimator_feature_importance
+113,XGBoost,Last Regimen_AZT-3TC-ATV/r,0.0,0.0,estimator_feature_importance
+114,XGBoost,Last Regimen_AZT-3TC-ABC,0.0,0.0,estimator_feature_importance
+115,XGBoost,Last Regimen_AZT+3TC+TDF,0.0,0.0,estimator_feature_importance
+116,XGBoost,Last Regimen_AZT+3TC+NVP,0.0,0.0,estimator_feature_importance
+117,XGBoost,Last Regimen_AZT+3TC+LPV/r,0.0,0.0,estimator_feature_importance
+118,XGBoost,Last Regimen_AZT+3TC+EFV,0.0,0.0,estimator_feature_importance
+119,XGBoost,Last Regimen_AZT+3TC+DTG,0.0,0.0,estimator_feature_importance
+120,XGBoost,Last Regimen_DDI-3TC-EFV,0.0,0.0,estimator_feature_importance
+121,XGBoost,Last Regimen_D4T-3TC-EFV,0.0,0.0,estimator_feature_importance
+122,XGBoost,Last Regimen_AZT-TDF-NVP,0.0,0.0,estimator_feature_importance
+123,XGBoost,Last Regimen_D4T+3TC+EFV,0.0,0.0,estimator_feature_importance
+124,XGBoost,Last Regimen_AZT-TDF-3TC-LPV/r,0.0,0.0,estimator_feature_importance
+125,XGBoost,Last Regimen_AZT-3TC-TDF,0.0,0.0,estimator_feature_importance
+126,XGBoost,Last Regimen_TDF+FTC+NVP,0.0,0.0,estimator_feature_importance
+127,XGBoost,Last Regimen_TDF+FTC+LPV/r,0.0,0.0,estimator_feature_importance
+128,XGBoost,Last Regimen_TDF+FTC+EFV,0.0,0.0,estimator_feature_importance
+129,XGBoost,Last Regimen_TDF+3TC+NVP,0.0,0.0,estimator_feature_importance
+130,XGBoost,Last Regimen_TDF+3TC+EFV,0.0,0.0,estimator_feature_importance
+131,XGBoost,Last Regimen_TDF+3TC+LPV/r,0.0,0.0,estimator_feature_importance
+132,XGBoost,Last Regimen_TDF-3TC-NVP,0.0,0.0,estimator_feature_importance
+133,XGBoost,Last Regimen_TDF-3TC-LPV/r,0.0,0.0,estimator_feature_importance
+134,XGBoost,Last Regimen_TDF-FTC-EFV,0.0,0.0,estimator_feature_importance
+135,XGBoost,Last Regimen_TDF-FTC-DTG,0.0,0.0,estimator_feature_importance
+136,XGBoost,Last Regimen_TDF-FTC-ATV/r,0.0,0.0,estimator_feature_importance
+137,XGBoost,Last Regimen_TDF-FTC-LPV/r,0.0,0.0,estimator_feature_importance
+138,XGBoost,Last Regimen_d4T-3TC-LPV/r,0.0,0.0,estimator_feature_importance
+139,XGBoost,Last Regimen_d4T+3TC+NVP,0.0,0.0,estimator_feature_importance
+140,XGBoost,Last Regimen_TDF-FTC-NVP,0.0,0.0,estimator_feature_importance
+141,XGBoost,Last Regimen_d4T-3TC-NVP,0.0,0.0,estimator_feature_importance

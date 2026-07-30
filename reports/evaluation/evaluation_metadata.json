@@ -1,0 +1,49 @@
+{
+    "evaluation_timestamp_utc": "2026-07-30T20:13:27.901295+00:00",
+    "evaluation_type": "locked_held_out_test_evaluation",
+    "test_dataset_path": "C:\\Users\\Home\\IdeaProjects\\LTFU-IN-HIV-PREDICTOR\\data\\processed\\03_test.parquet",
+    "test_records": 60855,
+    "predictor_features": 141,
+    "target_column": "Target",
+    "classification_threshold": 0.5,
+    "positive_class": {
+        "value": 1,
+        "meaning": "Inactive or loss to follow-up"
+    },
+    "negative_class": {
+        "value": 0,
+        "meaning": "Active or retained in treatment"
+    },
+    "models_evaluated": [
+        "logistic_regression",
+        "random_forest",
+        "adaboost",
+        "xgboost"
+    ],
+    "model_count": 4,
+    "total_evaluation_seconds": 10.749854600057006,
+    "leakage_safeguards": [
+        "No fitting or refitting was performed during evaluation.",
+        "Saved preprocessing pipelines were used unchanged.",
+        "A fixed 0.50 classification threshold was used.",
+        "No hyperparameter optimisation was performed on test outcomes.",
+        "Test rank is descriptive and must not be used for further tuning."
+    ],
+    "software_versions": {
+        "python": "3.11.15 | packaged by Anaconda, Inc. | (main, Jun 11 2026, 15:12:53) [MSC v.1942 64 bit (AMD64)]",
+        "platform": "Windows-10-10.0.26200-SP0",
+        "pandas": "3.0.5",
+        "numpy": "2.4.6",
+        "scikit_learn": "1.9.0",
+        "joblib": "1.5.3",
+        "matplotlib": "3.11.1",
+        "xgboost": "3.2.0"
+    },
+    "output_locations": {
+        "comparison_csv": "C:\\Users\\Home\\IdeaProjects\\LTFU-IN-HIV-PREDICTOR\\reports\\evaluation\\metrics\\model_comparison.csv",
+        "comparison_json": "C:\\Users\\Home\\IdeaProjects\\LTFU-IN-HIV-PREDICTOR\\reports\\evaluation\\metrics\\model_comparison.json",
+        "predictions": "C:\\Users\\Home\\IdeaProjects\\LTFU-IN-HIV-PREDICTOR\\reports\\evaluation\\predictions\\test_predictions.parquet",
+        "plots": "C:\\Users\\Home\\IdeaProjects\\LTFU-IN-HIV-PREDICTOR\\reports\\evaluation\\plots",
+        "feature_importance": "C:\\Users\\Home\\IdeaProjects\\LTFU-IN-HIV-PREDICTOR\\reports\\evaluation\\feature_importance"
+    }
+}

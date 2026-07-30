@@ -1,0 +1,142 @@
+rank,model,feature,importance,raw_value,importance_type
+1,Logistic Regression,Current Age,32.77483701467833,32.77483701467833,absolute_logistic_coefficient
+2,Logistic Regression,Age at ART Initiation,30.3598448313095,-30.3598448313095,absolute_logistic_coefficient
+3,Logistic Regression,ART Initiation Age Group_Unknown,27.02068596430824,27.02068596430824,absolute_logistic_coefficient
+4,Logistic Regression,ARV Refill Category_Unknown,11.349843762267561,11.349843762267561,absolute_logistic_coefficient
+5,Logistic Regression,Months on ART,10.352456664455909,-10.352456664455909,absolute_logistic_coefficient
+6,Logistic Regression,Last Regimen_AZT-3TC-NVP,6.329952699264068,6.329952699264068,absolute_logistic_coefficient
+7,Logistic Regression,Last Regimen_ABC+3TC+DTG,3.6796325343887126,-3.6796325343887126,absolute_logistic_coefficient
+8,Logistic Regression,Last Regimen_TDF-3TC-EFV,3.3956545269369567,3.3956545269369567,absolute_logistic_coefficient
+9,Logistic Regression,Pregnancy Status_Unknown,3.014570416426079,3.014570416426079,absolute_logistic_coefficient
+10,Logistic Regression,Last Regimen_TDF+3TC+ATV/r,2.9788873425320443,-2.9788873425320443,absolute_logistic_coefficient
+11,Logistic Regression,Last Regimen_TDF+3TC+DTG,2.963105678345003,-2.963105678345003,absolute_logistic_coefficient
+12,Logistic Regression,Last Regimen_AZT+3TC+ATV/r,2.6698861198416686,-2.6698861198416686,absolute_logistic_coefficient
+13,Logistic Regression,LGA_Ugwunagbo,1.7636923332391754,1.7636923332391754,absolute_logistic_coefficient
+14,Logistic Regression,Days Of ARV Refill,1.677691345551128,-1.677691345551128,absolute_logistic_coefficient
+15,Logistic Regression,LGA_Ehime Mbano,1.6182452838179,1.6182452838179,absolute_logistic_coefficient
+16,Logistic Regression,LGA_Ukwa East,1.607245851414064,-1.607245851414064,absolute_logistic_coefficient
+17,Logistic Regression,Last Regimen_ABC-3TC-ATV/r,1.5839788979578369,1.5839788979578369,absolute_logistic_coefficient
+18,Logistic Regression,Last Regimen_TDF+FTC+DTG,1.5107282833175384,-1.5107282833175384,absolute_logistic_coefficient
+19,Logistic Regression,Last Regimen_TDF-3TC-NVP,1.414437799985033,1.414437799985033,absolute_logistic_coefficient
+20,Logistic Regression,LGA_Nwangele,1.409638163916147,1.409638163916147,absolute_logistic_coefficient
+21,Logistic Regression,Last Regimen_ABC-3TC-NVP,1.357374321076994,1.357374321076994,absolute_logistic_coefficient
+22,Logistic Regression,LGA_isi uzo,1.318449447435052,-1.318449447435052,absolute_logistic_coefficient
+23,Logistic Regression,LGA_Ohaji/Egbema,1.3015276423190727,-1.3015276423190727,absolute_logistic_coefficient
+24,Logistic Regression,LGA_Umu Nneochi,1.2803004844766488,1.2803004844766488,absolute_logistic_coefficient
+25,Logistic Regression,Pregnancy Status_NP,1.198841365355782,-1.198841365355782,absolute_logistic_coefficient
+26,Logistic Regression,Last Regimen_TDF-3TC-LPV/r,1.1698441262588517,1.1698441262588517,absolute_logistic_coefficient
+27,Logistic Regression,LGA_Okigwe,1.1598144582525072,-1.1598144582525072,absolute_logistic_coefficient
+28,Logistic Regression,LGA_Isu,1.135195453686277,-1.135195453686277,absolute_logistic_coefficient
+29,Logistic Regression,LGA_Owerri Municipal,1.081467849198707,1.081467849198707,absolute_logistic_coefficient
+30,Logistic Regression,LGA_Igbo Etiti,1.0341543715418615,1.0341543715418615,absolute_logistic_coefficient
+31,Logistic Regression,LGA_Enugu East,1.030913864273875,1.030913864273875,absolute_logistic_coefficient
+32,Logistic Regression,LGA_Igbo Eze North,0.9182660689646489,-0.9182660689646489,absolute_logistic_coefficient
+33,Logistic Regression,State_Imo,0.914244271401976,0.914244271401976,absolute_logistic_coefficient
+34,Logistic Regression,Last Regimen_AZT-3TC-LPV/r,0.864321746998519,0.864321746998519,absolute_logistic_coefficient
+35,Logistic Regression,Last Regimen_TDF+3TC+EFV,0.8370801412373822,-0.8370801412373822,absolute_logistic_coefficient
+36,Logistic Regression,ARV Refill Category_Short Refill,0.81481312808652,-0.81481312808652,absolute_logistic_coefficient
+37,Logistic Regression,LGA_Aninri,0.7548538297982759,0.7548538297982759,absolute_logistic_coefficient
+38,Logistic Regression,LGA_Awgu,0.7256613745699573,0.7256613745699573,absolute_logistic_coefficient
+39,Logistic Regression,Last Regimen_AZT+3TC+DTG,0.7138498587599944,-0.7138498587599944,absolute_logistic_coefficient
+40,Logistic Regression,ART Initiation Age Group_Child,0.6950201947558456,-0.6950201947558456,absolute_logistic_coefficient
+41,Logistic Regression,LGA_Udenu,0.6942509300514353,-0.6942509300514353,absolute_logistic_coefficient
+42,Logistic Regression,LGA_Nkwerre,0.6755403633586181,0.6755403633586181,absolute_logistic_coefficient
+43,Logistic Regression,LGA_Osisioma,0.5926413854200773,0.5926413854200773,absolute_logistic_coefficient
+44,Logistic Regression,Last Regimen_TDF-3TC-DTG,0.5851555458718627,0.5851555458718627,absolute_logistic_coefficient
+45,Logistic Regression,Last Regimen_AZT-3TC-TDF,0.5655420924239619,-0.5655420924239619,absolute_logistic_coefficient
+46,Logistic Regression,LGA_Igbo Eze South,0.5362125135402301,0.5362125135402301,absolute_logistic_coefficient
+47,Logistic Regression,LGA_Isiala Ngwa South,0.5347115632372361,0.5347115632372361,absolute_logistic_coefficient
+48,Logistic Regression,Last Regimen_AZT-3TC-ATV/r,0.5162720307551292,0.5162720307551292,absolute_logistic_coefficient
+49,Logistic Regression,Last Regimen_ABC-3TC-DTG,0.5074176968157055,0.5074176968157055,absolute_logistic_coefficient
+50,Logistic Regression,Last Regimen_d4T-3TC-NVP,0.5010419919330281,0.5010419919330281,absolute_logistic_coefficient
+51,Logistic Regression,Last Regimen_ABC+FTC+DTG,0.4896181826075024,-0.4896181826075024,absolute_logistic_coefficient
+52,Logistic Regression,LGA_Oru East,0.47955550949215325,-0.47955550949215325,absolute_logistic_coefficient
+53,Logistic Regression,Pregnancy Status_P,0.46584634275453246,-0.46584634275453246,absolute_logistic_coefficient
+54,Logistic Regression,Age Group_55-64,0.4653288133716025,0.4653288133716025,absolute_logistic_coefficient
+55,Logistic Regression,LGA_Ngor Okpala,0.46380118041755786,0.46380118041755786,absolute_logistic_coefficient
+56,Logistic Regression,LGA_Njaba,0.45472088984252784,-0.45472088984252784,absolute_logistic_coefficient
+57,Logistic Regression,LGA_Arochukwu,0.4439679815668512,-0.4439679815668512,absolute_logistic_coefficient
+58,Logistic Regression,Viral Load Category_Unsuppressed,0.4398790832983456,0.4398790832983456,absolute_logistic_coefficient
+59,Logistic Regression,LGA_Orsu,0.4237846287303515,0.4237846287303515,absolute_logistic_coefficient
+60,Logistic Regression,LGA_Owerri North,0.409236180217895,0.409236180217895,absolute_logistic_coefficient
+61,Logistic Regression,Last Regimen_TDF-FTC-EFV,0.4079229306969485,0.4079229306969485,absolute_logistic_coefficient
+62,Logistic Regression,LGA_Enugu North,0.4016105934277721,-0.4016105934277721,absolute_logistic_coefficient
+63,Logistic Regression,LGA_Oguta,0.39260054163859337,-0.39260054163859337,absolute_logistic_coefficient
+64,Logistic Regression,LGA_Oji River,0.377801647396047,0.377801647396047,absolute_logistic_coefficient
+65,Logistic Regression,LGA_Mbaitoli,0.37276086138421927,0.37276086138421927,absolute_logistic_coefficient
+66,Logistic Regression,LGA_Aba South,0.369990396026542,-0.369990396026542,absolute_logistic_coefficient
+67,Logistic Regression,State_Enugu,0.36848035063087764,0.36848035063087764,absolute_logistic_coefficient
+68,Logistic Regression,Last Regimen_TDF-3TC-ATV/r,0.3611705998586693,0.3611705998586693,absolute_logistic_coefficient
+69,Logistic Regression,Last Regimen_AZT+3TC+TDF,0.3344327408549093,-0.3344327408549093,absolute_logistic_coefficient
+70,Logistic Regression,LGA_Udi,0.3324564221371568,-0.3324564221371568,absolute_logistic_coefficient
+71,Logistic Regression,LGA_Ikwuano,0.3132336523648334,0.3132336523648334,absolute_logistic_coefficient
+72,Logistic Regression,Last Regimen_ABC+3TC+TDF,0.29048156258591606,-0.29048156258591606,absolute_logistic_coefficient
+73,Logistic Regression,LGA_Nsukka,0.2818705623350957,-0.2818705623350957,absolute_logistic_coefficient
+74,Logistic Regression,LGA_Nkanu West,0.2768121099142151,-0.2768121099142151,absolute_logistic_coefficient
+75,Logistic Regression,ART Initiation Age Group_Older Adult,0.2711936540558349,-0.2711936540558349,absolute_logistic_coefficient
+76,Logistic Regression,LGA_Enugu South,0.27079645302567384,0.27079645302567384,absolute_logistic_coefficient
+77,Logistic Regression,ARV Refill Category_Medium Refill,0.2673975490267229,-0.2673975490267229,absolute_logistic_coefficient
+78,Logistic Regression,LGA_Isiala Mbano,0.2663907792632537,-0.2663907792632537,absolute_logistic_coefficient
+79,Logistic Regression,LGA_Orlu,0.256262979052969,-0.256262979052969,absolute_logistic_coefficient
+80,Logistic Regression,LGA_Ikeduru,0.20895310045146048,0.20895310045146048,absolute_logistic_coefficient
+81,Logistic Regression,LGA_Isiala Ngwa North,0.20060118482734823,-0.20060118482734823,absolute_logistic_coefficient
+82,Logistic Regression,Age Group_45-54,0.19509919727010352,0.19509919727010352,absolute_logistic_coefficient
+83,Logistic Regression,Sex_M,0.18147885194782637,-0.18147885194782637,absolute_logistic_coefficient
+84,Logistic Regression,LGA_Ukwa West,0.17810944802844617,0.17810944802844617,absolute_logistic_coefficient
+85,Logistic Regression,LGA_Ezinihitte,0.16044565417562956,-0.16044565417562956,absolute_logistic_coefficient
+86,Logistic Regression,LGA_Obi Ngwa,0.1596029959004997,-0.1596029959004997,absolute_logistic_coefficient
+87,Logistic Regression,LGA_Umuahia South,0.15440802222826291,-0.15440802222826291,absolute_logistic_coefficient
+88,Logistic Regression,Last Regimen_ABC+3TC+EFV,0.1401381030834665,-0.1401381030834665,absolute_logistic_coefficient
+89,Logistic Regression,Last Regimen_AZT-3TC-ABC,0.14002375297517275,0.14002375297517275,absolute_logistic_coefficient
+90,Logistic Regression,LGA_Uzo Uwani,0.1381975692355203,-0.1381975692355203,absolute_logistic_coefficient
+91,Logistic Regression,Viral Load Category_Unknown,0.13428364351451225,0.13428364351451225,absolute_logistic_coefficient
+92,Logistic Regression,Last Regimen_TDF-FTC-DTG,0.13374764958558022,0.13374764958558022,absolute_logistic_coefficient
+93,Logistic Regression,LGA_Obowo,0.13035024602996023,-0.13035024602996023,absolute_logistic_coefficient
+94,Logistic Regression,Is Elderly,0.1299886230774452,0.1299886230774452,absolute_logistic_coefficient
+95,Logistic Regression,Last Regimen_AZT+3TC+NVP,0.12686200529633235,0.12686200529633235,absolute_logistic_coefficient
+96,Logistic Regression,Is Adult,0.1069719459240589,-0.1069719459240589,absolute_logistic_coefficient
+97,Logistic Regression,Age Group_15-24,0.10412908926558745,-0.10412908926558745,absolute_logistic_coefficient
+98,Logistic Regression,LGA_aboh mbaise,0.09971544456726103,-0.09971544456726103,absolute_logistic_coefficient
+99,Logistic Regression,LGA_Ideato North,0.08739625822299099,0.08739625822299099,absolute_logistic_coefficient
+100,Logistic Regression,Last Regimen_ABC-3TC-LPV/r,0.08524336825012235,0.08524336825012235,absolute_logistic_coefficient
+101,Logistic Regression,Patient Transferred In_True,0.08473472132346882,0.08473472132346882,absolute_logistic_coefficient
+102,Logistic Regression,LGA_Bende,0.07091552478705862,0.07091552478705862,absolute_logistic_coefficient
+103,Logistic Regression,ART Initiation Age Group_Adult,0.059378546670421285,-0.059378546670421285,absolute_logistic_coefficient
+104,Logistic Regression,LGA_Umuahia North,0.05501763383340578,0.05501763383340578,absolute_logistic_coefficient
+105,Logistic Regression,Age Group_25-34,0.05245053672074321,-0.05245053672074321,absolute_logistic_coefficient
+106,Logistic Regression,Age Group_65+,0.051793251834641806,0.051793251834641806,absolute_logistic_coefficient
+107,Logistic Regression,Missing Viral Load,0.04777325891140037,0.04777325891140037,absolute_logistic_coefficient
+108,Logistic Regression,Last Regimen_TDF+3TC+NVP,0.04269846687046543,-0.04269846687046543,absolute_logistic_coefficient
+109,Logistic Regression,Age Group_35-44,0.03926752773234909,-0.03926752773234909,absolute_logistic_coefficient
+110,Logistic Regression,Last Regimen_TDF+3TC+LPV/r,0.027608874501976684,-0.027608874501976684,absolute_logistic_coefficient
+111,Logistic Regression,Last Regimen_AZT-3TC-EFV,0.02146462899422303,0.02146462899422303,absolute_logistic_coefficient
+112,Logistic Regression,LGA_Ohafia,0.009442408604594953,-0.009442408604594953,absolute_logistic_coefficient
+113,Logistic Regression,Last Regimen_AZT-3TC-DTG,0.009357390404798643,0.009357390404798643,absolute_logistic_coefficient
+114,Logistic Regression,LGA_Isuikwuato,0.009124179726884089,-0.009124179726884089,absolute_logistic_coefficient
+115,Logistic Regression,Last Regimen_D4T-3TC-EFV,0.0071574801181220294,0.0071574801181220294,absolute_logistic_coefficient
+116,Logistic Regression,Last Regimen_ABC-3TC-EFV,0.0052319866902510405,0.0052319866902510405,absolute_logistic_coefficient
+117,Logistic Regression,Last Regimen_AZT+3TC+ABC,0.0038318965598941627,-0.0038318965598941627,absolute_logistic_coefficient
+118,Logistic Regression,Is Child,0.0023998139148251035,0.0023998139148251035,absolute_logistic_coefficient
+119,Logistic Regression,Last Regimen_TDF-FTC-NVP,0.002021809461695923,0.002021809461695923,absolute_logistic_coefficient
+120,Logistic Regression,Last Regimen_AZT+3TC+LPV/r,0.0020013267517817097,-0.0020013267517817097,absolute_logistic_coefficient
+121,Logistic Regression,Current Viral Load,0.0015009034865419216,-0.0015009034865419216,absolute_logistic_coefficient
+122,Logistic Regression,Last Regimen_ABC-3TC-ddi,0.0014364913492830042,0.0014364913492830042,absolute_logistic_coefficient
+123,Logistic Regression,Last Regimen_TDF-FTC-LPV/r,0.00102581938699869,0.00102581938699869,absolute_logistic_coefficient
+124,Logistic Regression,Last Regimen_AZT-TDF-NVP,0.000989654599139577,0.000989654599139577,absolute_logistic_coefficient
+125,Logistic Regression,Last Regimen_d4T+3TC+NVP,0.0008254700267316585,0.0008254700267316585,absolute_logistic_coefficient
+126,Logistic Regression,Last Regimen_ABC+3TC+LPV/r,0.0006858928383853052,-0.0006858928383853052,absolute_logistic_coefficient
+127,Logistic Regression,Last Regimen_TDF+FTC+EFV,0.0004860912774321261,0.0004860912774321261,absolute_logistic_coefficient
+128,Logistic Regression,Last Regimen_ABC-3TC-TDF,0.00046965131434005645,0.00046965131434005645,absolute_logistic_coefficient
+129,Logistic Regression,Last Regimen_AZT-TDF-3TC-LPV/r,0.00030411705542523446,0.00030411705542523446,absolute_logistic_coefficient
+130,Logistic Regression,Last Regimen_d4T-3TC-LPV/r,0.0002463608675382681,0.0002463608675382681,absolute_logistic_coefficient
+131,Logistic Regression,Last Regimen_TDF-FTC-ATV/r,0.00021808617025047172,0.00021808617025047172,absolute_logistic_coefficient
+132,Logistic Regression,Last Regimen_D4T+3TC+EFV,0.0001983689461400967,0.0001983689461400967,absolute_logistic_coefficient
+133,Logistic Regression,Last Regimen_TDF+FTC+LPV/r,0.00010864688918015236,0.00010864688918015236,absolute_logistic_coefficient
+134,Logistic Regression,Last Regimen_AZT+3TC+EFV,7.953785088273662e-05,7.953785088273662e-05,absolute_logistic_coefficient
+135,Logistic Regression,Last Regimen_DDI-3TC-EFV,3.678406812659035e-05,3.678406812659035e-05,absolute_logistic_coefficient
+136,Logistic Regression,Last Regimen_ABC-DDI-LPV/r,3.0061998424788154e-05,3.0061998424788154e-05,absolute_logistic_coefficient
+137,Logistic Regression,Last Regimen_ABC-FTC-EFV,8.851971542088877e-06,8.851971542088877e-06,absolute_logistic_coefficient
+138,Logistic Regression,Last Regimen_TDF+FTC+NVP,2.48763821004051e-06,2.48763821004051e-06,absolute_logistic_coefficient
+139,Logistic Regression,Last Regimen_ABC+3TC+NVP,1.784491343553763e-06,1.784491343553763e-06,absolute_logistic_coefficient
+140,Logistic Regression,Current Status Q3 (90 Days),0.0,0.0,absolute_logistic_coefficient
+141,Logistic Regression,Current Status Q3 (28 Days),0.0,0.0,absolute_logistic_coefficient
