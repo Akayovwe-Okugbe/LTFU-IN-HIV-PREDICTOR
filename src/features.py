@@ -56,7 +56,6 @@ from src.splitter import split_data
 # =====================================================
 
 def load_dataset():
-
     """
     Loads the preprocessed dataset.
 
@@ -65,16 +64,17 @@ def load_dataset():
     pandas.DataFrame
     """
 
-    filepath = PROCESSED_DATA / "01_dates_converted.csv"
+    filepath = PROCESSED_DATA / "01_dates_converted.parquet"
 
     logger.info("Loading preprocessed dataset...")
+    logger.info(f"Source: {filepath}")
 
-    df = pd.read_csv(
-        filepath,
-        low_memory=False
+    df = pd.read_parquet(filepath)
+
+    logger.info(
+        f"Dataset loaded successfully "
+        f"({df.shape[0]:,} rows × {df.shape[1]} columns)."
     )
-
-    logger.info("Dataset loaded successfully.")
 
     return df
 
@@ -233,7 +233,7 @@ def save_features(df):
     Saves the engineered dataset.
     """
 
-    output = PROCESSED_DATA / "02_feature_engineered.csv"
+    output = PROCESSED_DATA / "02_feature_engineered.parquet"
 
     save_dataframe(
 

@@ -320,3 +320,29 @@ Name: count, dtype: int64
 2026-07-29 11:53:24,120 | INFO | ============================================================
 2026-07-29 11:53:24,120 | INFO | PREPROCESSING COMPLETED SUCCESSFULLY
 2026-07-29 11:53:24,121 | INFO | ============================================================
+2026-07-30 08:59:54,717 | INFO | ============================================================
+2026-07-30 08:59:54,718 | INFO | STARTING FEATURE ENGINEERING
+2026-07-30 08:59:54,718 | INFO | ============================================================
+2026-07-30 08:59:54,718 | INFO | Loading preprocessed dataset...
+2026-07-30 09:01:48,591 | INFO | ============================================================
+2026-07-30 09:01:48,592 | INFO | STARTING FEATURE ENGINEERING
+2026-07-30 09:01:48,592 | INFO | ============================================================
+2026-07-30 09:01:48,592 | INFO | Loading preprocessed dataset...
+2026-07-30 09:08:43,096 | INFO | ============================================================
+2026-07-30 09:08:43,096 | INFO | STARTING FEATURE ENGINEERING
+2026-07-30 09:08:43,096 | INFO | ============================================================
+2026-07-30 09:08:43,096 | INFO | Loading preprocessed dataset...
+2026-07-30 09:08:43,097 | INFO | Source: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\01_dates_converted.parquet
+2026-07-30 09:08:43,340 | INFO | Dataset loaded successfully (304,273 rows × 43 columns).
+2026-07-30 09:08:43,341 | INFO | Beginning feature engineering...
+2026-07-30 09:08:43,385 | INFO | Demographic features created.
+2026-07-30 09:08:43,453 | INFO | Temporal features created.
+2026-07-30 09:08:43,504 | INFO | Clinical features created.
+2026-07-30 09:08:43,563 | INFO | Treatment features created.
+2026-07-30 09:08:43,602 | INFO | Target variable created.
+2026-07-30 09:08:43,684 | INFO | Categorical encoding completed.
+2026-07-30 09:08:44,148 | INFO | Feature engineered dataset saved.
+2026-07-30 09:08:44,541 | INFO | Dataset successfully split.
+2026-07-30 09:08:44,547 | INFO | ============================================================
+2026-07-30 09:08:44,548 | INFO | FEATURE ENGINEERING COMPLETED
+2026-07-30 09:08:44,548 | INFO | ============================================================
