@@ -471,3 +471,178 @@ Length: 101, dtype: object
 2026-07-30 17:25:53,163 | INFO | ============================================================
 2026-07-30 17:25:53,164 | INFO | FEATURE ENGINEERING COMPLETED
 2026-07-30 17:25:53,164 | INFO | ============================================================
+2026-07-30 18:07:34,920 | INFO | ============================================================
+2026-07-30 18:07:34,920 | INFO | STARTING MODEL TRAINING
+2026-07-30 18:07:34,920 | INFO | ============================================================
+2026-07-30 18:07:34,921 | INFO | Loading training dataset...
+2026-07-30 18:07:34,921 | INFO | Source: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\03_train.parquet
+2026-07-30 18:07:35,018 | INFO | Training dataset loaded successfully (243,418 rows × 142 columns).
+2026-07-30 18:07:35,018 | INFO | Loading testing dataset...
+2026-07-30 18:07:35,018 | INFO | Source: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\03_test.parquet
+2026-07-30 18:07:35,035 | INFO | Testing dataset loaded successfully (60,855 rows × 142 columns).
+2026-07-30 18:07:35,062 | INFO | Training dataset validation completed successfully.
+2026-07-30 18:07:35,067 | INFO | Testing dataset validation completed successfully.
+2026-07-30 18:07:35,067 | INFO | Training and testing schemas match.
+2026-07-30 18:07:35,090 | INFO | Training predictor matrix: 243,418 rows × 141 features.
+2026-07-30 18:07:35,090 | INFO | Held-out test predictor matrix: 60,855 rows × 141 features.
+2026-07-30 18:07:35,091 | INFO | Numeric features: 11
+2026-07-30 18:07:35,092 | INFO | Boolean encoded features: 130
+2026-07-30 18:07:35,092 | INFO | Total predictor features: 141
+2026-07-30 18:07:35,097 | INFO | Training target distribution:
+2026-07-30 18:07:35,097 | INFO | Class 0 — Active/retained: 125,923 records (51.73%)
+2026-07-30 18:07:35,097 | INFO | Class 1 — Inactive/LTFU: 117,495 records (48.27%)
+2026-07-30 18:07:35,098 | INFO | XGBoost scale_pos_weight: 1.0717
+2026-07-30 18:07:35,099 | INFO | All model pipelines built successfully.
+2026-07-30 18:07:35,099 | INFO | Beginning Logistic Regression training...
+2026-07-30 18:07:35,367 | ERROR | Logistic Regression training failed.
+Traceback (most recent call last):
+  File "C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\src\train.py", line 247, in train_and_save_model
+    model.fit(
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\base.py", line 1403, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\pipeline.py", line 636, in fit
+    Xt = self._fit(
+         ^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\pipeline.py", line 565, in _fit
+    X, fitted_transformer = fit_transform_one_cached(
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\joblib\memory.py", line 326, in __call__
+    return self.func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\pipeline.py", line 1593, in _fit_transform_one_with_callbacks
+    Xt, transformer = _fit_transform_one(
+                      ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\pipeline.py", line 1566, in _fit_transform_one
+    res = transformer.fit_transform(X, y, **params.get("fit_transform", {}))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\utils\_set_output.py", line 319, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\base.py", line 1403, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\compose\_column_transformer.py", line 979, in fit_transform
+    result = self._call_func_on_transformers(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\compose\_column_transformer.py", line 889, in _call_func_on_transformers
+    return Parallel(n_jobs=self.n_jobs)(jobs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\utils\parallel.py", line 91, in __call__
+    return super().__call__(iterable_with_config_and_warning_filters)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\joblib\parallel.py", line 1986, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\joblib\parallel.py", line 1914, in _get_sequential_output
+    res = func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\utils\parallel.py", line 184, in __call__
+    return self.function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\pipeline.py", line 1566, in _fit_transform_one
+    res = transformer.fit_transform(X, y, **params.get("fit_transform", {}))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\base.py", line 1403, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\pipeline.py", line 732, in fit_transform
+    Xt = last_step.fit_transform(
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\utils\_set_output.py", line 319, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\base.py", line 972, in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\base.py", line 1403, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\impute\_base.py", line 448, in fit
+    X = self._validate_input(X, in_fit=True)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\impute\_base.py", line 383, in _validate_input
+    raise ValueError(
+ValueError: SimpleImputer does not support data with dtype bool. Please provide either a numeric array (with a floating point or integer dtype) or categorical data represented either as an array with integer dtype or an array of string values with an object dtype.
+2026-07-30 18:07:35,393 | ERROR | Model training pipeline failed.
+Traceback (most recent call last):
+  File "C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\src\train.py", line 247, in train_and_save_model
+    model.fit(
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\base.py", line 1403, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\pipeline.py", line 636, in fit
+    Xt = self._fit(
+         ^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\pipeline.py", line 565, in _fit
+    X, fitted_transformer = fit_transform_one_cached(
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\joblib\memory.py", line 326, in __call__
+    return self.func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\pipeline.py", line 1593, in _fit_transform_one_with_callbacks
+    Xt, transformer = _fit_transform_one(
+                      ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\pipeline.py", line 1566, in _fit_transform_one
+    res = transformer.fit_transform(X, y, **params.get("fit_transform", {}))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\utils\_set_output.py", line 319, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\base.py", line 1403, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\compose\_column_transformer.py", line 979, in fit_transform
+    result = self._call_func_on_transformers(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\compose\_column_transformer.py", line 889, in _call_func_on_transformers
+    return Parallel(n_jobs=self.n_jobs)(jobs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\utils\parallel.py", line 91, in __call__
+    return super().__call__(iterable_with_config_and_warning_filters)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\joblib\parallel.py", line 1986, in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\joblib\parallel.py", line 1914, in _get_sequential_output
+    res = func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\utils\parallel.py", line 184, in __call__
+    return self.function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\pipeline.py", line 1566, in _fit_transform_one
+    res = transformer.fit_transform(X, y, **params.get("fit_transform", {}))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\base.py", line 1403, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\pipeline.py", line 732, in fit_transform
+    Xt = last_step.fit_transform(
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\utils\_set_output.py", line 319, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\base.py", line 972, in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\base.py", line 1403, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\impute\_base.py", line 448, in fit
+    X = self._validate_input(X, in_fit=True)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\anaconda3\envs\ltfu\Lib\site-packages\sklearn\impute\_base.py", line 383, in _validate_input
+    raise ValueError(
+ValueError: SimpleImputer does not support data with dtype bool. Please provide either a numeric array (with a floating point or integer dtype) or categorical data represented either as an array with integer dtype or an array of string values with an object dtype.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\src\train.py", line 577, in <module>
+    train_models()
+  File "C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\src\train.py", line 455, in train_models
+    ] = train_and_save_model(
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\src\train.py", line 258, in train_and_save_model
+    raise RuntimeError(
+RuntimeError: Unable to train Logistic Regression.

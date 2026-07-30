@@ -8,6 +8,7 @@ The datasets have already been one-hot encoded during
 feature engineering. Consequently, this module mainly:
 
 - identifies numeric and Boolean predictors;
+- converts Boolean predictors to numeric 0/1 values;
 - imputes missing numeric values using the training median;
 - imputes missing Boolean values using the most frequent
   training value;
@@ -24,12 +25,50 @@ being used during imputation or scaling.
 
 from typing import List, Tuple
 
+import numpy as np
 import pandas as pd
 
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import (FunctionTransformer, StandardScaler)
+
+
+# =====================================================
+# BOOLEAN TO NUMERIC CONVERSION
+# =====================================================
+
+def convert_boolean_to_float(X):
+    """
+    Converts Boolean predictor values to numeric 0/1
+    values before they are passed to scikit-learn's
+    imputation and modelling components.
+
+    Parameters
+    ----------
+    X : array-like or pandas.DataFrame
+        Boolean predictor matrix selected by the
+        ColumnTransformer.
+
+    Returns
+    -------
+    numpy.ndarray
+        Floating-point matrix containing 0.0 and 1.0.
+
+    Notes
+    -----
+    A named function is used instead of a lambda so that
+    the complete fitted pipeline can be serialised safely
+    using joblib.
+    """
+
+    if isinstance(X, pd.DataFrame):
+        return X.astype("float64").to_numpy()
+
+    return np.asarray(
+        X,
+        dtype="float64",
+    )
 
 
 # =====================================================
@@ -164,12 +203,26 @@ def _build_boolean_pipeline() -> Pipeline:
     Builds preprocessing for one-hot-encoded Boolean
     predictors.
 
-    Missing values, if any, are replaced with the most
-    frequently observed training value.
+    Processing order
+    ----------------
+    1. Convert True/False values to numeric 1.0/0.0.
+    2. Replace any missing values with the most commonly
+       observed training value.
+
+    The conversion is required because some versions of
+    SimpleImputer do not accept native Boolean arrays.
     """
 
     return Pipeline(
         steps=[
+            (
+                "boolean_to_float",
+                FunctionTransformer(
+                    func=convert_boolean_to_float,
+                    validate=False,
+                    feature_names_out="one-to-one",
+                ),
+            ),
             (
                 "most_frequent_imputer",
                 SimpleImputer(
@@ -179,7 +232,6 @@ def _build_boolean_pipeline() -> Pipeline:
             ),
         ]
     )
-
 
 # =====================================================
 # LINEAR MODEL PREPROCESSOR
