@@ -83,10 +83,13 @@ def save_model(
             f"to {file_path}."
         ) from error
 
-    file_size_mb = (
-        file_path.stat().st_size
-        / (1024 ** 2)
-    )
+    # Read the saved model size in bytes.
+    file_size_bytes = file_path.stat().st_size
+
+    # Convert the size to kilobytes and megabytes so that
+    # small and large model files can be logged clearly.
+    file_size_kb = file_size_bytes / 1024
+    file_size_mb = file_size_bytes / (1024 ** 2)
 
     logger.info(
         "%s model saved successfully.",
@@ -98,10 +101,18 @@ def save_model(
         file_path,
     )
 
-    logger.info(
-        "File size: %.2f MB",
-        file_size_mb,
-    )
+    # Display small model files in kilobytes instead of
+    # rounding them to 0.00 MB.
+    if file_size_mb < 1:
+        logger.info(
+            "File size: %.2f KB",
+            file_size_kb,
+        )
+    else:
+        logger.info(
+            "File size: %.2f MB",
+            file_size_mb,
+        )
 
 
 # =====================================================

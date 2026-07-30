@@ -116,11 +116,10 @@ def build_logistic_regression_pipeline(
 
     classifier = LogisticRegression(
         solver="saga",
-        penalty="l2",
+        l1_ratio=0,
         class_weight="balanced",
-        max_iter=2_000,
+        max_iter=10_000,
         random_state=RANDOM_STATE,
-        n_jobs=N_JOBS,
     )
 
     return Pipeline(

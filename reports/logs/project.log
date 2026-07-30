@@ -646,3 +646,97 @@ Traceback (most recent call last):
   File "C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\src\train.py", line 258, in train_and_save_model
     raise RuntimeError(
 RuntimeError: Unable to train Logistic Regression.
+2026-07-30 18:29:40,790 | INFO | ============================================================
+2026-07-30 18:29:40,790 | INFO | STARTING MODEL TRAINING
+2026-07-30 18:29:40,790 | INFO | ============================================================
+2026-07-30 18:29:40,791 | INFO | Loading training dataset...
+2026-07-30 18:29:40,791 | INFO | Source: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\03_train.parquet
+2026-07-30 18:29:40,891 | INFO | Training dataset loaded successfully (243,418 rows × 142 columns).
+2026-07-30 18:29:40,891 | INFO | Loading testing dataset...
+2026-07-30 18:29:40,891 | INFO | Source: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\03_test.parquet
+2026-07-30 18:29:40,910 | INFO | Testing dataset loaded successfully (60,855 rows × 142 columns).
+2026-07-30 18:29:40,925 | INFO | Training dataset validation completed successfully.
+2026-07-30 18:29:40,930 | INFO | Testing dataset validation completed successfully.
+2026-07-30 18:29:40,931 | INFO | Training and testing schemas match.
+2026-07-30 18:29:40,959 | INFO | Training predictor matrix: 243,418 rows × 141 features.
+2026-07-30 18:29:40,959 | INFO | Held-out test predictor matrix: 60,855 rows × 141 features.
+2026-07-30 18:29:40,960 | INFO | Numeric features: 11
+2026-07-30 18:29:40,961 | INFO | Boolean encoded features: 130
+2026-07-30 18:29:40,961 | INFO | Total predictor features: 141
+2026-07-30 18:29:40,964 | INFO | Training target distribution:
+2026-07-30 18:29:40,964 | INFO | Class 0 — Active/retained: 125,923 records (51.73%)
+2026-07-30 18:29:40,964 | INFO | Class 1 — Inactive/LTFU: 117,495 records (48.27%)
+2026-07-30 18:29:40,965 | INFO | XGBoost scale_pos_weight: 1.0717
+2026-07-30 18:29:40,966 | INFO | All model pipelines built successfully.
+2026-07-30 18:29:40,966 | INFO | Beginning Logistic Regression training...
+2026-07-30 18:40:26,652 | INFO | Logistic Regression training completed in 645.69 seconds.
+2026-07-30 18:40:26,658 | INFO | Logistic Regression model saved successfully.
+2026-07-30 18:40:26,659 | INFO | Location: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\models\trained\logistic_regression_pipeline.joblib
+2026-07-30 18:40:26,659 | INFO | File size: 0.00 MB
+2026-07-30 18:40:26,659 | INFO | Beginning Random Forest training...
+2026-07-30 18:40:58,069 | INFO | Random Forest training completed in 31.41 seconds.
+2026-07-30 18:41:00,040 | INFO | Random Forest model saved successfully.
+2026-07-30 18:41:00,041 | INFO | Location: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\models\trained\random_forest_pipeline.joblib
+2026-07-30 18:41:00,041 | INFO | File size: 42.21 MB
+2026-07-30 18:41:00,041 | INFO | Beginning AdaBoost training...
+2026-07-30 18:41:46,400 | INFO | AdaBoost training completed in 46.36 seconds.
+2026-07-30 18:41:46,445 | INFO | AdaBoost model saved successfully.
+2026-07-30 18:41:46,446 | INFO | Location: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\models\trained\adaboost_pipeline.joblib
+2026-07-30 18:41:46,447 | INFO | File size: 0.02 MB
+2026-07-30 18:41:46,447 | INFO | Beginning XGBoost training...
+2026-07-30 18:41:55,655 | INFO | XGBoost training completed in 9.21 seconds.
+2026-07-30 18:41:55,689 | INFO | XGBoost model saved successfully.
+2026-07-30 18:41:55,689 | INFO | Location: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\models\trained\xgboost_pipeline.joblib
+2026-07-30 18:41:55,690 | INFO | File size: 0.34 MB
+2026-07-30 18:41:55,692 | INFO | Training metadata saved successfully.
+2026-07-30 18:41:55,692 | INFO | Location: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\models\trained\training_metadata.json
+2026-07-30 18:41:55,692 | INFO | ============================================================
+2026-07-30 18:41:55,693 | INFO | MODEL TRAINING COMPLETED
+2026-07-30 18:41:55,693 | INFO | ============================================================
+2026-07-30 19:29:54,593 | INFO | ============================================================
+2026-07-30 19:29:54,593 | INFO | STARTING MODEL TRAINING
+2026-07-30 19:29:54,594 | INFO | ============================================================
+2026-07-30 19:29:54,594 | INFO | Loading training dataset...
+2026-07-30 19:29:54,595 | INFO | Source: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\03_train.parquet
+2026-07-30 19:29:54,694 | INFO | Training dataset loaded successfully (243,418 rows × 142 columns).
+2026-07-30 19:29:54,695 | INFO | Loading testing dataset...
+2026-07-30 19:29:54,695 | INFO | Source: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\data\processed\03_test.parquet
+2026-07-30 19:29:54,719 | INFO | Testing dataset loaded successfully (60,855 rows × 142 columns).
+2026-07-30 19:29:54,733 | INFO | Training dataset validation completed successfully.
+2026-07-30 19:29:54,740 | INFO | Testing dataset validation completed successfully.
+2026-07-30 19:29:54,740 | INFO | Training and testing schemas match.
+2026-07-30 19:29:54,760 | INFO | Training predictor matrix: 243,418 rows × 141 features.
+2026-07-30 19:29:54,761 | INFO | Held-out test predictor matrix: 60,855 rows × 141 features.
+2026-07-30 19:29:54,762 | INFO | Numeric features: 11
+2026-07-30 19:29:54,762 | INFO | Boolean encoded features: 130
+2026-07-30 19:29:54,762 | INFO | Total predictor features: 141
+2026-07-30 19:29:54,767 | INFO | Training target distribution:
+2026-07-30 19:29:54,767 | INFO | Class 0 — Active/retained: 125,923 records (51.73%)
+2026-07-30 19:29:54,767 | INFO | Class 1 — Inactive/LTFU: 117,495 records (48.27%)
+2026-07-30 19:29:54,768 | INFO | XGBoost scale_pos_weight: 1.0717
+2026-07-30 19:29:54,769 | INFO | All model pipelines built successfully.
+2026-07-30 19:29:54,769 | INFO | Beginning Logistic Regression training...
+2026-07-30 19:55:44,695 | INFO | Logistic Regression training completed in 1549.93 seconds.
+2026-07-30 19:55:44,699 | INFO | Logistic Regression model saved successfully.
+2026-07-30 19:55:44,699 | INFO | Location: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\models\trained\logistic_regression_pipeline.joblib
+2026-07-30 19:55:44,700 | INFO | File size: 4.52 KB
+2026-07-30 19:55:44,700 | INFO | Beginning Random Forest training...
+2026-07-30 19:56:14,615 | INFO | Random Forest training completed in 29.91 seconds.
+2026-07-30 19:56:16,340 | INFO | Random Forest model saved successfully.
+2026-07-30 19:56:16,340 | INFO | Location: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\models\trained\random_forest_pipeline.joblib
+2026-07-30 19:56:16,341 | INFO | File size: 42.21 MB
+2026-07-30 19:56:16,341 | INFO | Beginning AdaBoost training...
+2026-07-30 19:57:02,471 | INFO | AdaBoost training completed in 46.13 seconds.
+2026-07-30 19:57:02,511 | INFO | AdaBoost model saved successfully.
+2026-07-30 19:57:02,511 | INFO | Location: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\models\trained\adaboost_pipeline.joblib
+2026-07-30 19:57:02,512 | INFO | File size: 22.71 KB
+2026-07-30 19:57:02,512 | INFO | Beginning XGBoost training...
+2026-07-30 19:57:11,203 | INFO | XGBoost training completed in 8.69 seconds.
+2026-07-30 19:57:11,235 | INFO | XGBoost model saved successfully.
+2026-07-30 19:57:11,235 | INFO | Location: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\models\trained\xgboost_pipeline.joblib
+2026-07-30 19:57:11,235 | INFO | File size: 344.10 KB
+2026-07-30 19:57:11,237 | INFO | Training metadata saved successfully.
+2026-07-30 19:57:11,237 | INFO | Location: C:\Users\Home\IdeaProjects\LTFU-IN-HIV-PREDICTOR\models\trained\training_metadata.json
+2026-07-30 19:57:11,238 | INFO | ============================================================
+2026-07-30 19:57:11,238 | INFO | MODEL TRAINING COMPLETED
+2026-07-30 19:57:11,238 | INFO | ============================================================
