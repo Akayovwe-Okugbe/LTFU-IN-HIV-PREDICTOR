@@ -1,0 +1,17 @@
+from enum import StrEnum
+
+class UserRole(StrEnum):
+    USER = 'USER'
+    CLINICIAN = 'CLINICIAN'
+    ADMINISTRATOR = 'ADMINISTRATOR'
+
+class AccountStatus(StrEnum):
+    PENDING_EMAIL_VERIFICATION = 'PENDING_EMAIL_VERIFICATION'
+    ACTIVE = 'ACTIVE'
+    SUSPENDED = 'SUSPENDED'
+    DEACTIVATED = 'DEACTIVATED'
+
+class ChangeRequestStatus(StrEnum):
+    PENDING = 'PENDING'
+    APPROVED = 'APPROVED'
+    REJECTED = 'REJECTED'

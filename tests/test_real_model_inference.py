@@ -6,6 +6,9 @@ Confirms that the inference module can load the actual
 trained Logistic Regression pipeline and generate valid
 predictions using the held-out test dataset schema.
 
+Author:
+    Akayovwe Okugbe
+
 =========================================================
 """
 
