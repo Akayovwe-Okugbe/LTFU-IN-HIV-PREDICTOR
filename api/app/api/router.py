@@ -22,8 +22,12 @@ Author:
 from fastapi import APIRouter
 
 from app.api.routes import (
+    administration,
     auth,
     authentication_phase2,
+    change_requests,
+    clinical_records,
+    messaging,
     patients,
     users,
 )
@@ -62,7 +66,6 @@ api_router.include_router(
     authentication_phase2.router
 )
 
-
 # =====================================================
 # USER ROUTES
 # =====================================================
@@ -71,11 +74,40 @@ api_router.include_router(
     users.router
 )
 
-
 # =====================================================
 # PATIENT ROUTES
 # =====================================================
 
 api_router.include_router(
     patients.router
+)
+
+# =====================================================
+# ADMINISTRATION ROUTES
+# =====================================================
+
+api_router.include_router(
+    administration.router
+)
+
+# =====================================================
+# CLINICAL RECORDS ROUTES
+# =====================================================
+api_router.include_router(
+    clinical_records.router
+)
+
+# =====================================================
+# CHANGE REQUESTS ROUTES
+# =====================================================
+api_router.include_router(
+    change_requests.router
+)
+
+# =====================================================
+# MESSAGING ROUTES
+# =====================================================
+
+api_router.include_router(
+    messaging.router
 )

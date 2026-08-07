@@ -33,6 +33,7 @@ from fastapi import (
 )
 from sqlalchemy import select
 
+from api.app import db
 from app.api.dependencies import DbSession
 from app.core.enums import (
     AccountStatus,
@@ -64,6 +65,15 @@ from app.services.authentication import (
 
 from app.api.routes.authentication_phase2 import (
     build_login_response,
+)
+
+# =====================================================
+# PHASE 3 NOTIFICATION SERVICES
+# =====================================================
+
+from app.services.notifications import (
+    notify_administrators_of_registration,
+    send_welcome_message,
 )
 
 # =====================================================
@@ -161,6 +171,9 @@ def register(
             db,
             user=user,
         )
+
+        send_welcome_message(db, user=user)
+        notify_administrators_of_registration(db, new_user=user)
 
         # ---------------------------------------------
         # Audit successful registration.
