@@ -30,6 +30,7 @@ from app.api.routes import (
     messaging,
     patients,
     users,
+    predictions,
 )
 
 
@@ -110,4 +111,12 @@ api_router.include_router(
 
 api_router.include_router(
     messaging.router
+)
+
+# =====================================================
+# PREDICTION ROUTES
+# =====================================================
+
+api_router.include_router(
+    predictions.router
 )

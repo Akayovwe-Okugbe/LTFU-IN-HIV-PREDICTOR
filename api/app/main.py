@@ -330,20 +330,27 @@ def root() -> dict[str, str]:
     tags=["System"],
     summary="Application health check",
 )
-def health_check() -> dict[str, str]:
+def health_check() -> dict[str, str | bool]:
     """
     Confirm that the MEDISCOPE API process is responding.
 
-    Future versions can extend this endpoint to check:
+    The response also exposes two important prototype
+    safety boundaries:
 
-    - PostgreSQL connectivity;
-    - machine-learning model availability;
-    - storage availability;
-    - other application dependencies.
+    - only synthetic patient data may be used;
+    - MEDISCOPE is a decision-support tool, not a
+      diagnostic system.
     """
 
     return {
         "status": "healthy",
         "application": "MEDISCOPE",
         "environment": settings.environment,
+        "synthetic_data_only": True,
+        "clinical_disclaimer": (
+            "MEDISCOPE provides clinical decision support "
+            "only and is not diagnosis, not an autonomous "
+            "treatment decision system, and not a "
+            "replacement for professional clinical judgement."
+        ),
     }
