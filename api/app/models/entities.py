@@ -206,6 +206,14 @@ class User(
         nullable=True,
     )
 
+    # Stores the protected TOTP authenticator secret.
+    # A real deployment must encrypt this value using
+    # a key stored separately from PostgreSQL.
+    mfa_secret_encrypted: Mapped[str | None] = mapped_column(
+        String(1024),
+        nullable=True,
+    )
+
     # -------------------------------------------------
     # ROLE AND ACCOUNT STATUS
     # -------------------------------------------------

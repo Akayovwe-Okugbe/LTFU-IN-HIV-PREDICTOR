@@ -31,6 +31,13 @@ from .entities import (
 )
 
 
+from .authentication import (
+    MfaRecoveryCode,
+    PendingTotpEnrollment,
+    RefreshTokenSession,
+)
+
+
 __all__ = [
     "AuditLog",
     "ClinicalRecord",
@@ -44,4 +51,7 @@ __all__ = [
     "Patient",
     "Prediction",
     "User",
+    "MfaRecoveryCode",
+    "PendingTotpEnrollment",
+    "RefreshTokenSession",
 ]
