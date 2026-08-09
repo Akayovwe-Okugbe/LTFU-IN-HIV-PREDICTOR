@@ -1,0 +1,1 @@
+import { Link } from 'react-router-dom';export default function NotFoundPage(){return <div className="not-found"><span>404</span><h1>That page is outside the clinical map.</h1><p>The route does not exist or is no longer available.</p><Link className="button primary" to="/">Return home</Link></div>}

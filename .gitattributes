@@ -1,0 +1,115 @@
+# =====================================================
+# MEDISCOPE Git Attributes
+#
+# Purpose:
+#   Ensure consistent line endings across Windows,
+#   Linux, macOS, GitHub and CI/CD environments.
+#
+# Policy:
+#   - Repository stores text files using LF.
+#   - Windows-specific scripts retain CRLF.
+# =====================================================
+
+# -----------------------------------------------------
+# Default text handling
+# -----------------------------------------------------
+
+* text=auto eol=lf
+
+# -----------------------------------------------------
+# Python
+# -----------------------------------------------------
+
+*.py          text eol=lf
+
+# -----------------------------------------------------
+# Documentation
+# -----------------------------------------------------
+
+*.md          text eol=lf
+*.txt         text eol=lf
+*.rst         text eol=lf
+
+# -----------------------------------------------------
+# Configuration
+# -----------------------------------------------------
+
+*.json        text eol=lf
+*.yml         text eol=lf
+*.yaml        text eol=lf
+*.toml        text eol=lf
+*.ini         text eol=lf
+*.cfg         text eol=lf
+
+# -----------------------------------------------------
+# SQL
+# -----------------------------------------------------
+
+*.sql         text eol=lf
+
+# -----------------------------------------------------
+# HTML / CSS / JavaScript
+# -----------------------------------------------------
+
+*.html        text eol=lf
+*.css         text eol=lf
+*.js          text eol=lf
+*.ts          text eol=lf
+
+# -----------------------------------------------------
+# React
+# -----------------------------------------------------
+
+*.jsx         text eol=lf
+*.tsx         text eol=lf
+
+# -----------------------------------------------------
+# Jupyter
+# -----------------------------------------------------
+
+*.ipynb       text eol=lf
+
+# -----------------------------------------------------
+# Docker
+# -----------------------------------------------------
+
+Dockerfile    text eol=lf
+*.dockerfile  text eol=lf
+
+# -----------------------------------------------------
+# Shell scripts
+# -----------------------------------------------------
+
+*.sh          text eol=lf
+
+# -----------------------------------------------------
+# Windows scripts
+# -----------------------------------------------------
+
+*.bat         text eol=crlf
+*.cmd         text eol=crlf
+*.ps1         text eol=crlf
+
+# -----------------------------------------------------
+# Binary files
+# -----------------------------------------------------
+
+*.png         binary
+*.jpg         binary
+*.jpeg        binary
+*.gif         binary
+*.ico         binary
+
+*.pdf         binary
+
+*.joblib      binary
+*.pkl         binary
+*.zip         binary
+
+*.xlsx        binary
+*.xls         binary
+
+*.parquet     binary
+
+*.db          binary
+*.sqlite      binary

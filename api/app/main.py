@@ -36,6 +36,7 @@ from __future__ import annotations
 # =====================================================
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 
 # =====================================================
@@ -273,6 +274,31 @@ development phases.
     contact={
         "name": "MEDISCOPE Project",
     },
+)
+
+
+# =====================================================
+# CORS CONFIGURATION
+# =====================================================
+
+# React runs on a different origin during local
+# development, so the browser requires the backend to
+# explicitly permit cross-origin requests.
+#
+# We list the development origins explicitly instead of
+# using "*" because MEDISCOPE uses Authorization headers
+# and authentication credentials.
+allowed_origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
