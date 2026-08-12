@@ -23,6 +23,7 @@ from fastapi import APIRouter
 
 from app.api.routes import (
     administration,
+    audit_logs,
     auth,
     authentication_phase2,
     change_requests,
@@ -89,6 +90,10 @@ api_router.include_router(
 
 api_router.include_router(
     administration.router
+)
+
+api_router.include_router(
+    audit_logs.router
 )
 
 # =====================================================

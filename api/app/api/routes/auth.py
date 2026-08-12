@@ -52,6 +52,7 @@ from app.schemas.auth import (
 from app.schemas.authentication import (
     AuthenticationTokensResponse,
     MfaRequiredResponse,
+    MfaSetupRequiredResponse,
 )
 from app.services.audit import write_audit_log
 
@@ -143,6 +144,7 @@ def register(
             ),
             first_name=payload.first_name.strip(),
             last_name=payload.last_name.strip(),
+            date_of_birth=payload.date_of_birth,
             phone=payload.phone,
             gender=payload.gender,
             role=UserRole.USER.value,
@@ -235,6 +237,7 @@ def register(
     response_model=(
         AuthenticationTokensResponse
         | MfaRequiredResponse
+        | MfaSetupRequiredResponse
     ),
 )
 def login(
@@ -244,6 +247,7 @@ def login(
 ) -> (
     AuthenticationTokensResponse
     | MfaRequiredResponse
+    | MfaSetupRequiredResponse
 ):
     """
     Authenticate a MEDISCOPE user.

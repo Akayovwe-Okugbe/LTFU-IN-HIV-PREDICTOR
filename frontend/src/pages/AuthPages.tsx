@@ -10,6 +10,8 @@ import {
   ArrowLeft,
   ArrowRight,
   CheckCircle2,
+  Copy,
+  KeyRound,
   LockKeyhole,
   MailCheck,
   RefreshCw,
@@ -23,18 +25,44 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 
+import {
+  QRCodeSVG,
+} from 'qrcode.react';
+
 import { Brand } from '../components/Brand';
-import { useAuth } from '../context/AuthContext';
+import { PasswordInput } from '../components/PasswordInput';
+
+import {
+  useAuth,
+} from '../context/AuthContext';
+
 import {
   ApiError,
   api,
 } from '../lib/api';
 
+import type {
+  TotpSetupResponse,
+} from '../lib/types';
+
+
+// =====================================================
+// NAVIGATION STATE TYPES
+// =====================================================
 
 type RegistrationLocationState = {
   email?: string;
 };
 
+
+type RequiredMfaLocationState = {
+  setupToken?: string;
+};
+
+
+// =====================================================
+// SHARED AUTHENTICATION LAYOUT
+// =====================================================
 
 function AuthLayout(
   {
@@ -70,16 +98,21 @@ function AuthLayout(
           </h2>
 
           <p>
-            Protected by role-based access, MFA, audit logging,
-            and synthetic-data controls.
+            Protected by role-based access, authenticator MFA,
+            audit logging and synthetic-data controls.
           </p>
         </div>
       </div>
 
       <div className="auth-panel">
         <div className="auth-form-wrap">
-          <h1>{title}</h1>
-          <p>{subtitle}</p>
+          <h1>
+            {title}
+          </h1>
+
+          <p>
+            {subtitle}
+          </p>
 
           {children}
         </div>
@@ -89,22 +122,106 @@ function AuthLayout(
 }
 
 
+// =====================================================
+// FRONTEND VALIDATION HELPERS
+// =====================================================
+
+function isValidName(
+  value: string,
+): boolean {
+  return /^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,100}$/.test(
+    value.trim(),
+  );
+}
+
+
+function isValidPhone(
+  value: string,
+): boolean {
+  // Phone is optional.
+  if (!value.trim()) {
+    return true;
+  }
+
+  return /^\+?[0-9 ()-]{7,20}$/.test(
+    value.trim(),
+  );
+}
+
+
+// =====================================================
+// PASSWORD REQUIREMENTS
+// =====================================================
+
 /**
- * Login page.
+ * Return the password-policy checks used by both
+ * registration and password reset.
  *
- * A pending/unverified account is intentionally prevented
- * from authenticating by the backend. When the backend
- * returns that state, the UI guides the user to the email
- * verification screen rather than presenting a generic
- * dead end.
+ * Keeping these checks in one place ensures the visual
+ * checklist and submit validation always agree.
  */
+function getPasswordRequirements(
+  value: string,
+) {
+  return [
+    {
+      id: 'length',
+      label: '12+ characters',
+      met:
+        value.length >= 12,
+    },
+    {
+      id: 'uppercase',
+      label: 'Uppercase letter',
+      met:
+        /[A-Z]/.test(
+          value,
+        ),
+    },
+    {
+      id: 'lowercase',
+      label: 'Lowercase letter',
+      met:
+        /[a-z]/.test(
+          value,
+        ),
+    },
+    {
+      id: 'number',
+      label: 'Number',
+      met:
+        /[0-9]/.test(
+          value,
+        ),
+    },
+  ];
+}
+
+
+function passwordMeetsRequirements(
+  value: string,
+): boolean {
+  return getPasswordRequirements(
+    value,
+  ).every(
+    (requirement) =>
+      requirement.met,
+  );
+}
+
+
+// =====================================================
+// LOGIN
+// =====================================================
+
 export function LoginPage() {
   const {
     login,
     completeMfa,
   } = useAuth();
 
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
   const [email, setEmail] =
     useState('');
@@ -121,12 +238,24 @@ export function LoginPage() {
   const [error, setError] =
     useState('');
 
-  const [needsVerification, setNeedsVerification] =
-    useState(false);
+  const [
+    needsVerification,
+    setNeedsVerification,
+  ] = useState(false);
 
   const [busy, setBusy] =
     useState(false);
 
+  const [
+    mfaMethod,
+    setMfaMethod,
+  ] =
+    useState<
+      'AUTHENTICATOR'
+      | 'RECOVERY'
+    >(
+      'AUTHENTICATOR',
+    );
 
   async function submit(
     event: FormEvent,
@@ -138,48 +267,118 @@ export function LoginPage() {
     setBusy(true);
 
     try {
+      // -------------------------------------------------
+      // SECOND-FACTOR LOGIN
+      // -------------------------------------------------
+
       if (challenge) {
         await completeMfa(
           challenge,
-          code,
+          code.trim(),
         );
 
-        navigate('/app');
+        navigate(
+          '/app',
+          {
+            replace: true,
+          },
+        );
+
         return;
       }
 
+      // -------------------------------------------------
+      // PASSWORD LOGIN
+      // -------------------------------------------------
+
       const result =
         await login(
-          email,
+          email
+            .trim()
+            .toLowerCase(),
           password,
         );
 
+      // -------------------------------------------------
+      // ACCOUNT ALREADY HAS MFA
+      // -------------------------------------------------
+
       if (
-        result.mfaRequired &&
-        result.challengeToken
+        result.status
+        === 'mfa_required'
       ) {
         setChallenge(
           result.challengeToken,
         );
-      } else {
-        navigate('/app');
+
+        setCode('');
+
+        // Always begin with the normal authenticator flow.
+        // The user may explicitly switch to a recovery code.
+        setMfaMethod(
+          'AUTHENTICATOR',
+        );
+
+        return;
       }
+
+      // -------------------------------------------------
+      // CLINICIAN / ADMINISTRATOR WITHOUT MFA
+      //
+      // The backend does not issue normal access tokens.
+      // The user must enrol TOTP first.
+      // -------------------------------------------------
+
+      if (
+        result.status
+        === 'mfa_setup_required'
+      ) {
+        navigate(
+          '/mfa-required-setup',
+          {
+            replace: true,
+
+            state: {
+              setupToken:
+                result.setupToken,
+            } satisfies RequiredMfaLocationState,
+          },
+        );
+
+        return;
+      }
+
+      // -------------------------------------------------
+      // STANDARD USER WITHOUT MFA
+      // -------------------------------------------------
+
+      navigate(
+        '/app',
+        {
+          replace: true,
+        },
+      );
     } catch (errorValue) {
       const message =
         errorValue instanceof Error
           ? errorValue.message
           : 'Unable to sign in.';
 
-      setError(message);
+      setError(
+        message,
+      );
 
-      // The backend currently returns a 403 when an
-      // account exists but still requires verification
-      // or activation.
+      // Existing backend behaviour uses 403 for accounts
+      // that cannot yet authenticate because verification
+      // or activation remains outstanding.
       if (
-        errorValue instanceof ApiError &&
+        errorValue instanceof ApiError
+        &&
         errorValue.status === 403
       ) {
-        setNeedsVerification(true);
+        setNeedsVerification(
+          true,
+        );
       }
     } finally {
       setBusy(false);
@@ -196,7 +395,7 @@ export function LoginPage() {
       }
       subtitle={
         challenge
-          ? 'Enter the current code from your authenticator app.'
+          ? 'Enter your current authenticator code or a one-time recovery code.'
           : 'Sign in to your MEDISCOPE workspace.'
       }
     >
@@ -208,35 +407,37 @@ export function LoginPage() {
           <>
             <label>
               Email
+
               <input
                 type="email"
+                required
+                maxLength={320}
+                autoComplete="email"
                 value={email}
+                placeholder="you@example.com"
                 onChange={
                   (event) =>
                     setEmail(
                       event.target.value,
                     )
                 }
-                required
-                autoComplete="email"
-                placeholder="clinician@example.com"
               />
             </label>
 
             <label>
               Password
-              <input
-                type="password"
+
+              <PasswordInput
+                required
+                autoComplete="current-password"
                 value={password}
+                placeholder="Enter your password"
                 onChange={
                   (event) =>
                     setPassword(
                       event.target.value,
                     )
                 }
-                required
-                autoComplete="current-password"
-                placeholder="••••••••••••"
               />
             </label>
 
@@ -253,22 +454,168 @@ export function LoginPage() {
         )}
 
         {challenge && (
-          <label>
-            Authenticator or recovery code
-            <input
-              value={code}
-              onChange={
-                (event) =>
-                  setCode(
-                    event.target.value,
-                  )
-              }
-              required
-              maxLength={100}
-              autoComplete="one-time-code"
-              placeholder="6-digit code"
-            />
-          </label>
+          <div className="mfa-login-panel">
+
+            {/* ===============================================
+                MFA METHOD SWITCH
+                =============================================== */}
+
+            <div className="mfa-method-tabs">
+              <button
+                type="button"
+                className={
+                  mfaMethod
+                    === 'AUTHENTICATOR'
+                    ? 'active'
+                    : ''
+                }
+                onClick={
+                  () => {
+                    setMfaMethod(
+                      'AUTHENTICATOR',
+                    );
+
+                    setCode('');
+                    setError('');
+                  }
+                }
+              >
+                <ShieldCheck size={16} />
+
+                Authenticator
+              </button>
+
+              <button
+                type="button"
+                className={
+                  mfaMethod
+                    === 'RECOVERY'
+                    ? 'active'
+                    : ''
+                }
+                onClick={
+                  () => {
+                    setMfaMethod(
+                      'RECOVERY',
+                    );
+
+                    setCode('');
+                    setError('');
+                  }
+                }
+              >
+                <KeyRound size={16} />
+
+                Recovery code
+              </button>
+            </div>
+
+
+            {/* ===============================================
+                AUTHENTICATOR CODE
+                =============================================== */}
+
+            {
+              mfaMethod
+              === 'AUTHENTICATOR'
+              && (
+                <>
+                  <label>
+                    Authenticator code
+
+                    <input
+                      className="otp-input"
+                      required
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                      pattern="[0-9]{6}"
+                      maxLength={6}
+                      value={code}
+                      placeholder="000000"
+                      onChange={
+                        (
+                          event,
+                        ) =>
+                          setCode(
+                            event.target.value.replace(
+                              /\D/g,
+                              '',
+                            ),
+                          )
+                      }
+                    />
+                  </label>
+
+                  <div className="mfa-method-help">
+                    <ShieldCheck size={17} />
+
+                    <div>
+                      <strong>
+                        Use your authenticator app
+                      </strong>
+
+                      <span>
+                        Enter the current six-digit code generated
+                        for your MEDISCOPE account.
+                      </span>
+                    </div>
+                  </div>
+                </>
+              )
+            }
+
+
+            {/* ===============================================
+                RECOVERY CODE
+                =============================================== */}
+
+            {
+              mfaMethod
+              === 'RECOVERY'
+              && (
+                <>
+                  <label>
+                    Recovery code
+
+                    <input
+                      required
+                      maxLength={100}
+                      autoComplete="off"
+                      value={code}
+                      placeholder="Enter one of your saved recovery codes"
+                      onChange={
+                        (
+                          event,
+                        ) =>
+                          setCode(
+                            event.target.value.replace(
+                              /\s/g,
+                              '',
+                            ),
+                          )
+                      }
+                    />
+                  </label>
+
+                  <div className="mfa-recovery-note">
+                    <KeyRound size={17} />
+
+                    <div>
+                      <strong>
+                        One-time recovery code
+                      </strong>
+
+                      <span>
+                        Use one of the recovery codes shown when MFA
+                        was enabled. A recovery code can only be used
+                        once.
+                      </span>
+                    </div>
+                  </div>
+                </>
+              )
+            }
+          </div>
         )}
 
         {error && (
@@ -287,8 +634,8 @@ export function LoginPage() {
               </strong>
 
               <span>
-                Open the email verification page to enter your
-                code or request a replacement.
+                Enter or resend your email verification code
+                before attempting to sign in again.
               </span>
             </div>
 
@@ -298,7 +645,9 @@ export function LoginPage() {
               onClick={
                 () =>
                   navigate(
-                    `/verify-email?email=${encodeURIComponent(email)}`,
+                    `/verify-email?email=${encodeURIComponent(
+                      email.trim().toLowerCase(),
+                    )}`,
                   )
               }
             >
@@ -326,6 +675,7 @@ export function LoginPage() {
       {!challenge && (
         <p className="auth-switch">
           New to MEDISCOPE?{' '}
+
           <Link to="/register">
             Create an account
           </Link>
@@ -336,29 +686,24 @@ export function LoginPage() {
 }
 
 
-/**
- * Registration page.
- *
- * Security note:
- * The backend deliberately returns the same response for
- * a newly registered address and an address that may
- * already exist. This prevents attackers from testing
- * which email addresses have MEDISCOPE accounts.
- *
- * The UI therefore never displays:
- *     "This email is already registered."
- *
- * Instead, it sends the user to the verification journey
- * with safe sign-in/password-reset alternatives.
- */
+// =====================================================
+// REGISTRATION
+// =====================================================
+
 export function RegisterPage() {
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
   const [error, setError] =
     useState('');
 
   const [busy, setBusy] =
     useState(false);
+
+  const [
+    confirmation,
+    setConfirmation,
+  ] = useState('');
 
   const [form, setForm] =
     useState({
@@ -368,7 +713,20 @@ export function RegisterPage() {
       last_name: '',
       phone: '',
       gender: '',
+      date_of_birth: '',
     });
+
+
+  const passwordRequirements =
+    getPasswordRequirements(
+      form.password,
+    );
+
+  const passwordValid =
+    passwordRequirements.every(
+      (requirement) =>
+        requirement.met,
+    );
 
 
   async function submit(
@@ -377,18 +735,155 @@ export function RegisterPage() {
     event.preventDefault();
 
     setError('');
+
+    // -------------------------------------------------
+    // NAME VALIDATION
+    // -------------------------------------------------
+
+    if (
+      !isValidName(
+        form.first_name,
+      )
+      ||
+      !isValidName(
+        form.last_name,
+      )
+    ) {
+      setError(
+        'Please enter valid first and last names.',
+      );
+
+      return;
+    }
+
+    // -------------------------------------------------
+    // PHONE VALIDATION
+    // -------------------------------------------------
+
+    if (
+      !isValidPhone(
+        form.phone,
+      )
+    ) {
+      setError(
+        'Please enter a valid phone number.',
+      );
+
+      return;
+    }
+
+    // -------------------------------------------------
+    // GENDER VALIDATION
+    // -------------------------------------------------
+
+    if (
+      ![
+        'Male',
+        'Female',
+      ].includes(
+        form.gender,
+      )
+    ) {
+      setError(
+        'Please select Male or Female.',
+      );
+
+      return;
+    }
+
+    // -------------------------------------------------
+    // DATE-OF-BIRTH VALIDATION
+    // -------------------------------------------------
+
+    if (
+      !form.date_of_birth
+    ) {
+      setError(
+        'Please provide your date of birth.',
+      );
+
+      return;
+    }
+
+    const dob =
+      new Date(
+        `${form.date_of_birth}T00:00:00`,
+      );
+
+    const today =
+      new Date();
+
+    if (
+      Number.isNaN(
+        dob.getTime(),
+      )
+      ||
+      dob > today
+    ) {
+      setError(
+        'Please provide a valid date of birth.',
+      );
+
+      return;
+    }
+
+    // -------------------------------------------------
+    // PASSWORD VALIDATION
+    // -------------------------------------------------
+
+    if (!passwordValid) {
+      setError(
+        'Please complete all password requirements.',
+      );
+
+      return;
+    }
+
+    if (
+      form.password
+      !== confirmation
+    ) {
+      setError(
+        'The passwords do not match.',
+      );
+
+      return;
+    }
+
     setBusy(true);
 
     try {
-      await api.register(
-        form,
-      );
+      await api.register({
+        ...form,
 
-      // The user is taken directly to verification.
-      // We pass only the email address; no password or
-      // sensitive registration data is placed in the URL.
+        email:
+          form.email
+            .trim()
+            .toLowerCase(),
+
+        first_name:
+          form.first_name
+            .trim(),
+
+        last_name:
+          form.last_name
+            .trim(),
+
+        phone:
+          form.phone.trim()
+          || null,
+      });
+
+      // Registration remains account-enumeration safe:
+      // regardless of whether the address already exists,
+      // continue to verification guidance.
+
       navigate(
-        `/verify-email?email=${encodeURIComponent(form.email.trim().toLowerCase())}`,
+        `/verify-email?email=${encodeURIComponent(
+          form.email
+            .trim()
+            .toLowerCase(),
+        )}`,
         {
           state: {
             email:
@@ -413,7 +908,7 @@ export function RegisterPage() {
   return (
     <AuthLayout
       title="Create your account"
-      subtitle="Register securely. Email verification is required before your account can sign in."
+      subtitle="Register securely. Email verification is required before sign-in."
     >
       <form
         className="auth-form"
@@ -422,16 +917,20 @@ export function RegisterPage() {
         <div className="two-col">
           <label>
             First name
+
             <input
               required
+              minLength={2}
+              maxLength={100}
+              autoComplete="given-name"
               value={
                 form.first_name
               }
-              autoComplete="given-name"
               onChange={
                 (event) =>
                   setForm({
                     ...form,
+
                     first_name:
                       event.target.value,
                   })
@@ -441,16 +940,20 @@ export function RegisterPage() {
 
           <label>
             Last name
+
             <input
               required
+              minLength={2}
+              maxLength={100}
+              autoComplete="family-name"
               value={
                 form.last_name
               }
-              autoComplete="family-name"
               onChange={
                 (event) =>
                   setForm({
                     ...form,
+
                     last_name:
                       event.target.value,
                   })
@@ -461,39 +964,22 @@ export function RegisterPage() {
 
         <label>
           Email
+
           <input
             type="email"
             required
+            maxLength={320}
+            autoComplete="email"
+            placeholder="you@example.com"
             value={
               form.email
             }
-            autoComplete="email"
             onChange={
               (event) =>
                 setForm({
                   ...form,
-                  email:
-                    event.target.value,
-                })
-            }
-          />
-        </label>
 
-        <label>
-          Password
-          <input
-            type="password"
-            minLength={12}
-            required
-            value={
-              form.password
-            }
-            autoComplete="new-password"
-            onChange={
-              (event) =>
-                setForm({
-                  ...form,
-                  password:
+                  email:
                     event.target.value,
                 })
             }
@@ -502,17 +988,28 @@ export function RegisterPage() {
 
         <div className="two-col">
           <label>
-            Phone
+            Date of birth
+
             <input
-              value={
-                form.phone
+              type="date"
+              required
+              max={
+                new Date()
+                  .toISOString()
+                  .slice(
+                    0,
+                    10,
+                  )
               }
-              autoComplete="tel"
+              value={
+                form.date_of_birth
+              }
               onChange={
                 (event) =>
                   setForm({
                     ...form,
-                    phone:
+
+                    date_of_birth:
                       event.target.value,
                   })
               }
@@ -521,7 +1018,10 @@ export function RegisterPage() {
 
           <label>
             Gender
-            <input
+
+            <select
+              className="auth-select"
+              required
               value={
                 form.gender
               }
@@ -529,13 +1029,169 @@ export function RegisterPage() {
                 (event) =>
                   setForm({
                     ...form,
+
                     gender:
                       event.target.value,
                   })
               }
-            />
+            >
+              <option value="">
+                Select gender
+              </option>
+
+              <option value="Male">
+                Male
+              </option>
+
+              <option value="Female">
+                Female
+              </option>
+            </select>
           </label>
         </div>
+
+        <label>
+          Phone
+
+          <input
+            type="tel"
+            maxLength={40}
+            autoComplete="tel"
+            placeholder="08012345678 or +2348012345678"
+            value={
+              form.phone
+            }
+            onChange={
+              (event) =>
+                setForm({
+                  ...form,
+
+                  phone:
+                    event.target.value,
+                })
+            }
+          />
+        </label>
+
+        <label>
+          Password
+
+          <PasswordInput
+            required
+            minLength={12}
+            maxLength={200}
+            autoComplete="new-password"
+            placeholder="Create a strong password"
+            value={
+              form.password
+            }
+            onChange={
+              (event) =>
+                setForm({
+                  ...form,
+
+                  password:
+                    event.target.value,
+                })
+            }
+          />
+        </label>
+
+        <div
+          className="password-strength-panel"
+          aria-live="polite"
+        >
+          <div className="password-strength-heading">
+            <span>
+              Password strength
+            </span>
+
+            <strong
+              className={
+                passwordValid
+                  ? 'complete'
+                  : ''
+              }
+            >
+              {
+                passwordValid
+                  ? 'Ready'
+                  : `${passwordRequirements.filter(
+                    (item) =>
+                      item.met,
+                  ).length}/4`
+              }
+            </strong>
+          </div>
+
+          <div className="password-requirement-grid">
+            {
+              passwordRequirements.map(
+                (
+                  requirement,
+                ) => (
+                  <span
+                    key={
+                      requirement.id
+                    }
+                    className={
+                      requirement.met
+                        ? 'password-requirement met'
+                        : 'password-requirement'
+                    }
+                  >
+                    <CheckCircle2
+                      size={14}
+                    />
+
+                    {
+                      requirement.label
+                    }
+                  </span>
+                ),
+              )
+            }
+          </div>
+        </div>
+
+        <label>
+          Confirm password
+
+          <PasswordInput
+            required
+            minLength={12}
+            maxLength={200}
+            autoComplete="new-password"
+            placeholder="Repeat your password"
+            value={confirmation}
+            onChange={
+              (event) =>
+                setConfirmation(
+                  event.target.value,
+                )
+            }
+          />
+        </label>
+
+        {
+          confirmation.length > 0 && (
+            <div
+              className={
+                form.password === confirmation
+                  ? 'password-match-status matched'
+                  : 'password-match-status'
+              }
+            >
+              <CheckCircle2 size={14} />
+
+              {
+                form.password === confirmation
+                  ? 'Passwords match'
+                  : 'Passwords do not match'
+              }
+            </div>
+          )
+        }
 
         <div className="security-note">
           <ShieldCheck size={19} />
@@ -546,8 +1202,8 @@ export function RegisterPage() {
             </strong>
 
             <span>
-              MEDISCOPE does not reveal whether an email is already
-              associated with an account.
+              MEDISCOPE does not reveal whether an email
+              address is already associated with an account.
             </span>
           </div>
         </div>
@@ -574,6 +1230,7 @@ export function RegisterPage() {
 
       <p className="auth-switch">
         Already registered?{' '}
+
         <Link to="/login">
           Sign in
         </Link>
@@ -583,19 +1240,282 @@ export function RegisterPage() {
 }
 
 
-/**
- * Email verification page.
- *
- * The page supports:
- * - an email carried forward from registration;
- * - direct navigation from login;
- * - six-digit OTP verification;
- * - resend verification code;
- * - success navigation to login.
- */
+// =====================================================
+// MANDATORY PRIVILEGED-ROLE MFA ENROLMENT
+// =====================================================
+
+export function RequiredMfaSetupPage() {
+  const location =
+    useLocation();
+
+  const navigate =
+    useNavigate();
+
+  const {
+    completeRequiredMfaSetup,
+  } = useAuth();
+
+  const locationState =
+    location.state as RequiredMfaLocationState | null;
+
+  const setupToken =
+    locationState?.setupToken ?? '';
+
+  const [setup, setSetup] =
+    useState<TotpSetupResponse | null>(
+      null,
+    );
+
+  const [code, setCode] =
+    useState('');
+
+  const [error, setError] =
+    useState('');
+
+  const [busy, setBusy] =
+    useState(false);
+
+  const [
+    recoveryCodes,
+    setRecoveryCodes,
+  ] = useState<string[]>([]);
+
+
+  useEffect(
+    () => {
+      if (!setupToken) {
+        setError(
+          'The MFA setup session is missing or has expired. Please sign in again.',
+        );
+
+        return;
+      }
+
+      api.beginRequiredMfaSetup(
+        setupToken,
+      )
+        .then(
+          setSetup,
+        )
+        .catch(
+          (errorValue) =>
+            setError(
+              errorValue instanceof Error
+                ? errorValue.message
+                : 'Unable to start MFA setup.',
+            ),
+        );
+    },
+    [
+      setupToken,
+    ],
+  );
+
+
+  async function submit(
+    event: FormEvent,
+  ) {
+    event.preventDefault();
+
+    setError('');
+    setBusy(true);
+
+    try {
+      const codes =
+        await completeRequiredMfaSetup(
+          setupToken,
+          code,
+        );
+
+      setRecoveryCodes(
+        codes,
+      );
+    } catch (errorValue) {
+      setError(
+        errorValue instanceof Error
+          ? errorValue.message
+          : 'Unable to complete MFA setup.',
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+
+  // -------------------------------------------------
+  // RECOVERY CODES — DISPLAYED ONCE
+  // -------------------------------------------------
+
+  if (
+    recoveryCodes.length > 0
+  ) {
+    return (
+      <AuthLayout
+        title="Save your recovery codes"
+        subtitle="MFA is enabled. Store these codes securely before continuing."
+      >
+        <div className="recovery-panel">
+          <div className="recovery-grid">
+            {
+              recoveryCodes.map(
+                (
+                  recoveryCode,
+                ) => (
+                  <code
+                    key={
+                      recoveryCode
+                    }
+                  >
+                    {recoveryCode}
+                  </code>
+                ),
+              )
+            }
+          </div>
+
+          <button
+            className="button primary wide"
+            onClick={
+              () =>
+                navigate(
+                  '/app',
+                  {
+                    replace: true,
+                  },
+                )
+            }
+          >
+            I have saved them
+
+            <ArrowRight size={18} />
+          </button>
+        </div>
+      </AuthLayout>
+    );
+  }
+
+
+  return (
+    <AuthLayout
+      title="Multi-factor authentication required"
+      subtitle="Clinician and administrator accounts must configure an authenticator before entering MEDISCOPE."
+    >
+      {setup && (
+        <div className="totp-enrolment">
+          <div className="qr-card">
+            <QRCodeSVG
+              value={
+                setup.provisioning_uri
+              }
+              size={196}
+              marginSize={2}
+            />
+          </div>
+
+          <div>
+            <span className="eyebrow">
+              Authenticator setup
+            </span>
+
+            <h3>
+              Scan the QR code
+            </h3>
+
+            <p>
+              Open Microsoft Authenticator or another
+              TOTP-compatible application and scan this code.
+            </p>
+
+            <div className="secret-box">
+              <code>
+                {
+                  setup.manual_secret
+                }
+              </code>
+
+              <button
+                type="button"
+                className="icon-button"
+                title="Copy manual secret"
+                onClick={
+                  () =>
+                    navigator.clipboard.writeText(
+                      setup.manual_secret,
+                    )
+                }
+              >
+                <Copy size={17} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <form
+        className="auth-form"
+        onSubmit={submit}
+      >
+        <label>
+          Current authenticator code
+
+          <input
+            className="otp-input"
+            required
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            pattern="[0-9]{6}"
+            maxLength={6}
+            value={code}
+            placeholder="000000"
+            onChange={
+              (event) =>
+                setCode(
+                  event.target.value.replace(
+                    /\D/g,
+                    '',
+                  ),
+                )
+            }
+          />
+        </label>
+
+        {error && (
+          <div className="form-error">
+            {error}
+          </div>
+        )}
+
+        <button
+          className="button primary wide"
+          disabled={
+            busy ||
+            !setup
+          }
+        >
+          <KeyRound size={18} />
+
+          {
+            busy
+              ? 'Securing account…'
+              : 'Enable MFA & continue'
+          }
+        </button>
+      </form>
+    </AuthLayout>
+  );
+}
+
+
+// =====================================================
+// EMAIL VERIFICATION
+// =====================================================
+
 export function VerifyEmailPage() {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate =
+    useNavigate();
+
+  const location =
+    useLocation();
 
   const [searchParams] =
     useSearchParams();
@@ -604,8 +1524,12 @@ export function VerifyEmailPage() {
     location.state as RegistrationLocationState | null;
 
   const initialEmail =
-    searchParams.get('email') ??
-    locationState?.email ??
+    searchParams.get(
+      'email',
+    )
+    ??
+    locationState?.email
+    ??
     '';
 
   const [email, setEmail] =
@@ -628,11 +1552,15 @@ export function VerifyEmailPage() {
   const [busy, setBusy] =
     useState(false);
 
-  const [resending, setResending] =
-    useState(false);
+  const [
+    resending,
+    setResending,
+  ] = useState(false);
 
-  const [resendCooldown, setResendCooldown] =
-    useState(0);
+  const [
+    resendCooldown,
+    setResendCooldown,
+  ] = useState(0);
 
 
   useEffect(
@@ -662,7 +1590,9 @@ export function VerifyEmailPage() {
           timer,
         );
     },
-    [resendCooldown],
+    [
+      resendCooldown,
+    ],
   );
 
 
@@ -684,7 +1614,10 @@ export function VerifyEmailPage() {
           otp.trim(),
         );
 
-      setVerified(true);
+      setVerified(
+        true,
+      );
+
       setMessage(
         response.message,
       );
@@ -702,7 +1635,8 @@ export function VerifyEmailPage() {
 
   async function resend() {
     if (
-      !email.trim() ||
+      !email.trim()
+      ||
       resendCooldown > 0
     ) {
       return;
@@ -724,10 +1658,11 @@ export function VerifyEmailPage() {
         response.message,
       );
 
-      // UX-only cooldown.
-      // Backend rate limiting should remain the ultimate
-      // protection against abuse.
-      setResendCooldown(30);
+      // This cooldown improves UX only.
+      // Backend rate limiting remains authoritative.
+      setResendCooldown(
+        30,
+      );
     } catch (errorValue) {
       setError(
         errorValue instanceof Error
@@ -744,7 +1679,7 @@ export function VerifyEmailPage() {
     return (
       <AuthLayout
         title="Email verified"
-        subtitle="Your MEDISCOPE account can now continue to sign-in."
+        subtitle="Your MEDISCOPE account is ready for sign-in."
       >
         <div className="verification-success">
           <div className="success-icon">
@@ -757,7 +1692,6 @@ export function VerifyEmailPage() {
 
           <p>
             Your email address has been verified successfully.
-            You can now sign in using your password.
           </p>
 
           <button
@@ -765,11 +1699,12 @@ export function VerifyEmailPage() {
             onClick={
               () =>
                 navigate(
-                  `/login`,
+                  '/login',
                 )
             }
           >
             Continue to sign in
+
             <ArrowRight size={18} />
           </button>
         </div>
@@ -781,7 +1716,7 @@ export function VerifyEmailPage() {
   return (
     <AuthLayout
       title="Verify your email"
-      subtitle="Enter the six-digit verification code sent to the email address used during registration."
+      subtitle="Enter the six-digit verification code sent to your registration email."
     >
       <form
         className="auth-form"
@@ -789,6 +1724,7 @@ export function VerifyEmailPage() {
       >
         <label>
           Email
+
           <input
             type="email"
             required
@@ -805,6 +1741,7 @@ export function VerifyEmailPage() {
 
         <label>
           Verification code
+
           <input
             className="otp-input"
             required
@@ -813,6 +1750,7 @@ export function VerifyEmailPage() {
             pattern="[0-9]{6}"
             maxLength={6}
             value={otp}
+            placeholder="000000"
             onChange={
               (event) =>
                 setOtp(
@@ -822,7 +1760,6 @@ export function VerifyEmailPage() {
                   ),
                 )
             }
-            placeholder="000000"
           />
         </label>
 
@@ -856,8 +1793,10 @@ export function VerifyEmailPage() {
           className="button secondary wide"
           onClick={resend}
           disabled={
-            resending ||
-            resendCooldown > 0 ||
+            resending
+            ||
+            resendCooldown > 0
+            ||
             !email.trim()
           }
         >
@@ -887,13 +1826,10 @@ export function VerifyEmailPage() {
 }
 
 
-/**
- * Forgotten-password request page.
- *
- * The backend returns a uniform response whether or not
- * the account exists. The frontend preserves that same
- * privacy-safe behaviour.
- */
+// =====================================================
+// FORGOTTEN PASSWORD
+// =====================================================
+
 export function ForgotPasswordPage() {
   const [email, setEmail] =
     useState('');
@@ -951,6 +1887,7 @@ export function ForgotPasswordPage() {
       >
         <label>
           Email
+
           <input
             type="email"
             required
@@ -993,6 +1930,7 @@ export function ForgotPasswordPage() {
 
       <p className="auth-switch">
         Remembered your password?{' '}
+
         <Link to="/login">
           Sign in
         </Link>
@@ -1002,17 +1940,13 @@ export function ForgotPasswordPage() {
 }
 
 
-/**
- * Password reset confirmation page.
- *
- * The password-reset email should point to:
- *
- *   http://localhost:5173/reset-password?token=...
- *
- * during local development.
- */
+// =====================================================
+// PASSWORD RESET
+// =====================================================
+
 export function ResetPasswordPage() {
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
   const [searchParams] =
     useSearchParams();
@@ -1023,17 +1957,20 @@ export function ResetPasswordPage() {
         searchParams.get(
           'token',
         ) ?? '',
-      [searchParams],
+      [
+        searchParams,
+      ],
     );
 
-  const [password, setPassword] =
-    useState('');
+  const [
+    password,
+    setPassword,
+  ] = useState('');
 
-  const [confirmation, setConfirmation] =
-    useState('');
-
-  const [message, setMessage] =
-    useState('');
+  const [
+    confirmation,
+    setConfirmation,
+  ] = useState('');
 
   const [error, setError] =
     useState('');
@@ -1044,54 +1981,62 @@ export function ResetPasswordPage() {
   const [done, setDone] =
     useState(false);
 
+  const passwordRequirements =
+    getPasswordRequirements(
+      password,
+    );
+
+  const passwordValid =
+    passwordMeetsRequirements(
+      password,
+    );
+
 
   async function submit(
     event: FormEvent,
   ) {
     event.preventDefault();
 
-    setMessage('');
     setError('');
 
     if (!token) {
       setError(
-        'This password-reset link does not contain a reset token.',
+        'This password-reset link does not contain a valid token.',
       );
+
+      return;
+    }
+
+    if (!passwordValid) {
+      setError(
+        'Please complete all password requirements.',
+      );
+
       return;
     }
 
     if (
-      password !== confirmation
+      password
+      !== confirmation
     ) {
       setError(
         'The passwords do not match.',
       );
-      return;
-    }
 
-    if (
-      password.length < 12
-    ) {
-      setError(
-        'Password must contain at least 12 characters.',
-      );
       return;
     }
 
     setBusy(true);
 
     try {
-      const response =
-        await api.resetPassword(
-          token,
-          password,
-        );
-
-      setMessage(
-        response.message,
+      await api.resetPassword(
+        token,
+        password,
       );
 
-      setDone(true);
+      setDone(
+        true,
+      );
     } catch (errorValue) {
       setError(
         errorValue instanceof Error
@@ -1108,7 +2053,7 @@ export function ResetPasswordPage() {
     return (
       <AuthLayout
         title="Password updated"
-        subtitle="Your existing refresh-token sessions have been revoked for security."
+        subtitle="Your previous refresh-token sessions have been revoked for security."
       >
         <div className="verification-success">
           <div className="success-icon">
@@ -1133,6 +2078,7 @@ export function ResetPasswordPage() {
             }
           >
             Continue to sign in
+
             <ArrowRight size={18} />
           </button>
         </div>
@@ -1158,10 +2104,11 @@ export function ResetPasswordPage() {
 
         <label>
           New password
-          <input
-            type="password"
+
+          <PasswordInput
             required
             minLength={12}
+            maxLength={200}
             autoComplete="new-password"
             value={password}
             onChange={
@@ -1173,12 +2120,70 @@ export function ResetPasswordPage() {
           />
         </label>
 
+        <div
+          className="password-strength-panel"
+          aria-live="polite"
+        >
+          <div className="password-strength-heading">
+            <span>
+              Password strength
+            </span>
+
+            <strong
+              className={
+                passwordValid
+                  ? 'complete'
+                  : ''
+              }
+            >
+              {
+                passwordValid
+                  ? 'Ready'
+                  : `${passwordRequirements.filter(
+                    (item) =>
+                      item.met,
+                  ).length}/4`
+              }
+            </strong>
+          </div>
+
+          <div className="password-requirement-grid">
+            {
+              passwordRequirements.map(
+                (
+                  requirement,
+                ) => (
+                  <span
+                    key={
+                      requirement.id
+                    }
+                    className={
+                      requirement.met
+                        ? 'password-requirement met'
+                        : 'password-requirement'
+                    }
+                  >
+                    <CheckCircle2
+                      size={14}
+                    />
+
+                    {
+                      requirement.label
+                    }
+                  </span>
+                ),
+              )
+            }
+          </div>
+        </div>
+
         <label>
           Confirm new password
-          <input
-            type="password"
+
+          <PasswordInput
             required
             minLength={12}
+            maxLength={200}
             autoComplete="new-password"
             value={confirmation}
             onChange={
@@ -1190,12 +2195,6 @@ export function ResetPasswordPage() {
           />
         </label>
 
-        {message && (
-          <div className="form-info">
-            {message}
-          </div>
-        )}
-
         {error && (
           <div className="form-error">
             {error}
@@ -1205,7 +2204,8 @@ export function ResetPasswordPage() {
         <button
           className="button primary wide"
           disabled={
-            busy ||
+            busy
+            ||
             !token
           }
         >
@@ -1221,6 +2221,7 @@ export function ResetPasswordPage() {
 
       <p className="auth-switch">
         Need a new link?{' '}
+
         <Link to="/forgot-password">
           Request another reset email
         </Link>

@@ -69,7 +69,7 @@ from app.api.dependencies import (
     DbSession,
 )
 
-from app.core.enums import AccountStatus
+from app.core.enums import AccountStatus, UserRole
 
 from app.core.security import (
     create_access_token,
@@ -79,6 +79,8 @@ from app.core.security import (
 from app.core.auth_security import (
     create_mfa_challenge_token,
     decode_mfa_challenge_token,
+    create_mfa_setup_token,
+    decode_mfa_setup_token,
 )
 
 from app.models.entities import User
@@ -88,6 +90,10 @@ from app.schemas.authentication import (
     EmailVerificationRequest,
     LogoutRequest,
     MfaRequiredResponse,
+    MfaSetupRequiredResponse,
+    MfaSetupLoginRequest,
+    MfaSetupLoginConfirmRequest,
+    MfaSetupLoginCompleteResponse,
     PasswordResetConfirmRequest,
     PasswordResetRequest,
     RefreshTokenRequest,
@@ -122,6 +128,10 @@ from app.services.tokens import (
     create_refresh_token_session,
     revoke_refresh_token,
     rotate_refresh_token,
+)
+
+from app.services.audit import (
+    write_audit_log,
 )
 
 
@@ -743,6 +753,18 @@ def disable_totp(
     and current authentication factor.
     """
 
+    if current_user.role in {
+        UserRole.CLINICIAN.value,
+        UserRole.ADMINISTRATOR.value,
+    }:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "Multi-factor authentication is mandatory "
+                "for clinician and administrator accounts."
+            ),
+        )
+
     password_valid = verify_password(
         payload.password,
         current_user.password_hash,
@@ -804,37 +826,180 @@ def build_login_response(
 ) -> (
     AuthenticationTokensResponse
     | MfaRequiredResponse
+    | MfaSetupRequiredResponse
 ):
-    """
-    Build the response returned after password validation.
+    """Build the secure response after password validation."""
 
-    MFA-enabled accounts receive only a short-lived MFA
-    challenge. Accounts without MFA receive access and
-    refresh tokens immediately.
-    """
-
+    # Accounts that already use MFA must prove the second
+    # factor before receiving normal tokens.
     if user.mfa_enabled:
-        challenge_token = (
-            create_mfa_challenge_token(
-                subject=user.id,
-                role=user.role,
-            )
-        )
-
         return MfaRequiredResponse(
             mfa_required=True,
-            mfa_challenge_token=(
-                challenge_token
+            mfa_challenge_token=create_mfa_challenge_token(
+                subject=user.id,
+                role=user.role,
+            ),
+            message="A second authentication factor is required.",
+        )
+
+    privileged_roles = {
+        UserRole.CLINICIAN.value,
+        UserRole.ADMINISTRATOR.value,
+    }
+
+    # A privileged account without MFA gets only a
+    # short-lived setup token, never an access token.
+    if user.role in privileged_roles:
+        return MfaSetupRequiredResponse(
+            mfa_setup_required=True,
+            mfa_setup_token=create_mfa_setup_token(
+                subject=user.id,
+                role=user.role,
             ),
             message=(
-                "A second authentication factor "
-                "is required."
+                "Multi-factor authentication must be configured "
+                "before this role can sign in."
             ),
         )
 
+    # Standard USER may continue without MFA.
     return create_login_tokens(
         db,
         user=user,
         request=request,
+        mfa_verified=False,
+    )
+
+
+def _user_from_mfa_setup_token(
+    db: DbSession,
+    token: str,
+) -> User:
+    try:
+        claims = decode_mfa_setup_token(token)
+        user_id = UUID(str(claims["sub"]))
+    except (
+        jwt.InvalidTokenError,
+        KeyError,
+        ValueError,
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid MFA setup challenge.",
+        )
+
+    user = db.get(User, user_id)
+
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid MFA setup challenge.",
+        )
+
+    if user.role not in {
+        UserRole.CLINICIAN.value,
+        UserRole.ADMINISTRATOR.value,
+    }:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="MFA setup is not required for this login.",
+        )
+
+    if user.account_status != AccountStatus.ACTIVE.value:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="This account is not active.",
+        )
+
+    return user
+
+
+@router.post(
+    "/mfa/totp/setup/login",
+    response_model=TotpEnrollmentStartResponse,
+)
+def start_required_totp_setup(
+    payload: MfaSetupLoginRequest,
+    db: DbSession,
+) -> TotpEnrollmentStartResponse:
+    user = _user_from_mfa_setup_token(
+        db,
+        payload.mfa_setup_token,
+    )
+
+    if user.mfa_enabled:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="MFA is already enabled.",
+        )
+
+    provisioning_uri, secret = begin_totp_enrollment(
+        db,
+        user=user,
+    )
+
+    db.commit()
+
+    return TotpEnrollmentStartResponse(
+        provisioning_uri=provisioning_uri,
+        manual_secret=secret,
+        message="Scan the QR code and confirm the current authenticator code.",
+    )
+
+
+@router.post(
+    "/mfa/totp/confirm/login",
+    response_model=MfaSetupLoginCompleteResponse,
+)
+def confirm_required_totp_setup(
+    payload: MfaSetupLoginConfirmRequest,
+    request: Request,
+    db: DbSession,
+) -> MfaSetupLoginCompleteResponse:
+    user = _user_from_mfa_setup_token(
+        db,
+        payload.mfa_setup_token,
+    )
+
+    try:
+        recovery_codes = confirm_totp_enrollment(
+            db,
+            user=user,
+            code=payload.code,
+        )
+    except MfaError as error:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(error),
+        )
+
+    tokens = create_login_tokens(
+        db,
+        user=user,
+        request=request,
         mfa_verified=True,
+    )
+
+    user.last_login_at = datetime.now(UTC)
+
+    write_audit_log(
+        db,
+        actor_user_id=user.id,
+        action="MFA_REQUIRED_ENROLMENT_COMPLETED",
+        outcome="SUCCESS",
+        resource_type="USER",
+        resource_id=user.id,
+        ip_address=get_client_ip(request),
+        user_agent=request.headers.get("user-agent"),
+    )
+
+    db.commit()
+
+    return MfaSetupLoginCompleteResponse(
+        access_token=tokens.access_token,
+        refresh_token=tokens.refresh_token,
+        token_type=tokens.token_type,
+        message="MFA enabled successfully. Store the recovery codes securely.",
+        recovery_codes=recovery_codes,
     )

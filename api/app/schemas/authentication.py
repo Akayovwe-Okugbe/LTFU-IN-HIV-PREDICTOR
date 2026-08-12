@@ -1,13 +1,11 @@
 """
 =========================================================
-Phase 2 Authentication Schemas
-
-MEDISCOPE
-LTFU Prediction Platform
+MEDISCOPE Authentication Schemas
 
 Purpose:
-    Defines the Pydantic request and response models used
-    by the Phase 2 authentication endpoints.
+    Define the Pydantic request and response models used
+    by MEDISCOPE authentication and account-security
+    workflows.
 
 Implemented workflows:
     - email OTP verification;
@@ -19,15 +17,22 @@ Implemented workflows:
     - TOTP authenticator enrolment;
     - TOTP login verification;
     - MFA recovery-code verification;
-    - MFA removal.
+    - MFA removal;
+    - mandatory MFA enrolment for privileged roles.
 
 Security:
     These schemas validate incoming authentication data
-    before it reaches the service layer.
+    before it reaches the authentication service or route
+    logic.
 
     Sensitive values such as passwords, OTPs, refresh
-    tokens and MFA recovery codes must never be written
-    to application logs.
+    tokens, MFA setup tokens, MFA challenge tokens and
+    recovery codes must never be written to application
+    logs.
+
+    MFA challenge and MFA setup tokens are workflow tokens
+    only. They must never be treated as normal access
+    tokens.
 
 Author:
     Akayovwe Okugbe
@@ -56,11 +61,11 @@ from pydantic import (
 
 class SecurityMessageResponse(BaseModel):
     """
-    Returns a generic security-safe response message.
+    Return a generic security-safe response message.
 
-    Generic responses are particularly useful for email
-    verification and password-reset requests because they
-    help prevent account-enumeration attacks.
+    Generic responses are useful for workflows such as
+    password reset and verification-code resend because
+    they help prevent account-enumeration attacks.
     """
 
     message: str
@@ -72,13 +77,19 @@ class SecurityMessageResponse(BaseModel):
 
 class AuthenticationTokensResponse(BaseModel):
     """
-    Returns the access and refresh tokens issued after
-    successful authentication.
+    Return the normal authentication credentials issued
+    after successful authentication.
 
-    The access token is short-lived.
+    access_token:
+        Short-lived JWT used to access protected API
+        endpoints.
 
-    The refresh token is longer-lived and is rotated each
-    time it is used.
+    refresh_token:
+        Longer-lived opaque token backed by a database
+        session and rotated whenever it is used.
+
+    token_type:
+        Standard Bearer authentication token type.
     """
 
     access_token: str
@@ -89,16 +100,19 @@ class AuthenticationTokensResponse(BaseModel):
 
 
 # =====================================================
-# MFA CHALLENGE RESPONSE
+# MFA LOGIN CHALLENGE RESPONSE
 # =====================================================
 
 class MfaRequiredResponse(BaseModel):
     """
     Returned after successful password verification when
-    the user's account has MFA enabled.
+    the account already has MFA enabled.
 
-    The MFA challenge token is short-lived and cannot be
-    used as a normal access token.
+    No normal access or refresh tokens are returned at
+    this stage.
+
+    The MFA challenge token is short-lived and can only be
+    used to complete the second-factor login workflow.
     """
 
     mfa_required: bool = True
@@ -109,12 +123,102 @@ class MfaRequiredResponse(BaseModel):
 
 
 # =====================================================
+# MANDATORY MFA SETUP RESPONSE
+# =====================================================
+
+class MfaSetupRequiredResponse(BaseModel):
+    """
+    Returned after successful password verification when
+    a privileged account has not yet configured mandatory
+    MFA.
+
+    This applies to roles such as:
+
+    - CLINICIAN;
+    - ADMINISTRATOR.
+
+    The account must complete TOTP enrolment before normal
+    access and refresh tokens are issued.
+    """
+
+    mfa_setup_required: bool = True
+
+    mfa_setup_token: str
+
+    message: str
+
+
+# =====================================================
+# PRIVILEGED MFA SETUP REQUEST
+# =====================================================
+
+class MfaSetupLoginRequest(BaseModel):
+    """
+    Start privileged-role MFA enrolment during login.
+
+    The supplied token proves that password verification
+    has already succeeded.
+
+    Important:
+        The MFA setup token is not an access token.
+    """
+
+    mfa_setup_token: str = Field(
+        min_length=20,
+        max_length=2000,
+    )
+
+
+# =====================================================
+# PRIVILEGED MFA SETUP CONFIRMATION
+# =====================================================
+
+class MfaSetupLoginConfirmRequest(
+    MfaSetupLoginRequest
+):
+    """
+    Confirm mandatory privileged-role TOTP enrolment.
+
+    The six-digit code must come from the authenticator
+    application configured using the provisioning URI or
+    manual secret returned during setup.
+    """
+
+    code: str = Field(
+        min_length=6,
+        max_length=6,
+        pattern=r"^\d{6}$",
+    )
+
+
+# =====================================================
+# PRIVILEGED MFA SETUP COMPLETION RESPONSE
+# =====================================================
+
+class MfaSetupLoginCompleteResponse(
+    AuthenticationTokensResponse
+):
+    """
+    Return normal authentication credentials after a
+    clinician or administrator successfully completes
+    mandatory MFA enrolment.
+
+    Recovery codes are returned only once and should be
+    stored securely by the user.
+    """
+
+    message: str
+
+    recovery_codes: list[str]
+
+
+# =====================================================
 # EMAIL VERIFICATION REQUEST
 # =====================================================
 
 class EmailVerificationRequest(BaseModel):
     """
-    Verifies a user account using a six-digit email OTP.
+    Verify a user account using a six-digit email OTP.
     """
 
     email: EmailStr
@@ -134,15 +238,15 @@ class EmailVerificationRequest(BaseModel):
         value: EmailStr,
     ) -> str:
         """
-        Convert the email address to a consistent format.
-
-        Email addresses are stripped of surrounding spaces
-        and stored in lowercase.
+        Strip surrounding whitespace and convert the email
+        address to lowercase.
         """
 
-        return str(
-            value
-        ).strip().lower()
+        return (
+            str(value)
+            .strip()
+            .lower()
+        )
 
 
 # =====================================================
@@ -151,7 +255,10 @@ class EmailVerificationRequest(BaseModel):
 
 class ResendEmailVerificationRequest(BaseModel):
     """
-    Requests a replacement email-verification OTP.
+    Request a replacement email-verification OTP.
+
+    The route should return a uniform response whether or
+    not the supplied account exists.
     """
 
     email: EmailStr
@@ -164,13 +271,13 @@ class ResendEmailVerificationRequest(BaseModel):
         cls,
         value: EmailStr,
     ) -> str:
-        """
-        Normalise the supplied email address.
-        """
+        """Normalise the supplied email address."""
 
-        return str(
-            value
-        ).strip().lower()
+        return (
+            str(value)
+            .strip()
+            .lower()
+        )
 
 
 # =====================================================
@@ -179,10 +286,10 @@ class ResendEmailVerificationRequest(BaseModel):
 
 class PasswordResetRequest(BaseModel):
     """
-    Requests password-reset instructions.
+    Request password-reset instructions.
 
-    The API returns the same response regardless of whether
-    the supplied email exists.
+    The API should return the same response regardless of
+    whether the supplied email exists.
     """
 
     email: EmailStr
@@ -195,13 +302,13 @@ class PasswordResetRequest(BaseModel):
         cls,
         value: EmailStr,
     ) -> str:
-        """
-        Normalise the supplied email address.
-        """
+        """Normalise the supplied email address."""
 
-        return str(
-            value
-        ).strip().lower()
+        return (
+            str(value)
+            .strip()
+            .lower()
+        )
 
 
 # =====================================================
@@ -210,7 +317,7 @@ class PasswordResetRequest(BaseModel):
 
 class PasswordResetConfirmRequest(BaseModel):
     """
-    Confirms a password reset using a single-use token.
+    Complete a password reset using a single-use token.
     """
 
     token: str = Field(
@@ -230,7 +337,7 @@ class PasswordResetConfirmRequest(BaseModel):
 
 class RefreshTokenRequest(BaseModel):
     """
-    Exchanges a valid refresh token for a newly rotated
+    Exchange a valid refresh token for a newly rotated
     access-token and refresh-token pair.
     """
 
@@ -246,7 +353,7 @@ class RefreshTokenRequest(BaseModel):
 
 class LogoutRequest(BaseModel):
     """
-    Revokes one refresh-token session.
+    Revoke one refresh-token session.
     """
 
     refresh_token: str = Field(
@@ -261,17 +368,19 @@ class LogoutRequest(BaseModel):
 
 class TotpEnrollmentStartResponse(BaseModel):
     """
-    Returns the information needed to configure an
+    Return the information needed to configure a TOTP
     authenticator application.
 
-    The provisioning URI can be converted into a QR code.
+    provisioning_uri:
+        otpauth:// URI suitable for rendering as a QR code.
 
-    The manual secret allows the user to configure the
-    authenticator application without scanning a QR code.
+    manual_secret:
+        Base32 secret that may be manually entered into the
+        authenticator application.
 
-    Important:
+    Security:
         The manual secret should only be displayed during
-        the enrolment process and must not be logged.
+        enrolment and must never be written to logs.
     """
 
     provisioning_uri: str
@@ -287,8 +396,8 @@ class TotpEnrollmentStartResponse(BaseModel):
 
 class TotpEnrollmentConfirmRequest(BaseModel):
     """
-    Confirms TOTP enrolment using the six-digit code
-    generated by the authenticator application.
+    Confirm normal authenticated TOTP enrolment using the
+    six-digit code generated by the authenticator.
     """
 
     code: str = Field(
@@ -304,10 +413,10 @@ class TotpEnrollmentConfirmRequest(BaseModel):
 
 class TotpEnrollmentConfirmResponse(BaseModel):
     """
-    Returns one-time recovery codes after MFA enrolment.
+    Return one-time recovery codes after MFA enrolment.
 
-    Recovery codes are displayed only once. Only their
-    cryptographic hashes should be stored in PostgreSQL.
+    Recovery codes should be displayed only once. Only
+    cryptographic hashes should be persisted.
     """
 
     message: str
@@ -321,9 +430,9 @@ class TotpEnrollmentConfirmResponse(BaseModel):
 
 class TotpLoginVerifyRequest(BaseModel):
     """
-    Completes MFA login using either:
+    Complete MFA login using either:
 
-    - a six-digit authenticator code; or
+    - a six-digit TOTP authenticator code; or
     - a one-time recovery code.
     """
 
@@ -332,6 +441,9 @@ class TotpLoginVerifyRequest(BaseModel):
         max_length=2000,
     )
 
+    # Recovery codes may be longer than six characters,
+    # therefore this field deliberately allows a larger
+    # maximum length than the enrolment-confirmation code.
     code: str = Field(
         min_length=6,
         max_length=100,
@@ -344,10 +456,15 @@ class TotpLoginVerifyRequest(BaseModel):
 
 class TotpDisableRequest(BaseModel):
     """
-    Disables MFA after verifying both:
+    Disable MFA after verifying both:
 
     - the user's current password; and
-    - a valid authenticator or recovery code.
+    - a current TOTP or one-time recovery code.
+
+    Note:
+        The route layer should reject this operation for
+        roles where MFA is mandatory, such as CLINICIAN
+        and ADMINISTRATOR.
     """
 
     password: str = Field(

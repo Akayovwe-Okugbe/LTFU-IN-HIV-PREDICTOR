@@ -191,6 +191,8 @@ class User(
         nullable=False,
     )
 
+    date_of_birth: Mapped[date | None] = mapped_column(Date)
+
     phone: Mapped[str | None] = mapped_column(
         String(40),
         nullable=True,

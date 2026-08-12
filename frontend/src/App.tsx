@@ -8,11 +8,13 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 
 import AboutPage from './pages/AboutPage';
 import AdministrationPage from './pages/AdministrationPage';
+import AuditLogsPage from './pages/AuditLogsPage';
 
 import {
   ForgotPasswordPage,
   LoginPage,
   RegisterPage,
+  RequiredMfaSetupPage,
   ResetPasswordPage,
   VerifyEmailPage,
 } from './pages/AuthPages';
@@ -27,6 +29,7 @@ import PatientDetailPage from './pages/PatientDetailPage';
 import PatientsPage from './pages/PatientsPage';
 import PredictionsPage from './pages/PredictionsPage';
 import SettingsPage from './pages/SettingsPage';
+import ProfilePage from './pages/ProfilePage';
 
 
 export default function App() {
@@ -74,6 +77,11 @@ export default function App() {
         element={<ResetPasswordPage />}
       />
 
+      <Route
+        path="/mfa-required-setup"
+        element={<RequiredMfaSetupPage />}
+      />
+
       {/* Authenticated application */}
       <Route
         path="/app"
@@ -86,6 +94,11 @@ export default function App() {
         <Route
           index
           element={<DashboardPage />}
+        />
+
+        <Route
+          path="profile"
+          element={<ProfilePage />}
         />
 
         <Route
@@ -145,6 +158,13 @@ export default function App() {
             >
               <AdministrationPage />
             </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="audit-logs"
+          element={
+            <AuditLogsPage />
           }
         />
 

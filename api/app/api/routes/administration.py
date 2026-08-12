@@ -10,6 +10,7 @@ from app.core.enums import AccountStatus, UserRole
 from app.core.security import hash_password
 from app.models.entities import ClinicianPatientAssignment, Patient, User
 from app.schemas.administration import (
+    AdminPatientSummaryResponse,
     AdminUserCreateRequest,
     AdminUserResponse,
     AdminUserUpdateRequest,
@@ -65,11 +66,35 @@ def _audit_request_metadata(
     )
 
 
-def _request_meta(request: Request) -> tuple[str | None, str | None]:
-    return (
-        request.client.host if request.client else None,
-        request.headers.get("user-agent"),
-    )
+
+# =====================================================
+# ADMINISTRATION METADATA
+# =====================================================
+
+@router.get(
+    "/metadata",
+)
+def administration_metadata(
+    current_admin: AdminUser,
+) -> dict[str, list[str]]:
+    """
+    Return backend-supported administration options.
+
+    The frontend uses this endpoint for role and account
+    status selectors so it never has to duplicate or guess
+    backend enum values.
+    """
+
+    return {
+        "roles": [
+            member.value
+            for member in UserRole
+        ],
+        "account_statuses": [
+            member.value
+            for member in AccountStatus
+        ],
+    }
 
 
 @router.get("/users", response_model=list[AdminUserResponse])
@@ -129,6 +154,7 @@ def create_user(
         password_hash=hash_password(payload.password),
         first_name=payload.first_name.strip(),
         last_name=payload.last_name.strip(),
+        date_of_birth=payload.date_of_birth,
         phone=payload.phone,
         gender=payload.gender,
         role=payload.role,
@@ -139,7 +165,7 @@ def create_user(
     db.flush()
 
     send_welcome_message(db, user=user)
-    ip_address, user_agent = _request_meta(request)
+    ip_address, user_agent = _audit_request_metadata(request)
 
     write_audit_log(
         db,
@@ -175,7 +201,7 @@ def update_user(
     for name, value in changes.items():
         setattr(user, name, value)
 
-    ip_address, user_agent = _request_meta(request)
+    ip_address, user_agent = _audit_request_metadata(request)
     write_audit_log(
         db,
         actor_user_id=current_admin.id,
@@ -210,10 +236,85 @@ def change_user_role(
     if payload.role not in allowed_roles:
         raise HTTPException(status_code=400, detail="Invalid role.")
 
+    # -------------------------------------------------
+    # PREVENT ADMINISTRATOR SELF-DEMOTION
+    # -------------------------------------------------
+
+    if (
+        user.id == current_admin.id
+        and payload.role != UserRole.ADMINISTRATOR.value
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=(
+                "You cannot remove your own administrator "
+                "role from this interface."
+            ),
+        )
+
+    # -------------------------------------------------
+    # PROTECT ACTIVE CLINICIAN ASSIGNMENTS
+    #
+    # A clinician should not silently become a USER or
+    # ADMINISTRATOR while active patient assignments
+    # still reference that account.
+    # -------------------------------------------------
+
+    if (
+        user.role == UserRole.CLINICIAN.value
+        and payload.role != UserRole.CLINICIAN.value
+    ):
+        active_assignment = db.scalar(
+            select(
+                ClinicianPatientAssignment.id
+            ).where(
+                ClinicianPatientAssignment.clinician_user_id
+                == user.id,
+                ClinicianPatientAssignment.is_active.is_(True),
+            )
+        )
+
+        if active_assignment is not None:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=(
+                    "This clinician still has active patient "
+                    "assignments. End those assignments before "
+                    "changing the account role."
+                ),
+            )
+
+    # -------------------------------------------------
+    # PROTECT PATIENT-USER LINK
+    # -------------------------------------------------
+
+    if (
+        user.role == UserRole.USER.value
+        and payload.role != UserRole.USER.value
+    ):
+        linked_patient = db.scalar(
+            select(
+                Patient.id
+            ).where(
+                Patient.linked_user_id
+                == user.id
+            )
+        )
+
+        if linked_patient is not None:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=(
+                    "This USER account is still linked to a "
+                    "patient profile. Unlink the account before "
+                    "changing its role."
+                ),
+            )
+
     previous_role = user.role
     user.role = payload.role
 
-    ip_address, user_agent = _request_meta(request)
+    ip_address, user_agent = _audit_request_metadata(request)
     write_audit_log(
         db,
         actor_user_id=current_admin.id,
@@ -241,8 +342,33 @@ def change_account_status(
 ) -> User:
     """Change an account to a supported account status."""
     user = db.get(User, user_id)
+
+    # -------------------------------------------------
+    # VALIDATE TARGET ACCOUNT
+    # -------------------------------------------------
+
     if user is None or user.deleted_at is not None:
-        raise HTTPException(status_code=404, detail="User not found.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found.",
+        )
+
+    # -------------------------------------------------
+    # PREVENT SELF-SUSPENSION / SELF-DISABLING
+    # -------------------------------------------------
+
+    if (
+        user.id == current_admin.id
+        and payload.account_status
+        != AccountStatus.ACTIVE.value
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=(
+                "You cannot make your own administrator "
+                "account inactive from this interface."
+            ),
+        )
 
     allowed_statuses = {member.value for member in AccountStatus}
     if payload.account_status not in allowed_statuses:
@@ -251,7 +377,7 @@ def change_account_status(
     previous_status = user.account_status
     user.account_status = payload.account_status
 
-    ip_address, user_agent = _request_meta(request)
+    ip_address, user_agent = _audit_request_metadata(request)
     write_audit_log(
         db,
         actor_user_id=current_admin.id,
@@ -284,8 +410,53 @@ def soft_delete_user(
     if user is None or user.deleted_at is not None:
         raise HTTPException(status_code=404, detail="User not found.")
 
+    # -------------------------------------------------
+    # PREVENT DELETION WHILE RELATIONSHIPS ARE ACTIVE
+    # -------------------------------------------------
+
+    if user.role == UserRole.CLINICIAN.value:
+        active_assignment = db.scalar(
+            select(
+                ClinicianPatientAssignment.id
+            ).where(
+                ClinicianPatientAssignment.clinician_user_id
+                == user.id,
+                ClinicianPatientAssignment.is_active.is_(True),
+            )
+        )
+
+        if active_assignment is not None:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=(
+                    "This clinician still has active patient "
+                    "assignments. End them before deleting "
+                    "the account."
+                ),
+            )
+
+    if user.role == UserRole.USER.value:
+        linked_patient = db.scalar(
+            select(
+                Patient.id
+            ).where(
+                Patient.linked_user_id
+                == user.id
+            )
+        )
+
+        if linked_patient is not None:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=(
+                    "This user account is still linked to a "
+                    "patient profile. Unlink it before deleting "
+                    "the account."
+                ),
+            )
+
     user.deleted_at = datetime.now(UTC)
-    ip_address, user_agent = _request_meta(request)
+    ip_address, user_agent = _audit_request_metadata(request)
 
     write_audit_log(
         db,
@@ -574,6 +745,64 @@ def unlink_user_from_patient(
     }
 
 
+# =====================================================
+# LIST CLINICIAN-PATIENT ASSIGNMENTS
+# =====================================================
+
+@router.get(
+    "/assignments",
+    response_model=list[ClinicianAssignmentResponse],
+)
+def list_assignments(
+    db: DbSession,
+    current_admin: AdminUser,
+    clinician_user_id: UUID | None = None,
+    patient_id: UUID | None = None,
+    active_only: bool = True,
+) -> list[ClinicianPatientAssignment]:
+    """
+    Return clinician-patient assignments for the
+    administration workspace.
+
+    Optional filters allow the frontend to inspect:
+        - all active assignments;
+        - one clinician's patients;
+        - clinicians assigned to one patient;
+        - historical assignments when active_only=False.
+    """
+
+    statement = select(
+        ClinicianPatientAssignment
+    )
+
+    if active_only:
+        statement = statement.where(
+            ClinicianPatientAssignment.is_active.is_(True)
+        )
+
+    if clinician_user_id is not None:
+        statement = statement.where(
+            ClinicianPatientAssignment.clinician_user_id
+            == clinician_user_id
+        )
+
+    if patient_id is not None:
+        statement = statement.where(
+            ClinicianPatientAssignment.patient_id
+            == patient_id
+        )
+
+    statement = statement.order_by(
+        ClinicianPatientAssignment.assigned_at.desc()
+    )
+
+    return list(
+        db.scalars(
+            statement
+        ).all()
+    )
+
+
 @router.post("/assignments", response_model=ClinicianAssignmentResponse, status_code=201)
 def assign_clinician(
     payload: ClinicianAssignmentCreateRequest,
@@ -621,7 +850,7 @@ def assign_clinician(
         patient_number=patient.synthetic_patient_number,
     )
 
-    ip_address, user_agent = _request_meta(request)
+    ip_address, user_agent = _audit_request_metadata(request)
     write_audit_log(
         db,
         actor_user_id=current_admin.id,
@@ -655,7 +884,7 @@ def end_assignment(
         assignment.is_active = False
         assignment.ended_at = datetime.now(UTC)
 
-        ip_address, user_agent = _request_meta(request)
+        ip_address, user_agent = _audit_request_metadata(request)
         write_audit_log(
             db,
             actor_user_id=current_admin.id,
@@ -671,3 +900,66 @@ def end_assignment(
         db.refresh(assignment)
 
     return assignment
+
+
+
+# =====================================================
+# LIST SYNTHETIC PATIENTS FOR ADMINISTRATION
+# =====================================================
+
+@router.get(
+    "/patients",
+    response_model=list[AdminPatientSummaryResponse],
+)
+def list_admin_patients(
+    db: DbSession,
+    current_admin: AdminUser,
+    search: str | None = None,
+) -> list[Patient]:
+    """
+    Return synthetic patient summaries required for user
+    linking and clinician-assignment administration.
+
+    Clinical-record contents are intentionally excluded.
+    """
+
+    statement = select(
+        Patient
+    ).where(
+        Patient.is_synthetic.is_(True)
+    )
+
+    if search:
+        pattern = (
+            f"%{search.strip()}%"
+        )
+
+        statement = statement.where(
+            or_(
+                Patient.synthetic_patient_number.ilike(
+                    pattern
+                ),
+                Patient.first_name.ilike(
+                    pattern
+                ),
+                Patient.last_name.ilike(
+                    pattern
+                ),
+                Patient.state.ilike(
+                    pattern
+                ),
+                Patient.lga.ilike(
+                    pattern
+                ),
+            )
+        )
+
+    statement = statement.order_by(
+        Patient.synthetic_patient_number
+    )
+
+    return list(
+        db.scalars(
+            statement
+        ).all()
+    )

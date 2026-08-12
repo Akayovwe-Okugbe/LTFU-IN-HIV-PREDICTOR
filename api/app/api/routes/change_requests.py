@@ -165,3 +165,11 @@ def review_change_request(
     db.commit()
     db.refresh(item)
     return item
+
+
+@router.get('/mine', response_model=list[HealthRecordChangeResponse])
+def list_my_change_requests(db: DbSession, current_user: CurrentUser) -> list[HealthRecordChangeRequest]:
+    """Return the current standard user's own change requests, newest first."""
+    if current_user.role != UserRole.USER.value:
+        raise HTTPException(status_code=403, detail='Only standard users have personal health-record change requests.')
+    return list(db.scalars(select(HealthRecordChangeRequest).where(HealthRecordChangeRequest.requested_by == current_user.id).order_by(HealthRecordChangeRequest.created_at.desc())).all())
