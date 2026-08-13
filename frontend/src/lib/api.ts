@@ -4,6 +4,8 @@ import type {
   AuditLogItem,
   AuditLogListResponse,
   AuditLogMetadata,
+  ClinicianDashboardResponse,
+  ClinicianPatientIntelligence,
   ClinicianAssignment,
   ClinicalRecord,
   HealthRecordChangeRequest,
@@ -505,6 +507,24 @@ export const api = {
       ClinicalRecord[]
     >(
       `/clinical/patients/${patientId}/records`,
+    ),
+
+
+  // ===================================================
+  // CLINICIAN INTELLIGENCE
+  // ===================================================
+
+  clinicianDashboard: () =>
+    request<ClinicianDashboardResponse>(
+      '/clinical/intelligence/dashboard',
+    ),
+
+
+  clinicianPatientIntelligence: (
+    patientId: string,
+  ) =>
+    request<ClinicianPatientIntelligence>(
+      `/clinical/intelligence/patients/${patientId}`,
     ),
 
 

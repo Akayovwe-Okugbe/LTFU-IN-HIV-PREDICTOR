@@ -28,6 +28,7 @@ from app.api.routes import (
     authentication_phase2,
     change_requests,
     clinical_records,
+    clinician_intelligence,
     messaging,
     patients,
     users,
@@ -101,6 +102,10 @@ api_router.include_router(
 # =====================================================
 api_router.include_router(
     clinical_records.router
+)
+
+api_router.include_router(
+    clinician_intelligence.router
 )
 
 # =====================================================

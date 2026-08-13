@@ -370,3 +370,194 @@ export type AuditLogMetadata = {
 
   resource_types: string[];
 };
+
+
+// =====================================================
+// CLINICIAN INTELLIGENCE
+// =====================================================
+
+export type ClinicianDashboardSummary = {
+  assigned_patients: number;
+
+  patients_with_predictions: number;
+
+  patients_without_predictions: number;
+
+  prediction_coverage_percentage: number;
+
+  both_above_threshold: number;
+
+  model_disagreement: number;
+
+  both_below_threshold: number;
+
+  pending_prediction_reviews: number;
+
+  complete_prediction_inputs: number;
+
+  incomplete_prediction_inputs: number;
+};
+
+
+export type ClinicianPriorityPatient = {
+  patient_id: string;
+
+  synthetic_patient_number: string;
+
+  first_name: string;
+
+  last_name: string;
+
+  sex?: string | null;
+
+  state: string;
+
+  lga: string;
+
+  patient_status: string;
+
+  logistic_probability?: number | null;
+
+  xgboost_probability?: number | null;
+
+  logistic_classification?: string | null;
+
+  xgboost_classification?: string | null;
+
+  threshold?: number | null;
+
+  agreement_status?: string | null;
+
+  risk_state:
+  | 'BOTH_ABOVE_THRESHOLD'
+  | 'MODEL_DISAGREEMENT'
+  | 'BOTH_BELOW_THRESHOLD'
+  | 'NO_STORED_ASSESSMENT';
+
+  prediction_generated_at?: string | null;
+
+  clinical_review_status?: string | null;
+
+  missing_feature_count: number;
+
+  missing_features: string[];
+};
+
+
+export type ClinicianPredictionTrendPoint = {
+  period: string;
+
+  prediction_count: number;
+
+  mean_logistic_probability: number;
+
+  mean_xgboost_probability: number;
+
+  agreement_percentage: number;
+};
+
+
+export type MissingFeatureSummary = {
+  feature_name: string;
+
+  missing_count: number;
+};
+
+
+export type ClinicianDashboardResponse = {
+  summary: ClinicianDashboardSummary;
+
+  priority_patients:
+  ClinicianPriorityPatient[];
+
+  trend:
+  ClinicianPredictionTrendPoint[];
+
+  missing_features:
+  MissingFeatureSummary[];
+};
+
+
+export type ClinicianPatientIntelligence = {
+  patient: {
+    id: string;
+
+    synthetic_patient_number: string;
+
+    first_name: string;
+
+    last_name: string;
+
+    date_of_birth?: string | null;
+
+    sex: string;
+
+    state: string;
+
+    lga: string;
+
+    status: string;
+
+    is_synthetic: boolean;
+  };
+
+  latest_clinical_record:
+  ClinicalRecord | null;
+
+  clinical_history:
+  ClinicalRecord[];
+
+  latest_prediction: {
+    id: string;
+
+    logistic_probability: number;
+
+    logistic_classification: string;
+
+    xgboost_probability: number;
+
+    xgboost_classification: string;
+
+    agreement_status: string;
+
+    threshold_used: number;
+
+    input_schema_version: string;
+
+    input_snapshot:
+    Record<string, unknown>;
+
+    generated_at: string;
+
+    clinical_review_status: string;
+  } | null;
+
+  prediction_history: Array<{
+    id: string;
+
+    logistic_probability: number;
+
+    logistic_classification: string;
+
+    xgboost_probability: number;
+
+    xgboost_classification: string;
+
+    agreement_status: string;
+
+    threshold_used: number;
+
+    input_schema_version: string;
+
+    input_snapshot:
+    Record<string, unknown>;
+
+    generated_at: string;
+
+    clinical_review_status: string;
+  }>;
+
+  missing_features: string[];
+
+  prediction_coverage_status: string;
+};

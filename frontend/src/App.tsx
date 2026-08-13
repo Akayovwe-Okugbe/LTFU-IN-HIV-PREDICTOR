@@ -30,6 +30,7 @@ import PatientsPage from './pages/PatientsPage';
 import PredictionsPage from './pages/PredictionsPage';
 import SettingsPage from './pages/SettingsPage';
 import ProfilePage from './pages/ProfilePage';
+import PatientIntelligencePage from './pages/PatientIntelligencePage';
 
 
 export default function App() {
@@ -120,6 +121,13 @@ export default function App() {
             >
               <PatientDetailPage />
             </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="patients/:patientId/intelligence"
+          element={
+            <PatientIntelligencePage />
           }
         />
 

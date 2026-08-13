@@ -2,9 +2,13 @@ import {
   Activity,
   AlertTriangle,
   ArrowRight,
+  BarChart3,
+  BrainCircuit,
   CheckCircle2,
+  CircleGauge,
   CircleUserRound,
   Clock3,
+  Database,
   HeartPulse,
   LockKeyhole,
   MessageSquare,
@@ -14,6 +18,7 @@ import {
   UserCog,
   Users,
   ScrollText,
+  TrendingUp,
 } from 'lucide-react';
 
 import {
@@ -40,6 +45,9 @@ import {
 } from '../lib/api';
 
 import type {
+  ClinicianDashboardResponse,
+  ClinicianPredictionTrendPoint,
+  ClinicianPriorityPatient,
   HealthRecordChangeRequest,
   MessageItem,
   Patient,
@@ -682,9 +690,9 @@ function UserDashboard() {
 // CLINICIAN DASHBOARD
 //
 // Clinician functionality remains intentionally separate
-// from administration. A later UI refinement can expand
-// this dashboard without affecting administrator or USER
-// workflows.
+// from administration. Clinicians are not administrators
+// and do not have access to the same system-level
+// metrics or governance capabilities.
 // =====================================================
 
 function ClinicianDashboard() {
@@ -696,59 +704,89 @@ function ClinicianDashboard() {
     useNavigate();
 
   const [
-    patientCount,
-    setPatientCount,
+    dashboard,
+    setDashboard,
+  ] =
+    useState<
+      ClinicianDashboardResponse | null
+    >(
+      null,
+    );
+
+  const [
+    unreadMessages,
+    setUnreadMessages,
   ] =
     useState(0);
 
   const [
-    messages,
-    setMessages,
+    loading,
+    setLoading,
   ] =
-    useState<MessageItem[]>(
-      [],
-    );
+    useState(true);
+
+  const [
+    error,
+    setError,
+  ] =
+    useState('');
 
 
   useEffect(
     () => {
-      let active =
-        true;
+      let active = true;
 
-      async function loadClinicianDashboard() {
-        const [
-          patientResult,
-          messageResult,
-        ] =
-          await Promise.allSettled([
-            api.assignedPatients(),
-            api.inbox(),
-          ]);
+      async function load() {
+        setLoading(
+          true,
+        );
 
-        if (!active) {
-          return;
-        }
+        try {
+          const [
+            intelligence,
+            inbox,
+          ] =
+            await Promise.all([
+              api.clinicianDashboard(),
+              api.inbox(),
+            ]);
 
-        if (
-          patientResult.status
-          === 'fulfilled'
-        ) {
-          setPatientCount(
-            patientResult.value.length,
+          if (!active) {
+            return;
+          }
+
+          setDashboard(
+            intelligence,
           );
-        }
 
-        if (
-          messageResult.status
-          === 'fulfilled'
-        ) {
-          setMessages(
-            messageResult.value,
+          setUnreadMessages(
+            inbox.filter(
+              (
+                message,
+              ) =>
+                !message.read_at,
+            ).length,
           );
+        } catch (
+        errorValue
+        ) {
+          if (active) {
+            setError(
+              errorValue instanceof Error
+                ? errorValue.message
+                : 'Unable to load clinical intelligence.',
+            );
+          }
+        } finally {
+          if (active) {
+            setLoading(
+              false,
+            );
+          }
         }
       }
 
-      void loadClinicianDashboard();
+      void load();
 
       return () => {
         active = false;
@@ -758,27 +796,213 @@ function ClinicianDashboard() {
   );
 
 
-  const unreadMessages =
-    messages.filter(
+  if (loading) {
+    return (
+      <>
+        <PageHeader
+          eyebrow="Clinical intelligence"
+          title="Preparing your care portfolio…"
+          description="Loading stored patient and prediction intelligence."
+        />
+
+        <div className="dashboard-empty">
+          Loading clinical intelligence…
+        </div>
+      </>
+    );
+  }
+
+
+  if (
+    error
+    ||
+    !dashboard
+  ) {
+    return (
+      <>
+        <PageHeader
+          eyebrow="Clinical intelligence"
+          title="Clinician overview"
+          description="Assigned-patient and LTFU decision-support intelligence."
+        />
+
+        <div className="form-error">
+          {
+            error
+            || 'Clinical intelligence is unavailable.'
+          }
+        </div>
+      </>
+    );
+  }
+
+
+  const {
+    summary,
+  } =
+    dashboard;
+
+
+  const priorityPatients =
+    dashboard.priority_patients.filter(
       (
-        message,
+        patient,
       ) =>
-        !message.read_at,
-    ).length;
+        patient.risk_state
+        !== 'BOTH_BELOW_THRESHOLD',
+    );
 
 
   return (
     <>
       <PageHeader
-        eyebrow="Clinical workspace"
-        title={`Good to see you, ${user?.first_name ?? ''}.`}
-        description="Review your assigned patients, secure communication and clinical workflows."
+        eyebrow="Clinical intelligence"
+        title={`Welcome back, ${user?.first_name ?? 'Clinician'}.`}
+        description="A data-informed view of your assigned care portfolio, stored LTFU assessments and patients requiring review."
       />
 
-      <div className="admin-kpi-grid">
+
+      {/* =================================================
+          PRIMARY CLINICAL KPIs
+          ================================================= */}
+
+      <section className="clinician-kpi-grid">
         <button
           type="button"
-          className="admin-kpi-card"
+          onClick={
+            () =>
+              navigate(
+                '/app/patients',
+              )
+          }
+          className="clinician-kpi-card"
+        >
+          <Stethoscope size={20} />
+
+          <span>
+            Assigned patients
+          </span>
+
+          <strong>
+            {
+              summary
+                .assigned_patients
+            }
+          </strong>
+
+          <small>
+            Active care portfolio
+          </small>
+        </button>
+
+
+        <div className="clinician-kpi-card risk">
+          <CircleGauge size={20} />
+
+          <span>
+            Above threshold
+          </span>
+
+          <strong>
+            {
+              summary
+                .both_above_threshold
+            }
+          </strong>
+
+          <small>
+            Both models above stored threshold
+          </small>
+        </div>
+
+
+        <div className="clinician-kpi-card disagreement">
+          <AlertTriangle size={20} />
+
+          <span>
+            Model disagreement
+          </span>
+
+          <strong>
+            {
+              summary
+                .model_disagreement
+            }
+          </strong>
+
+          <small>
+            Requires closer interpretation
+          </small>
+        </div>
+
+
+        <button
+          type="button"
+          onClick={
+            () =>
+              navigate(
+                '/app/messages',
+              )
+          }
+          className="clinician-kpi-card"
+        >
+          <MessageSquare size={20} />
+
+          <span>
+            Unread messages
+          </span>
+
+          <strong>
+            {unreadMessages}
+          </strong>
+
+          <small>
+            Secure clinical communication
+          </small>
+        </button>
+      </section>
+
+
+      {/* =================================================
+          PORTFOLIO INTELLIGENCE BANNER
+          ================================================= */}
+
+      <section className="clinician-intelligence-banner">
+        <div className="clinician-intelligence-icon">
+          <BrainCircuit size={23} />
+        </div>
+
+        <div>
+          <span className="eyebrow">
+            Decision-support coverage
+          </span>
+
+          <strong>
+            {
+              summary
+                .prediction_coverage_percentage
+            }% of your assigned portfolio has a stored LTFU assessment
+          </strong>
+
+          <span>
+            {
+              summary
+                .patients_with_predictions
+            } assessed ·{' '}
+            {
+              summary
+                .patients_without_predictions
+            } without a stored assessment ·{' '}
+            {
+              summary
+                .pending_prediction_reviews
+            } awaiting clinical review
+          </span>
+        </div>
+
+        <button
+          type="button"
+          className="button secondary"
           onClick={
             () =>
               navigate(
@@ -786,116 +1010,663 @@ function ClinicianDashboard() {
               )
           }
         >
-          <div className="admin-kpi-icon clinician">
-            <Stethoscope size={21} />
+          Review patients
+
+          <ArrowRight size={16} />
+        </button>
+      </section>
+
+
+      {/* =================================================
+          ANALYTICAL VISUALS
+          ================================================= */}
+
+      <section className="clinician-analytics-grid">
+
+        {/* -----------------------------------------------
+            RISK DISTRIBUTION
+            ----------------------------------------------- */}
+
+        <article className="panel clinician-analytics-card">
+          <div className="clinician-card-heading">
+            <div>
+              <span className="eyebrow">
+                Portfolio distribution
+              </span>
+
+              <h2>
+                Stored assessment states
+              </h2>
+            </div>
+
+            <BarChart3 size={20} />
           </div>
 
+          <div className="risk-distribution-bars">
+            <RiskDistributionBar
+              label="Both models above threshold"
+              value={
+                summary
+                  .both_above_threshold
+              }
+              total={
+                summary
+                  .assigned_patients
+              }
+              state="high"
+            />
+
+            <RiskDistributionBar
+              label="Model disagreement"
+              value={
+                summary
+                  .model_disagreement
+              }
+              total={
+                summary
+                  .assigned_patients
+              }
+              state="review"
+            />
+
+            <RiskDistributionBar
+              label="Both below threshold"
+              value={
+                summary
+                  .both_below_threshold
+              }
+              total={
+                summary
+                  .assigned_patients
+              }
+              state="lower"
+            />
+
+            <RiskDistributionBar
+              label="No stored assessment"
+              value={
+                summary
+                  .patients_without_predictions
+              }
+              total={
+                summary
+                  .assigned_patients
+              }
+              state="missing"
+            />
+          </div>
+
+          <p className="analytics-footnote">
+            Categories are derived from each prediction's stored model threshold; MEDISCOPE does not invent arbitrary probability bands.
+          </p>
+        </article>
+
+
+        {/* -----------------------------------------------
+            MODEL AGREEMENT / DATA QUALITY
+            ----------------------------------------------- */}
+
+        <article className="panel clinician-analytics-card">
+          <div className="clinician-card-heading">
+            <div>
+              <span className="eyebrow">
+                Analytical assurance
+              </span>
+
+              <h2>
+                Model & data quality
+              </h2>
+            </div>
+
+            <Database size={20} />
+          </div>
+
+          <div className="clinical-quality-grid">
+            <div>
+              <strong>
+                {
+                  summary
+                    .patients_with_predictions
+                  - summary
+                    .model_disagreement
+                }
+              </strong>
+
+              <span>
+                Latest assessments with model agreement
+              </span>
+            </div>
+
+            <div>
+              <strong>
+                {
+                  summary
+                    .complete_prediction_inputs
+                }
+              </strong>
+
+              <span>
+                Complete stored input snapshots
+              </span>
+            </div>
+
+            <div>
+              <strong>
+                {
+                  summary
+                    .incomplete_prediction_inputs
+                }
+              </strong>
+
+              <span>
+                Assessments containing missing inputs
+              </span>
+            </div>
+
+            <div>
+              <strong>
+                {
+                  summary
+                    .pending_prediction_reviews
+                }
+              </strong>
+
+              <span>
+                Assessments pending clinician review
+              </span>
+            </div>
+          </div>
+        </article>
+      </section>
+
+
+      {/* =================================================
+          PRIORITY REVIEW QUEUE
+          ================================================= */}
+
+      <section className="panel clinician-priority-panel">
+        <header className="clinician-panel-header">
           <div>
-            <span>
-              Assigned patients
+            <span className="eyebrow">
+              Prioritisation
             </span>
 
-            <strong>
-              {patientCount}
-            </strong>
+            <h2>
+              Patient review queue
+            </h2>
 
-            <small>
-              Current clinical workload
-            </small>
+            <p>
+              Patients with both models above threshold, disagreement, or no stored assessment are surfaced first.
+            </p>
           </div>
-        </button>
+
+          <button
+            type="button"
+            className="button secondary small"
+            onClick={
+              () =>
+                navigate(
+                  '/app/patients',
+                )
+            }
+          >
+            All patients
+          </button>
+        </header>
 
 
-        <button
-          type="button"
-          className="admin-kpi-card"
-          onClick={
-            () =>
-              navigate(
-                '/app/messages',
+        <div className="clinician-priority-table">
+          <div className="clinician-priority-row header">
+            <span>
+              Patient
+            </span>
+
+            <span>
+              Logistic
+            </span>
+
+            <span>
+              XGBoost
+            </span>
+
+            <span>
+              Assessment
+            </span>
+
+            <span>
+              Data
+            </span>
+
+            <span />
+          </div>
+
+
+          {
+            priorityPatients.length
+              === 0
+              ? (
+                <div className="dashboard-empty">
+                  No patients currently meet the review-queue criteria.
+                </div>
+              )
+              : (
+                priorityPatients
+                  .slice(
+                    0,
+                    8,
+                  )
+                  .map(
+                    (
+                      patient,
+                    ) => (
+                      <button
+                        type="button"
+                        className="clinician-priority-row"
+                        key={
+                          patient.patient_id
+                        }
+                        onClick={
+                          () =>
+                            navigate(
+                              `/app/patients/${patient.patient_id}/intelligence`,
+                            )
+                        }
+                      >
+                        <div className="priority-patient">
+                          <strong>
+                            {
+                              patient
+                                .synthetic_patient_number
+                            }
+                          </strong>
+
+                          <span>
+                            {
+                              patient.first_name
+                            }{' '}
+                            {
+                              patient.last_name
+                            }
+                          </span>
+                        </div>
+
+                        <ProbabilityCell
+                          value={
+                            patient
+                              .logistic_probability
+                          }
+                        />
+
+                        <ProbabilityCell
+                          value={
+                            patient
+                              .xgboost_probability
+                          }
+                        />
+
+                        <RiskStateBadge
+                          state={
+                            patient
+                              .risk_state
+                          }
+                        />
+
+                        <span>
+                          {
+                            patient
+                              .missing_feature_count
+                              === 0
+                              ? 'Complete'
+                              : `${patient.missing_feature_count} missing`
+                          }
+                        </span>
+
+                        <ArrowRight size={15} />
+                      </button>
+                    ),
+                  )
               )
           }
-        >
-          <div className="admin-kpi-icon all">
-            <MessageSquare size={21} />
+        </div>
+      </section>
+
+
+      {/* =================================================
+          TREND + MISSING DATA
+          ================================================= */}
+
+      <section className="clinician-analytics-grid">
+        <article className="panel clinician-analytics-card">
+          <div className="clinician-card-heading">
+            <div>
+              <span className="eyebrow">
+                Longitudinal intelligence
+              </span>
+
+              <h2>
+                Stored prediction trend
+              </h2>
+            </div>
+
+            <TrendingUp size={20} />
           </div>
 
-          <div>
-            <span>
-              Unread messages
-            </span>
+          <ClinicianTrendChart
+            data={
+              dashboard.trend
+            }
+          />
 
-            <strong>
-              {unreadMessages}
-            </strong>
+          <p className="analytics-footnote">
+            Monthly points summarise stored prediction events and do not generate new assessments.
+          </p>
+        </article>
 
-            <small>
-              Secure communication
-            </small>
+
+        <article className="panel clinician-analytics-card">
+          <div className="clinician-card-heading">
+            <div>
+              <span className="eyebrow">
+                Data quality
+              </span>
+
+              <h2>
+                Most frequently missing inputs
+              </h2>
+            </div>
+
+            <Database size={20} />
           </div>
-        </button>
 
+          {
+            dashboard
+              .missing_features
+              .length
+              === 0
+              ? (
+                <div className="dashboard-empty">
+                  No missing inputs were detected in the latest stored prediction snapshots.
+                </div>
+              )
+              : (
+                <div className="missing-feature-list">
+                  {
+                    dashboard
+                      .missing_features
+                      .map(
+                        (
+                          item,
+                        ) => (
+                          <div
+                            key={
+                              item.feature_name
+                            }
+                          >
+                            <span>
+                              {
+                                item
+                                  .feature_name
+                                  .replaceAll(
+                                    '_',
+                                    ' ',
+                                  )
+                              }
+                            </span>
 
-        <button
-          type="button"
-          className="admin-kpi-card"
-          onClick={
-            () =>
-              navigate(
-                '/app/predictions',
+                            <strong>
+                              {
+                                item
+                                  .missing_count
+                              }
+                            </strong>
+                          </div>
+                        ),
+                      )
+                  }
+                </div>
               )
           }
-        >
-          <div className="admin-kpi-icon users">
-            <Activity size={21} />
-          </div>
-
-          <div>
-            <span>
-              Prediction workflow
-            </span>
-
-            <strong>
-              Active
-            </strong>
-
-            <small>
-              Decision-support access
-            </small>
-          </div>
-        </button>
+        </article>
+      </section>
 
 
-        <button
-          type="button"
-          className="admin-kpi-card"
-          onClick={
-            () =>
-              navigate(
-                '/app/settings',
-              )
-          }
-        >
-          <div className="admin-kpi-icon administrator">
-            <ShieldCheck size={21} />
-          </div>
+      <div className="clinical-disclaimer-banner">
+        <ShieldCheck size={18} />
 
-          <div>
-            <span>
-              Account security
-            </span>
-
-            <strong>
-              MFA
-            </strong>
-
-            <small>
-              Required for clinicians
-            </small>
-          </div>
-        </button>
+        <span>
+          MEDISCOPE predictions are decision-support outputs generated from synthetic data. They do not replace clinical judgement, diagnosis or individualised care decisions.
+        </span>
       </div>
     </>
+  );
+}
+
+
+function ProbabilityCell(
+  {
+    value,
+  }: {
+    value?: number | null;
+  },
+) {
+  if (
+    value === null
+    ||
+    value === undefined
+  ) {
+    return (
+      <span className="probability-empty">
+        —
+      </span>
+    );
+  }
+
+  return (
+    <div className="probability-cell">
+      <strong>
+        {
+          Math.round(
+            value
+            * 100,
+          )
+        }%
+      </strong>
+
+      <span>
+        <i
+          style={{
+            width:
+              `${Math.min(
+                100,
+                Math.max(
+                  0,
+                  value
+                  * 100,
+                ),
+              )}%`,
+          }}
+        />
+      </span>
+    </div>
+  );
+}
+
+
+function RiskStateBadge(
+  {
+    state,
+  }: {
+    state:
+    ClinicianPriorityPatient[
+    'risk_state'
+    ];
+  },
+) {
+  const labels: Record<
+    ClinicianPriorityPatient[
+    'risk_state'
+    ],
+    string
+  > = {
+    BOTH_ABOVE_THRESHOLD:
+      'Above threshold',
+
+    MODEL_DISAGREEMENT:
+      'Models disagree',
+
+    BOTH_BELOW_THRESHOLD:
+      'Below threshold',
+
+    NO_STORED_ASSESSMENT:
+      'No assessment',
+  };
+
+  return (
+    <span
+      className="clinical-risk-badge"
+      data-state={
+        state
+      }
+    >
+      {
+        labels[
+        state
+        ]
+      }
+    </span>
+  );
+}
+
+
+function RiskDistributionBar(
+  {
+    label,
+    value,
+    total,
+    state,
+  }: {
+    label: string;
+
+    value: number;
+
+    total: number;
+
+    state: string;
+  },
+) {
+  const percentage =
+    total > 0
+      ? (
+        value
+        /
+        total
+      )
+      * 100
+      : 0;
+
+  return (
+    <div className="risk-distribution-row">
+      <div>
+        <span>
+          {label}
+        </span>
+
+        <strong>
+          {value}
+        </strong>
+      </div>
+
+      <div className="risk-distribution-track">
+        <i
+          data-state={
+            state
+          }
+          style={{
+            width:
+              `${percentage}%`,
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function ClinicianTrendChart(
+  {
+    data,
+  }: {
+    data:
+    ClinicianPredictionTrendPoint[];
+  },
+) {
+  if (
+    data.length === 0
+  ) {
+    return (
+      <div className="dashboard-empty">
+        Prediction history will appear here as stored assessments accumulate.
+      </div>
+    );
+  }
+
+  return (
+    <div className="clinical-trend-chart">
+      {
+        data.map(
+          (
+            point,
+          ) => (
+            <div
+              className="clinical-trend-column"
+              key={
+                point.period
+              }
+            >
+              <div className="clinical-trend-bars">
+                <i
+                  className="logistic"
+                  style={{
+                    height:
+                      `${Math.max(
+                        4,
+                        point.mean_logistic_probability
+                        * 100,
+                      )}%`,
+                  }}
+                />
+
+                <i
+                  className="xgboost"
+                  style={{
+                    height:
+                      `${Math.max(
+                        4,
+                        point.mean_xgboost_probability
+                        * 100,
+                      )}%`,
+                  }}
+                />
+              </div>
+
+              <strong>
+                {
+                  point.period
+                    .slice(
+                      5,
+                    )
+                }
+              </strong>
+
+              <span>
+                {
+                  point.prediction_count
+                } predictions
+              </span>
+            </div>
+          ),
+        )
+      }
+    </div>
   );
 }
 
