@@ -441,6 +441,28 @@ export const api = {
     ),
 
 
+  reviewChangeRequest: (
+    requestId: string,
+    approve: boolean,
+    reviewComment?: string,
+  ) =>
+    request<HealthRecordChangeRequest>(
+      `/change-requests/${requestId}/review`,
+      {
+        method: 'POST',
+
+        body:
+          JSON.stringify({
+            approve,
+
+            review_comment:
+              reviewComment?.trim()
+              || null,
+          }),
+      },
+    ),
+
+
   // ===================================================
   // NORMAL AUTHENTICATED MFA SETTINGS
   // ===================================================
@@ -525,6 +547,73 @@ export const api = {
   ) =>
     request<ClinicianPatientIntelligence>(
       `/clinical/intelligence/patients/${patientId}`,
+    ),
+
+
+  createClinicalRecord: (
+    patientId: string,
+    payload: {
+      art_start_date?: string | null;
+
+      age_at_art_initiation?: number | null;
+
+      last_regimen?: string | null;
+
+      days_of_arv_refill?: number | null;
+
+      current_viral_load?: number | null;
+
+      pregnancy_status?: string | null;
+
+      last_clinic_visit_date?: string | null;
+
+      notes?: string | null;
+    },
+  ) =>
+    request<ClinicalRecord>(
+      `/clinical/patients/${patientId}/records`,
+      {
+        method: 'POST',
+
+        body:
+          JSON.stringify(
+            payload,
+          ),
+      },
+    ),
+
+
+  updateClinicalRecord: (
+    patientId: string,
+    recordId: string,
+    payload: Partial<{
+      art_start_date: string | null;
+
+      age_at_art_initiation: number | null;
+
+      last_regimen: string | null;
+
+      days_of_arv_refill: number | null;
+
+      current_viral_load: number | null;
+
+      pregnancy_status: string | null;
+
+      last_clinic_visit_date: string | null;
+
+      notes: string | null;
+    }>,
+  ) =>
+    request<ClinicalRecord>(
+      `/clinical/patients/${patientId}/records/${recordId}`,
+      {
+        method: 'PATCH',
+
+        body:
+          JSON.stringify(
+            payload,
+          ),
+      },
     ),
 
 
@@ -891,6 +980,38 @@ export const api = {
     ),
 
 
+  adminCreatePatient: (
+    payload: {
+      synthetic_patient_number: string;
+
+      first_name: string;
+
+      last_name: string;
+
+      date_of_birth?: string | null;
+
+      sex: 'Male' | 'Female';
+
+      state: string;
+
+      lga: string;
+
+      status?: string;
+    },
+  ) =>
+    request<AdminPatientSummary>(
+      '/admin/patients',
+      {
+        method: 'POST',
+
+        body:
+          JSON.stringify(
+            payload,
+          ),
+      },
+    ),
+
+
   // ===================================================
   // ADMINISTRATOR AUDIT LOGS
   // ===================================================
@@ -1019,6 +1140,4 @@ export const api = {
       '/admin/audit-logs/metadata',
     ),
 };
-
-
 

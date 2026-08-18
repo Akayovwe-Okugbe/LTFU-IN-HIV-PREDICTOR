@@ -1,9 +1,10 @@
 """
 =========================================================
-MEDISCOPE Phase 2 Authentication API Routes
+MEDISCOPE Authentication Security API Routes
 
 Purpose:
-    Expose secure authentication workflows through FastAPI.
+    Expose MEDISCOPE authentication-security workflows
+    through FastAPI.
 
 Implemented workflows:
     - email verification using OTP;
@@ -15,7 +16,8 @@ Implemented workflows:
     - TOTP authenticator enrolment;
     - TOTP MFA login;
     - one-time MFA recovery codes;
-    - TOTP MFA removal.
+    - TOTP MFA removal;
+    - mandatory MFA enrolment for privileged roles.
 
 Security:
     - Registration-related email responses do not disclose

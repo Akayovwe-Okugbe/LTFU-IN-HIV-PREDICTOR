@@ -165,6 +165,61 @@ class PatientUserLinkRequest(BaseModel):
 
 
 # =====================================================
+# CREATE SYNTHETIC PATIENT
+# =====================================================
+
+class AdminPatientCreateRequest(BaseModel):
+    """
+    Create a synthetic patient identity.
+
+    Administrators create the administrative patient
+    profile only. Clinical/treatment information is added
+    separately by an assigned clinician.
+
+    All patients created through this endpoint are forced
+    to remain synthetic.
+    """
+
+    synthetic_patient_number: str = Field(
+        min_length=3,
+        max_length=50,
+    )
+
+    first_name: str = Field(
+        min_length=1,
+        max_length=100,
+    )
+
+    last_name: str = Field(
+        min_length=1,
+        max_length=100,
+    )
+
+    date_of_birth: date | None = None
+
+    sex: str = Field(
+        min_length=1,
+        max_length=40,
+    )
+
+    state: str = Field(
+        min_length=1,
+        max_length=100,
+    )
+
+    lga: str = Field(
+        min_length=1,
+        max_length=150,
+    )
+
+    status: str = Field(
+        default="ACTIVE",
+        min_length=1,
+        max_length=40,
+    )
+
+
+# =====================================================
 # ADMIN PATIENT SUMMARY
 # =====================================================
 

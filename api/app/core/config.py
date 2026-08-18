@@ -5,29 +5,30 @@ MEDISCOPE Application Configuration
 LTFU Prediction in HIV Treatment Programmes
 Rome Business School Capstone Project
 
-File:
-    config.py
-
 Purpose:
-    Defines the environment-backed configuration used by
-    the MEDISCOPE FastAPI backend.
+    Define typed, environment-backed configuration for the
+    MEDISCOPE FastAPI backend.
 
-    Configuration includes:
+Configuration includes:
 
-    - application settings;
+    - application environment;
+    - frontend integration;
     - PostgreSQL connectivity;
-    - JWT authentication;
+    - JWT access-token configuration;
     - password and OTP policies;
-    - refresh-token settings;
+    - refresh-token lifecycle;
     - TOTP multi-factor authentication;
     - email and SMTP delivery;
-    - machine-learning model locations.
+    - synthetic-data governance;
+    - machine-learning model locations and threshold.
 
 Security:
-    Real credentials and secrets must be stored in the
-    project's local .env file.
+    Real credentials and secrets must be supplied through
+    environment variables or the local project-root .env
+    file.
 
-    The .env file must never be committed to GitHub.
+    The .env file must never be committed to source
+    control.
 
 Author:
     Akayovwe Okugbe
@@ -36,7 +37,6 @@ Author:
 """
 
 from __future__ import annotations
-from pathlib import Path
 
 
 # =====================================================
@@ -44,6 +44,8 @@ from pathlib import Path
 # =====================================================
 
 from functools import lru_cache
+from pathlib import Path
+from typing import Literal
 
 
 # =====================================================
@@ -53,6 +55,7 @@ from functools import lru_cache
 from pydantic import (
     EmailStr,
     Field,
+    model_validator,
 )
 
 from pydantic_settings import (
@@ -62,7 +65,7 @@ from pydantic_settings import (
 
 
 # =====================================================
-# APPLICATION IMPORTS
+# PROJECT PATHS
 # =====================================================
 
 PROJECT_ROOT = (
@@ -85,10 +88,17 @@ class Settings(BaseSettings):
     """
     Typed MEDISCOPE configuration.
 
-    Pydantic reads matching values from environment
-    variables and from the project-root .env file.
+    Operating-system environment variables take
+    precedence over values supplied through the local
+    project-root .env file.
 
-    Environment-variable names are case-insensitive.
+    This allows the same application configuration model
+    to support:
+
+        - local development;
+        - automated testing;
+        - container deployment;
+        - hosted production environments.
     """
 
     # -------------------------------------------------
@@ -96,11 +106,12 @@ class Settings(BaseSettings):
     # -------------------------------------------------
 
     model_config = SettingsConfigDict(
-        env_file=   ENV_FILE,
+        env_file=ENV_FILE,
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore",
     )
+
 
     # =================================================
     # GENERAL APPLICATION SETTINGS
@@ -108,33 +119,40 @@ class Settings(BaseSettings):
 
     app_name: str = "MEDISCOPE"
 
-    environment: str = "development"
+    environment: Literal[
+        "development",
+        "testing",
+        "production",
+    ] = "development"
 
     debug: bool = False
 
-    # Base address of the future frontend application.
-    # Password-reset links are constructed from this URL.
+    # Used when constructing browser-facing application
+    # links such as password-reset URLs.
     frontend_base_url: str = (
-        "http://localhost:3000"
+        "http://localhost:5173"
     )
+
 
     # =================================================
     # DATABASE SETTINGS
     # =================================================
 
-    # This default is a placeholder only.
-    # The real value must be provided in .env.
+    # Development placeholder only.
+    #
+    # Production validation below prevents MEDISCOPE from
+    # starting with this value.
     database_url: str = (
         "postgresql+psycopg://"
         "mediscope:change-me@"
         "localhost:5432/mediscope"
     )
 
+
     # =================================================
     # JWT ACCESS-TOKEN SETTINGS
     # =================================================
 
-    # The real secret must be supplied through .env.
     secret_key: str = Field(
         default=(
             "CHANGE-THIS-IN-.ENV-WITH-A-"
@@ -145,69 +163,122 @@ class Settings(BaseSettings):
 
     jwt_algorithm: str = "HS256"
 
-    access_token_expire_minutes: int = 30
+    access_token_expire_minutes: int = Field(
+        default=30,
+        ge=1,
+        le=1440,
+    )
+
 
     # =================================================
     # REFRESH-TOKEN SETTINGS
     # =================================================
 
-    refresh_token_expire_days: int = 7
+    refresh_token_expire_days: int = Field(
+        default=7,
+        ge=1,
+        le=90,
+    )
+
 
     # =================================================
     # PASSWORD SECURITY SETTINGS
     # =================================================
 
-    password_min_length: int = 12
+    password_min_length: int = Field(
+        default=12,
+        ge=12,
+        le=200,
+    )
+
 
     # =================================================
     # EMAIL VERIFICATION OTP SETTINGS
     # =================================================
 
-    otp_expire_minutes: int = 10
+    otp_expire_minutes: int = Field(
+        default=10,
+        ge=1,
+        le=60,
+    )
 
-    otp_max_attempts: int = 5
+    otp_max_attempts: int = Field(
+        default=5,
+        ge=1,
+        le=20,
+    )
+
 
     # =================================================
     # PASSWORD-RESET SETTINGS
     # =================================================
 
-    password_reset_expire_minutes: int = 20
+    password_reset_expire_minutes: int = Field(
+        default=20,
+        ge=1,
+        le=120,
+    )
+
 
     # =================================================
     # TOTP MULTI-FACTOR AUTHENTICATION
     # =================================================
 
+    # Dedicated Fernet key used to protect TOTP secrets
+    # at rest.
+    #
+    # This key must be generated independently from the
+    # JWT SECRET_KEY and must remain stable for as long as
+    # encrypted MFA secrets need to be decrypted.
+    #
+    # Generate with:
+    #
+    # python -c "from cryptography.fernet import Fernet; \
+    # print(Fernet.generate_key().decode())"
+    #
+    # Fernet keys are URL-safe Base64 encoded 32-byte keys
+    # and are normally 44 characters long.
+    totp_encryption_key: str = Field(
+        default="",
+        max_length=44,
+    )
+
     # Name displayed inside authenticator applications.
     totp_issuer_name: str = "MEDISCOPE"
 
-    # MFA challenge tokens should remain short-lived.
-    mfa_challenge_expire_minutes: int = 5
+    mfa_challenge_expire_minutes: int = Field(
+        default=5,
+        ge=1,
+        le=30,
+    )
 
-    # Number of single-use recovery codes generated when
-    # TOTP MFA is successfully enabled.
-    mfa_recovery_code_count: int = 10
+    mfa_recovery_code_count: int = Field(
+        default=10,
+        ge=1,
+        le=50,
+    )
+
 
     # =================================================
     # EMAIL DELIVERY SETTINGS
     # =================================================
 
-    # Sender address displayed in authentication emails.
     email_from: EmailStr = (
         "noreply@example.com"
     )
 
-    # When True, authentication emails are displayed in
-    # the Uvicorn terminal rather than sent through SMTP.
-    #
-    # This should be used only for local development with
-    # synthetic demonstration accounts.
+    # Local-development convenience only.
+    # Production validation below prevents console email
+    # delivery from being accidentally enabled.
     email_console_backend: bool = True
 
-    # SMTP fields can remain empty while console delivery
-    # is enabled.
     smtp_host: str | None = None
 
-    smtp_port: int = 587
+    smtp_port: int = Field(
+        default=587,
+        ge=1,
+        le=65535,
+    )
 
     smtp_username: str | None = None
 
@@ -215,29 +286,152 @@ class Settings(BaseSettings):
 
     smtp_use_tls: bool = True
 
+
     # =================================================
-    # DATA-GOVERNANCE SETTINGS
+    # DATA GOVERNANCE
     # =================================================
 
-    # MEDISCOPE currently permits synthetic application
-    # records only.
     synthetic_data_only: bool = True
+
 
     # =================================================
     # MACHINE-LEARNING MODEL SETTINGS
     # =================================================
 
-    logistic_model_path: str = (
-        "models/trained/"
-        "logistic_regression_pipeline.joblib"
+    logistic_model_path: str = str(
+        PROJECT_ROOT
+        / "models"
+        / "trained"
+        / "logistic_regression_pipeline.joblib"
     )
 
-    xgboost_model_path: str = (
-        "models/trained/"
-        "xgboost_pipeline.joblib"
+    xgboost_model_path: str = str(
+        PROJECT_ROOT
+        / "models"
+        / "trained"
+        / "xgboost_pipeline.joblib"
     )
 
-    decision_threshold: float = 0.50
+    decision_threshold: float = Field(
+        default=0.50,
+        ge=0.0,
+        le=1.0,
+    )
+
+
+    # =================================================
+    # SECURITY CONFIGURATION VALIDATION
+    # =================================================
+
+    @model_validator(
+        mode="after"
+    )
+    def validate_security_settings(
+        self,
+    ) -> "Settings":
+        """
+        Validate security-critical MEDISCOPE settings.
+
+        TOTP encryption is required in every environment
+        because authenticator secrets must never silently
+        fall back to plaintext persistence.
+
+        Additional deployment safeguards are enforced when
+        ENVIRONMENT=production.
+        """
+
+
+        # ---------------------------------------------
+        # TOTP ENCRYPTION KEY
+        # ---------------------------------------------
+
+        if not self.totp_encryption_key:
+            raise ValueError(
+                "TOTP_ENCRYPTION_KEY must be configured."
+            )
+
+        if (
+            len(
+                self.totp_encryption_key
+            )
+            != 44
+        ):
+            raise ValueError(
+                "TOTP_ENCRYPTION_KEY must be a valid "
+                "44-character Fernet key."
+            )
+
+
+        # ---------------------------------------------
+        # DEVELOPMENT / TESTING
+        #
+        # The remaining checks are production-specific.
+        # ---------------------------------------------
+
+        if (
+            self.environment
+            != "production"
+        ):
+            return self
+
+
+        # ---------------------------------------------
+        # SECRET KEY
+        # ---------------------------------------------
+
+        if (
+            "CHANGE-THIS"
+            in self.secret_key.upper()
+            or
+            "REPLACE"
+            in self.secret_key.upper()
+        ):
+            raise ValueError(
+                "A production SECRET_KEY must be "
+                "configured."
+            )
+
+
+        # ---------------------------------------------
+        # DATABASE CREDENTIALS
+        # ---------------------------------------------
+
+        if (
+            "change-me"
+            in self.database_url.lower()
+            or
+            "replace-me"
+            in self.database_url.lower()
+        ):
+            raise ValueError(
+                "A production DATABASE_URL must be "
+                "configured."
+            )
+
+
+        # ---------------------------------------------
+        # EMAIL DELIVERY
+        # ---------------------------------------------
+
+        if self.email_console_backend:
+            raise ValueError(
+                "EMAIL_CONSOLE_BACKEND must be false "
+                "in production."
+            )
+
+
+        # ---------------------------------------------
+        # DATA GOVERNANCE
+        # ---------------------------------------------
+
+        if not self.synthetic_data_only:
+            raise ValueError(
+                "This MEDISCOPE prototype requires "
+                "SYNTHETIC_DATA_ONLY=true."
+            )
+
+
+        return self
 
 
 # =====================================================
@@ -245,14 +439,14 @@ class Settings(BaseSettings):
 # =====================================================
 
 @lru_cache(
-    maxsize=1
+    maxsize=1,
 )
 def get_settings() -> Settings:
     """
     Return the shared MEDISCOPE configuration instance.
 
-    Caching prevents the .env file from being repeatedly
-    re-read during every API request.
+    Caching prevents the settings object and local .env
+    file from being reconstructed for every API request.
     """
 
     return Settings()

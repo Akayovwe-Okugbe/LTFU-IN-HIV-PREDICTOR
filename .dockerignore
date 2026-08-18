@@ -1,0 +1,47 @@
+# =========================================================
+# MEDISCOPE Docker Ignore
+# =========================================================
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Local environment / secrets
+.env
+.env.*
+!.env.example
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+
+# IDE/editor
+.vscode/
+.idea/
+
+# Frontend development artefacts
+frontend/node_modules/
+frontend/dist/
+
+# Jupyter / research-only artefacts
+notebooks/
+reports/
+
+# Raw / processed research datasets
+data/
+
+# Temporary project review files
+project_structure.txt
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

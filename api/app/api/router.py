@@ -25,7 +25,7 @@ from app.api.routes import (
     administration,
     audit_logs,
     auth,
-    authentication_phase2,
+    authentication,
     change_requests,
     clinical_records,
     clinician_intelligence,
@@ -50,7 +50,7 @@ api_router = APIRouter(
 #
 # auth.py contains registration and password login.
 #
-# authentication_phase2.py contains:
+# authentication.py contains:
 # - email verification
 # - password recovery
 # - refresh-token rotation
@@ -66,7 +66,7 @@ api_router.include_router(
 )
 
 api_router.include_router(
-    authentication_phase2.router
+    authentication.router
 )
 
 # =====================================================

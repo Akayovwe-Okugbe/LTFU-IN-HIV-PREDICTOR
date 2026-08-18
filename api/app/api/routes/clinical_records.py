@@ -2,7 +2,7 @@
 from __future__ import annotations
 from typing import Annotated
 from uuid import UUID
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy import select
 from app.api.dependencies import DbSession, require_roles
 from app.core.enums import UserRole
@@ -22,6 +22,40 @@ ClinicianUser = Annotated[
     User,
     Depends(require_roles(UserRole.CLINICIAN.value)),
 ]
+
+# =====================================================
+# REQUEST AUDIT METADATA HELPER
+# =====================================================
+
+def _audit_request_metadata(
+    request: Request,
+) -> tuple[str | None, str | None]:
+    """
+    Extract request metadata used by clinical audit logs.
+
+    Returns
+    -------
+    tuple[str | None, str | None]
+        Client IP address and user-agent string.
+
+    Either value may be unavailable depending on the
+    request environment, so both are optional.
+    """
+
+    ip_address = (
+        request.client.host
+        if request.client
+        else None
+    )
+
+    user_agent = request.headers.get(
+        "user-agent",
+    )
+
+    return (
+        ip_address,
+        user_agent,
+    )
 
 
 def _get_assigned_patient(
@@ -83,7 +117,15 @@ def list_clinical_records(
     )
 
 
-@router.post("/patients/{patient_id}/records", response_model=ClinicalRecordResponse, status_code=201)
+# =====================================================
+# CREATE CLINICAL RECORD
+# =====================================================
+
+@router.post(
+    "/patients/{patient_id}/records",
+    response_model=ClinicalRecordResponse,
+    status_code=status.HTTP_201_CREATED,
+)
 def create_clinical_record(
     patient_id: UUID,
     payload: ClinicalRecordCreateRequest,
@@ -91,39 +133,108 @@ def create_clinical_record(
     db: DbSession,
     current_clinician: ClinicianUser,
 ) -> ClinicalRecord:
-    """Create a clinical record for an assigned patient."""
-    patient = _get_assigned_patient(
-        db,
-        clinician=current_clinician,
-        patient_id=patient_id,
+    """
+    Add a new longitudinal clinical record for an actively
+    assigned synthetic patient.
+    """
+
+    patient = _require_assigned_patient(
+        db=db,
+
+        clinician_id=(
+            current_clinician.id
+        ),
+
+        patient_id=(
+            patient_id
+        ),
     )
+
+    if not patient.is_synthetic:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "Only synthetic patient data are supported "
+                "by this prototype."
+            ),
+        )
 
     record = ClinicalRecord(
         patient_id=patient.id,
-        recorded_by=current_clinician.id,
+
+        recorded_by=(
+            current_clinician.id
+        ),
+
         **payload.model_dump(),
     )
-    db.add(record)
+
+    db.add(
+        record
+    )
+
     db.flush()
+
+    ip_address, user_agent = (
+        _audit_request_metadata(
+            request
+        )
+    )
 
     write_audit_log(
         db,
-        actor_user_id=current_clinician.id,
-        action="CLINICAL_RECORD_CREATED",
+
+        actor_user_id=(
+            current_clinician.id
+        ),
+
+        action=(
+            "CLINICAL_RECORD_CREATED"
+        ),
+
         outcome="SUCCESS",
-        resource_type="CLINICAL_RECORD",
-        resource_id=record.id,
-        ip_address=request.client.host if request.client else None,
-        user_agent=request.headers.get("user-agent"),
-        details={"patient_id": str(patient.id)},
+
+        resource_type=(
+            "CLINICAL_RECORD"
+        ),
+
+        resource_id=(
+            record.id
+        ),
+
+        ip_address=(
+            ip_address
+        ),
+
+        user_agent=(
+            user_agent
+        ),
+
+        details={
+            "patient_id":
+                str(
+                    patient.id
+                ),
+        },
     )
 
     db.commit()
-    db.refresh(record)
+
+    db.refresh(
+        record
+    )
+
     return record
 
 
-@router.patch("/patients/{patient_id}/records/{record_id}", response_model=ClinicalRecordResponse)
+# =====================================================
+# UPDATE CLINICAL RECORD
+# =====================================================
+
+@router.patch(
+    "/patients/{patient_id}/records/{record_id}",
+    response_model=ClinicalRecordResponse,
+)
 def update_clinical_record(
     patient_id: UUID,
     record_id: UUID,
@@ -132,29 +243,169 @@ def update_clinical_record(
     db: DbSession,
     current_clinician: ClinicianUser,
 ) -> ClinicalRecord:
-    """Update a clinical record for an assigned patient."""
-    _get_assigned_patient(db, clinician=current_clinician, patient_id=patient_id)
+    """
+    Correct an existing clinical record belonging to an
+    actively assigned patient.
 
-    record = db.get(ClinicalRecord, record_id)
-    if record is None or record.patient_id != patient_id:
-        raise HTTPException(status_code=404, detail="Clinical record not found.")
+    All modifications are audited.
+    """
 
-    changes = payload.model_dump(exclude_unset=True)
-    for name, value in changes.items():
-        setattr(record, name, value)
+    _require_assigned_patient(
+        db=db,
+
+        clinician_id=(
+            current_clinician.id
+        ),
+
+        patient_id=(
+            patient_id
+        ),
+    )
+
+    record = db.get(
+        ClinicalRecord,
+        record_id,
+    )
+
+    if (
+        record is None
+        or
+        record.patient_id
+        != patient_id
+    ):
+        raise HTTPException(
+            status_code=404,
+            detail=(
+                "Clinical record not found."
+            ),
+        )
+
+    changes = (
+        payload.model_dump(
+            exclude_unset=True,
+        )
+    )
+
+    if not changes:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "No clinical fields were supplied."
+            ),
+        )
+
+    for (
+        field_name,
+        value,
+    ) in changes.items():
+        setattr(
+            record,
+            field_name,
+            value,
+        )
+
+    ip_address, user_agent = (
+        _audit_request_metadata(
+            request
+        )
+    )
 
     write_audit_log(
         db,
-        actor_user_id=current_clinician.id,
-        action="CLINICAL_RECORD_UPDATED",
+
+        actor_user_id=(
+            current_clinician.id
+        ),
+
+        action=(
+            "CLINICAL_RECORD_UPDATED"
+        ),
+
         outcome="SUCCESS",
-        resource_type="CLINICAL_RECORD",
-        resource_id=record.id,
-        ip_address=request.client.host if request.client else None,
-        user_agent=request.headers.get("user-agent"),
-        details={"patient_id": str(patient_id), "fields": sorted(changes)},
+
+        resource_type=(
+            "CLINICAL_RECORD"
+        ),
+
+        resource_id=(
+            record.id
+        ),
+
+        ip_address=(
+            ip_address
+        ),
+
+        user_agent=(
+            user_agent
+        ),
+
+        details={
+            "patient_id":
+                str(
+                    patient_id
+                ),
+
+            "fields":
+                sorted(
+                    changes.keys()
+                ),
+        },
     )
 
     db.commit()
-    db.refresh(record)
+
+    db.refresh(
+        record
+    )
+
     return record
+
+
+def _require_assigned_patient(
+    *,
+    db: DbSession,
+    clinician_id: UUID,
+    patient_id: UUID,
+) -> Patient:
+    """
+    Return the patient only when the clinician currently
+    holds an active assignment.
+    """
+
+    patient = db.get(
+        Patient,
+        patient_id,
+    )
+
+    if patient is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Patient not found.",
+        )
+
+    assignment = db.scalar(
+        select(
+            ClinicianPatientAssignment.id
+        ).where(
+            ClinicianPatientAssignment.clinician_user_id
+            == clinician_id,
+
+            ClinicianPatientAssignment.patient_id
+            == patient_id,
+
+            ClinicianPatientAssignment.is_active.is_(
+                True
+            ),
+        )
+    )
+
+    if assignment is None:
+        raise HTTPException(
+            status_code=403,
+            detail=(
+                "This patient is not actively assigned "
+                "to your clinician account."
+            ),
+        )
+
+    return patient

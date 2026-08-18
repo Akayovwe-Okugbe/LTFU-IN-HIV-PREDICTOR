@@ -29,6 +29,9 @@ Security:
     - Token type is validated before a workflow token is
       accepted for its intended purpose.
 
+Author:
+    Akayovwe Okugbe
+
 =========================================================
 """
 
@@ -139,18 +142,17 @@ def hash_secret(
     value: str,
 ) -> str:
     """
-    Hash an already-random secret using SHA-256.
+    Hash a temporary authentication secret using SHA-256.
 
-    This helper is intended for high-entropy or short-lived
-    authentication values such as:
+    Appropriate for:
+        - high-entropy password-reset tokens;
+        - high-entropy refresh tokens;
+        - MFA recovery codes;
+        - short-lived OTPs when combined with strict expiry,
+          attempt limits and server-side access controls.
 
-    - OTPs;
-    - password-reset tokens;
-    - refresh tokens;
-    - MFA recovery codes.
-
-    It is deliberately not used for user passwords, which
-    are handled separately with Argon2id.
+    This helper must never be used for user passwords.
+    Passwords are protected separately with Argon2id.
     """
 
     return hashlib.sha256(

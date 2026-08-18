@@ -41,6 +41,10 @@ import {
 } from '../components/PasswordInput';
 
 import {
+    CreatePatientModal,
+} from '../components/admin/CreatePatientModal';
+
+import {
     useAuth,
 } from '../context/AuthContext';
 
@@ -70,6 +74,26 @@ type SortOption =
     | 'NAME_DESC'
     | 'ROLE'
     | 'STATUS';
+
+
+// =====================================================
+// DIRECTORY PAGINATION
+//
+// Keeping the directory deliberately compact prevents a
+// large user population from pushing clinical assignment
+// management far down the page.
+// =====================================================
+
+const DIRECTORY_PAGE_SIZE =
+    10;
+
+
+// Active clinician-patient relationships are paginated
+// independently from the account directory so both large
+// datasets remain compact and easy to navigate.
+const ASSIGNMENT_PAGE_SIZE =
+    10;
+
 
 type DrawerMode =
     | 'CREATE'
@@ -176,6 +200,12 @@ export default function AdministrationPage() {
     ] =
         useSearchParams();
 
+    const [
+        creatingPatient,
+        setCreatingPatient,
+    ] =
+        useState(false);
+
 
     // ===================================================
     // GLOBAL CLINICAL ASSIGNMENT WORKSPACE
@@ -217,6 +247,14 @@ export default function AdministrationPage() {
         setAssignmentBusy,
     ] =
         useState(false);
+
+    const [
+        assignmentPage,
+        setAssignmentPage,
+    ] =
+        useState(
+            1,
+        );
 
 
     // ===================================================
@@ -307,6 +345,14 @@ export default function AdministrationPage() {
             string | null
         >(
             null,
+        );
+
+    const [
+        directoryPage,
+        setDirectoryPage,
+    ] =
+        useState(
+            1,
         );
 
 
@@ -619,6 +665,117 @@ export default function AdministrationPage() {
 
 
     // ===================================================
+    // DIRECTORY PAGINATION
+    //
+    // Pagination is applied only after search, role filtering
+    // and sorting. This means each filtered population receives
+    // its own correct page count.
+    // ===================================================
+
+    const directoryTotalPages =
+        Math.max(
+            1,
+            Math.ceil(
+                visibleUsers.length
+                /
+                DIRECTORY_PAGE_SIZE,
+            ),
+        );
+
+
+    const paginatedUsers =
+        useMemo(
+            () => {
+                const start =
+                    (
+                        directoryPage
+                        - 1
+                    )
+                    *
+                    DIRECTORY_PAGE_SIZE;
+
+                return visibleUsers.slice(
+                    start,
+                    start
+                    +
+                    DIRECTORY_PAGE_SIZE,
+                );
+            },
+            [
+                visibleUsers,
+                directoryPage,
+            ],
+        );
+
+
+    const directoryStart =
+        visibleUsers.length === 0
+            ? 0
+            : (
+                (
+                    directoryPage
+                    - 1
+                )
+                *
+                DIRECTORY_PAGE_SIZE
+            )
+            +
+            1;
+
+
+    const directoryEnd =
+        Math.min(
+            directoryPage
+            *
+            DIRECTORY_PAGE_SIZE,
+            visibleUsers.length,
+        );
+
+
+    // Any new search, filter or sort represents a new result
+    // population, so begin again at page one and collapse any
+    // account that had been expanded on the previous page.
+    useEffect(
+        () => {
+            setDirectoryPage(
+                1,
+            );
+
+            setExpandedUserId(
+                null,
+            );
+        },
+        [
+            filter,
+            search,
+            sort,
+        ],
+    );
+
+
+    // Account deletion or other data refreshes can reduce the
+    // total number of pages. Clamp the current page so the
+    // directory never becomes blank simply because an old page
+    // number is now outside the available range.
+    useEffect(
+        () => {
+            setDirectoryPage(
+                (
+                    current,
+                ) =>
+                    Math.min(
+                        current,
+                        directoryTotalPages,
+                    ),
+            );
+        },
+        [
+            directoryTotalPages,
+        ],
+    );
+
+
+    // ===================================================
     // RELATIONSHIP HELPERS
     // ===================================================
 
@@ -849,6 +1006,110 @@ export default function AdministrationPage() {
         );
 
 
+    // ===================================================
+    // ACTIVE RELATIONSHIP PAGINATION
+    //
+    // Filtering by clinician is applied first. Pagination is
+    // then calculated from the filtered relationships so the
+    // page count always reflects exactly what the administrator
+    // is reviewing.
+    // ===================================================
+
+    const assignmentTotalPages =
+        Math.max(
+            1,
+            Math.ceil(
+                globalAssignmentRows.length
+                /
+                ASSIGNMENT_PAGE_SIZE,
+            ),
+        );
+
+
+    const paginatedAssignmentRows =
+        useMemo(
+            () => {
+                const start =
+                    (
+                        assignmentPage
+                        - 1
+                    )
+                    *
+                    ASSIGNMENT_PAGE_SIZE;
+
+                return globalAssignmentRows.slice(
+                    start,
+                    start
+                    +
+                    ASSIGNMENT_PAGE_SIZE,
+                );
+            },
+            [
+                globalAssignmentRows,
+                assignmentPage,
+            ],
+        );
+
+
+    const assignmentStart =
+        globalAssignmentRows.length === 0
+            ? 0
+            : (
+                (
+                    assignmentPage
+                    - 1
+                )
+                *
+                ASSIGNMENT_PAGE_SIZE
+            )
+            +
+            1;
+
+
+    const assignmentEnd =
+        Math.min(
+            assignmentPage
+            *
+            ASSIGNMENT_PAGE_SIZE,
+            globalAssignmentRows.length,
+        );
+
+
+    // Changing the clinician filter creates a new relationship
+    // population, so always begin that filtered view at page one.
+    useEffect(
+        () => {
+            setAssignmentPage(
+                1,
+            );
+        },
+        [
+            assignmentClinicianFilter,
+        ],
+    );
+
+
+    // Unassigning a relationship can reduce the total number of
+    // pages. Clamp the active page so the table never lands on an
+    // empty page after the final row on a page is removed.
+    useEffect(
+        () => {
+            setAssignmentPage(
+                (
+                    current,
+                ) =>
+                    Math.min(
+                        current,
+                        assignmentTotalPages,
+                    ),
+            );
+        },
+        [
+            assignmentTotalPages,
+        ],
+    );
+
+
     const assignedClinicianCount =
         new Set(
             assignments
@@ -952,6 +1213,32 @@ export default function AdministrationPage() {
         );
 
         setError('');
+    }
+
+
+    // ===================================================
+    // CREATE SYNTHETIC PATIENT MODAL
+    //
+    // Patient creation is deliberately separate from user
+    // account creation. Opening this workflow closes any
+    // account drawer first so two overlays cannot compete for
+    // focus or obscure one another.
+    // ===================================================
+
+    function openCreatePatientModal() {
+        closeDrawer();
+
+        setError(
+            '',
+        );
+
+        setMessage(
+            '',
+        );
+
+        setCreatingPatient(
+            true,
+        );
     }
 
 
@@ -1910,12 +2197,16 @@ export default function AdministrationPage() {
                         </h2>
 
                         <p>
-                            {visibleUsers.length}{' '}
-                            account{
-                                visibleUsers.length === 1
-                                    ? ''
-                                    : 's'
-                            } shown
+                            {
+                                visibleUsers.length === 0
+                                    ? 'No accounts shown'
+                                    : (
+                                        `Showing ${directoryStart}–${directoryEnd} of ${visibleUsers.length} account${visibleUsers.length === 1
+                                            ? ''
+                                            : 's'
+                                        }`
+                                    )
+                            }
                         </p>
                     </div>
 
@@ -2040,7 +2331,7 @@ export default function AdministrationPage() {
                         )}
 
                     {!loading &&
-                        visibleUsers.map(
+                        paginatedUsers.map(
                             (
                                 directoryUser,
                             ) => {
@@ -2309,6 +2600,122 @@ export default function AdministrationPage() {
                             },
                         )}
                 </div>
+
+
+                {/* =============================================
+                    DIRECTORY PAGINATION
+
+                    Only ten accounts are rendered at a time.
+                    Search, role filters and sorting are applied
+                    before pagination so the controls always
+                    describe the currently visible population.
+                    ============================================= */}
+
+                {!loading &&
+                    visibleUsers.length > 0 && (
+                        <div className="admin-directory-pagination">
+                            <div className="admin-pagination-summary">
+                                <strong>
+                                    {
+                                        directoryStart
+                                    }–{
+                                        directoryEnd
+                                    }
+                                </strong>
+
+                                <span>
+                                    of{' '}
+                                    {
+                                        visibleUsers.length
+                                    } account{
+                                        visibleUsers.length === 1
+                                            ? ''
+                                            : 's'
+                                    }
+                                </span>
+                            </div>
+
+
+                            <div className="admin-pagination-controls">
+                                <button
+                                    type="button"
+                                    className="button secondary small"
+                                    disabled={
+                                        directoryPage
+                                        <= 1
+                                    }
+                                    onClick={
+                                        () => {
+                                            setExpandedUserId(
+                                                null,
+                                            );
+
+                                            setDirectoryPage(
+                                                (
+                                                    current,
+                                                ) =>
+                                                    Math.max(
+                                                        1,
+                                                        current - 1,
+                                                    ),
+                                            );
+                                        }
+                                    }
+                                >
+                                    Previous
+                                </button>
+
+
+                                <span className="admin-pagination-page">
+                                    Page{' '}
+
+                                    <strong>
+                                        {
+                                            directoryPage
+                                        }
+                                    </strong>
+
+                                    {' '}of{' '}
+
+                                    <strong>
+                                        {
+                                            directoryTotalPages
+                                        }
+                                    </strong>
+                                </span>
+
+
+                                <button
+                                    type="button"
+                                    className="button secondary small"
+                                    disabled={
+                                        directoryPage
+                                        >=
+                                        directoryTotalPages
+                                    }
+                                    onClick={
+                                        () => {
+                                            setExpandedUserId(
+                                                null,
+                                            );
+
+                                            setDirectoryPage(
+                                                (
+                                                    current,
+                                                ) =>
+                                                    Math.min(
+                                                        directoryTotalPages,
+                                                        current + 1,
+                                                    ),
+                                            );
+                                        }
+                                    }
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        </div>
+                    )}
             </section>
 
 
@@ -2352,6 +2759,18 @@ export default function AdministrationPage() {
                     <div className="admin-assignment-header-icon">
                         <Stethoscope size={22} />
                     </div>
+
+                    <button
+                        type="button"
+                        className="button secondary"
+                        onClick={
+                            openCreatePatientModal
+                        }
+                    >
+                        <UserPlus size={17} />
+
+                        Create synthetic patient
+                    </button>
                 </header>
 
 
@@ -2762,8 +3181,18 @@ export default function AdministrationPage() {
                             </h3>
 
                             <p>
-                                Review and end active assignments without opening
-                                an individual account.
+                                {
+                                    globalAssignmentRows.length === 0
+                                        ? (
+                                            'No active assignments match the current filter.'
+                                        )
+                                        : (
+                                            `Showing ${assignmentStart}–${assignmentEnd} of ${globalAssignmentRows.length} active relationship${globalAssignmentRows.length === 1
+                                                ? ''
+                                                : 's'
+                                            }.`
+                                        )
+                                }
                             </p>
                         </div>
 
@@ -2858,7 +3287,7 @@ export default function AdministrationPage() {
                                     </div>
                                 )
                                 : (
-                                    globalAssignmentRows.map(
+                                    paginatedAssignmentRows.map(
                                         (
                                             row,
                                         ) => (
@@ -2972,6 +3401,113 @@ export default function AdministrationPage() {
                                 )
                         }
                     </div>
+
+
+                    {/* =========================================
+                        ACTIVE RELATIONSHIP PAGINATION
+
+                        This paginator is intentionally independent
+                        from the Account Directory paginator above.
+                        Unassigning rows or changing the clinician
+                        filter updates this page count automatically.
+                        ========================================= */}
+
+                    {
+                        globalAssignmentRows.length > 0 && (
+                            <div className="admin-directory-pagination">
+                                <div className="admin-pagination-summary">
+                                    <strong>
+                                        {
+                                            assignmentStart
+                                        }–{
+                                            assignmentEnd
+                                        }
+                                    </strong>
+
+                                    <span>
+                                        of{' '}
+                                        {
+                                            globalAssignmentRows.length
+                                        } active relationship{
+                                            globalAssignmentRows.length === 1
+                                                ? ''
+                                                : 's'
+                                        }
+                                    </span>
+                                </div>
+
+
+                                <div className="admin-pagination-controls">
+                                    <button
+                                        type="button"
+                                        className="button secondary small"
+                                        disabled={
+                                            assignmentPage
+                                            <= 1
+                                        }
+                                        onClick={
+                                            () =>
+                                                setAssignmentPage(
+                                                    (
+                                                        current,
+                                                    ) =>
+                                                        Math.max(
+                                                            1,
+                                                            current - 1,
+                                                        ),
+                                                )
+                                        }
+                                    >
+                                        Previous
+                                    </button>
+
+
+                                    <span className="admin-pagination-page">
+                                        Page{' '}
+
+                                        <strong>
+                                            {
+                                                assignmentPage
+                                            }
+                                        </strong>
+
+                                        {' '}of{' '}
+
+                                        <strong>
+                                            {
+                                                assignmentTotalPages
+                                            }
+                                        </strong>
+                                    </span>
+
+
+                                    <button
+                                        type="button"
+                                        className="button secondary small"
+                                        disabled={
+                                            assignmentPage
+                                            >=
+                                            assignmentTotalPages
+                                        }
+                                        onClick={
+                                            () =>
+                                                setAssignmentPage(
+                                                    (
+                                                        current,
+                                                    ) =>
+                                                        Math.min(
+                                                            assignmentTotalPages,
+                                                            current + 1,
+                                                        ),
+                                                )
+                                        }
+                                    >
+                                        Next
+                                    </button>
+                                </div>
+                            </div>
+                        )
+                    }
                 </section>
             </section>
 
@@ -4092,6 +4628,8 @@ export default function AdministrationPage() {
                                                                                     >
                                                                                         Remove
                                                                                     </button>
+
+
                                                                                 </div>
                                                                             );
                                                                         },
@@ -4226,6 +4764,62 @@ export default function AdministrationPage() {
                         </div>
                     </aside>
                 </div>
+            )}
+
+            {/* =================================================
+                CREATE SYNTHETIC PATIENT MODAL
+
+                The modal is rendered at page level rather than
+                inside the assignment workspace so it can overlay
+                the complete administration interface cleanly.
+
+                On successful creation, the new patient is inserted
+                into local state immediately. This makes the patient
+                available to linking and clinician-assignment
+                controls without requiring a full page refresh.
+                ================================================= */}
+
+            {creatingPatient && (
+                <CreatePatientModal
+                    onClose={
+                        () =>
+                            setCreatingPatient(
+                                false,
+                            )
+                    }
+                    onCreated={
+                        (
+                            patient,
+                        ) => {
+                            setPatients(
+                                (
+                                    current,
+                                ) => [
+                                        patient,
+                                        ...current,
+                                    ],
+                            );
+
+                            // Make the newly created patient immediately
+                            // discoverable in the assignment workspace.
+                            setAssignmentPatientSearch(
+                                '',
+                            );
+
+                            setCreatingPatient(
+                                false,
+                            );
+
+                            setMessage(
+                                'Synthetic patient created successfully.',
+                            );
+
+                            setError(
+                                '',
+                            );
+                        }
+                    }
+                />
             )}
         </>
     );

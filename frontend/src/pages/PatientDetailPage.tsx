@@ -6,9 +6,11 @@ import {
     CalendarDays,
     CheckCircle2,
     Clock3,
+    FilePlus2,
     FileText,
     HeartPulse,
     MapPin,
+    Pencil,
     Pill,
     ShieldAlert,
     Stethoscope,
@@ -32,6 +34,10 @@ import {
 import {
     PageHeader,
 } from '../components/UI';
+
+import {
+    ClinicalRecordModal,
+} from '../components/clinical/ClinicalRecordModal';
 
 import {
     api,
@@ -93,6 +99,11 @@ export default function PatientDetailPage() {
     const navigate =
         useNavigate();
 
+
+    // =================================================
+    // PATIENT STATE
+    // =================================================
+
     const [
         patient,
         setPatient,
@@ -100,6 +111,11 @@ export default function PatientDetailPage() {
         useState<Patient | null>(
             null,
         );
+
+
+    // =================================================
+    // CLINICAL RECORD STATE
+    // =================================================
 
     const [
         records,
@@ -111,6 +127,11 @@ export default function PatientDetailPage() {
             [],
         );
 
+
+    // =================================================
+    // CURRENT-SESSION PREDICTION STATE
+    // =================================================
+
     const [
         prediction,
         setPrediction,
@@ -120,6 +141,11 @@ export default function PatientDetailPage() {
         >(
             null,
         );
+
+
+    // =================================================
+    // PAGE / REQUEST STATE
+    // =================================================
 
     const [
         loading,
@@ -140,6 +166,31 @@ export default function PatientDetailPage() {
         useState('');
 
 
+    // =================================================
+    // CLINICAL RECORD MODAL STATE
+    //
+    // CREATE:
+    //     Adds a new longitudinal clinical record.
+    //
+    // EDIT:
+    //     Updates the current/latest clinical record.
+    // =================================================
+
+    const [
+        recordModal,
+        setRecordModal,
+    ] =
+        useState<
+            'CREATE'
+            |
+            'EDIT'
+            |
+            null
+        >(
+            null,
+        );
+
+
     // ===================================================
     // LOAD PATIENT + ALL CLINICAL RECORDS
     // ===================================================
@@ -154,7 +205,9 @@ export default function PatientDetailPage() {
                     true,
                 );
 
-                setError('');
+                setError(
+                    '',
+                );
 
                 try {
                     const [
@@ -163,6 +216,7 @@ export default function PatientDetailPage() {
                     ] =
                         await Promise.all([
                             api.assignedPatients(),
+
                             api.clinicalRecords(
                                 id,
                             ),
@@ -217,11 +271,47 @@ export default function PatientDetailPage() {
     );
 
 
+    // ===================================================
+    // DETERMINE LATEST CLINICAL RECORD
+    //
+    // Do not rely solely on backend list ordering.
+    // The most recently updated/created record is selected
+    // for the current clinical-state summary and edit flow.
+    // ===================================================
+
     const latestRecord =
         useMemo(
-            () =>
-                records[0]
-                ?? null,
+            () => {
+                if (
+                    records.length
+                    === 0
+                ) {
+                    return null;
+                }
+
+                return [...records]
+                    .sort(
+                        (
+                            first,
+                            second,
+                        ) =>
+                            new Date(
+                                second.updated_at
+                                ??
+                                second.created_at
+                                ??
+                                0,
+                            ).getTime()
+                            -
+                            new Date(
+                                first.updated_at
+                                ??
+                                first.created_at
+                                ??
+                                0,
+                            ).getTime(),
+                    )[0];
+            },
             [
                 records,
             ],
@@ -230,6 +320,11 @@ export default function PatientDetailPage() {
 
     // ===================================================
     // EXPLICITLY GENERATE NEW PREDICTION
+    //
+    // A prediction is generated only when the clinician
+    // deliberately requests it from this patient record.
+    // Simply viewing the patient or intelligence page does
+    // not create a new prediction.
     // ===================================================
 
     async function predict() {
@@ -237,7 +332,9 @@ export default function PatientDetailPage() {
             true,
         );
 
-        setError('');
+        setError(
+            '',
+        );
 
         try {
             const response =
@@ -264,6 +361,10 @@ export default function PatientDetailPage() {
     }
 
 
+    // ===================================================
+    // LOADING STATE
+    // ===================================================
+
     if (loading) {
         return (
             <>
@@ -277,8 +378,16 @@ export default function PatientDetailPage() {
     }
 
 
+    // ===================================================
+    // RENDER
+    // ===================================================
+
     return (
         <>
+            {/* =================================================
+                BACK NAVIGATION
+                ================================================= */}
+
             <Link
                 className="back-link dark"
                 to="/app/patients"
@@ -288,6 +397,10 @@ export default function PatientDetailPage() {
                 Back to patients
             </Link>
 
+
+            {/* =================================================
+                PAGE HEADER
+                ================================================= */}
 
             <PageHeader
                 eyebrow={
@@ -304,6 +417,11 @@ export default function PatientDetailPage() {
                 description="Comprehensive synthetic clinical profile with longitudinal health records and model-assisted retention support."
                 actions={
                     <div className="patient-header-actions">
+
+                        {/* -------------------------------------
+                            OPEN STORED ANALYTICAL INTELLIGENCE
+                            ------------------------------------- */}
+
                         <button
                             type="button"
                             className="button secondary"
@@ -321,6 +439,11 @@ export default function PatientDetailPage() {
 
                             View intelligence
                         </button>
+
+
+                        {/* -------------------------------------
+                            GENERATE FRESH PATIENT PREDICTION
+                            ------------------------------------- */}
 
                         <button
                             type="button"
@@ -345,6 +468,10 @@ export default function PatientDetailPage() {
             />
 
 
+            {/* =================================================
+                PAGE ERROR
+                ================================================= */}
+
             {error && (
                 <div className="form-error page-message">
                     {error}
@@ -353,8 +480,8 @@ export default function PatientDetailPage() {
 
 
             {/* =================================================
-          PATIENT IDENTITY
-          ================================================= */}
+                PATIENT IDENTITY
+                ================================================= */}
 
             {
                 patient && (
@@ -404,6 +531,7 @@ export default function PatientDetailPage() {
 
                                 <span>
                                     Status:{' '}
+
                                     {
                                         patient.status
                                     }
@@ -416,10 +544,15 @@ export default function PatientDetailPage() {
 
 
             {/* =================================================
-          PERSONAL + CURRENT CLINICAL SUMMARY
-          ================================================= */}
+                PERSONAL + CURRENT CLINICAL SUMMARY
+                ================================================= */}
 
             <div className="detail-grid enhanced-detail-grid">
+
+                {/* ---------------------------------------------
+                    DEMOGRAPHIC INFORMATION
+                    --------------------------------------------- */}
+
                 <section className="panel patient-detail-section">
                     <div className="panel-heading">
                         <div>
@@ -434,6 +567,7 @@ export default function PatientDetailPage() {
 
                         <UserRound size={20} />
                     </div>
+
 
                     <div className="detail-list enhanced">
                         <div>
@@ -453,6 +587,7 @@ export default function PatientDetailPage() {
                             </strong>
                         </div>
 
+
                         <div>
                             <UserRound />
 
@@ -470,6 +605,7 @@ export default function PatientDetailPage() {
                             </strong>
                         </div>
 
+
                         <div>
                             <MapPin />
 
@@ -486,6 +622,7 @@ export default function PatientDetailPage() {
                                 }
                             </strong>
                         </div>
+
 
                         <div>
                             <MapPin />
@@ -507,6 +644,10 @@ export default function PatientDetailPage() {
                 </section>
 
 
+                {/* ---------------------------------------------
+                    LATEST CLINICAL STATE
+                    --------------------------------------------- */}
+
                 <section className="panel patient-detail-section">
                     <div className="panel-heading">
                         <div>
@@ -522,10 +663,12 @@ export default function PatientDetailPage() {
                         <HeartPulse size={20} />
                     </div>
 
+
                     {
                         latestRecord
                             ? (
                                 <div className="detail-list enhanced">
+
                                     <div>
                                         <Pill />
 
@@ -542,6 +685,7 @@ export default function PatientDetailPage() {
                                             }
                                         </strong>
                                     </div>
+
 
                                     <div>
                                         <TestTube2 />
@@ -565,6 +709,7 @@ export default function PatientDetailPage() {
                                         </strong>
                                     </div>
 
+
                                     <div>
                                         <Clock3 />
 
@@ -587,6 +732,7 @@ export default function PatientDetailPage() {
                                         </strong>
                                     </div>
 
+
                                     <div>
                                         <CalendarDays />
 
@@ -604,6 +750,7 @@ export default function PatientDetailPage() {
                                         </strong>
                                     </div>
 
+
                                     <div>
                                         <Stethoscope />
 
@@ -620,6 +767,7 @@ export default function PatientDetailPage() {
                                             }
                                         </strong>
                                     </div>
+
 
                                     <div>
                                         <Activity />
@@ -659,8 +807,8 @@ export default function PatientDetailPage() {
 
 
             {/* =================================================
-          FRESH PREDICTION
-          ================================================= */}
+                FRESH PREDICTION
+                ================================================= */}
 
             <section className="panel patient-live-prediction-panel">
                 <div className="panel-heading">
@@ -682,10 +830,15 @@ export default function PatientDetailPage() {
                     <BrainCircuit size={22} />
                 </div>
 
+
                 {
                     prediction
                         ? (
                             <>
+                                {/* -------------------------------------
+                                    AGREEMENT STATE
+                                    ------------------------------------- */}
+
                                 <div
                                     className="patient-live-agreement"
                                     data-agreement={
@@ -704,6 +857,7 @@ export default function PatientDetailPage() {
                                                 <AlertTriangle size={22} />
                                             )
                                     }
+
 
                                     <div>
                                         <span>
@@ -730,6 +884,10 @@ export default function PatientDetailPage() {
                                 </div>
 
 
+                                {/* -------------------------------------
+                                    MODEL COMPARISON
+                                    ------------------------------------- */}
+
                                 <div className="patient-live-model-grid">
                                     <div>
                                         <span>
@@ -754,6 +912,7 @@ export default function PatientDetailPage() {
                                             }
                                         </small>
                                     </div>
+
 
                                     <div>
                                         <span>
@@ -780,6 +939,10 @@ export default function PatientDetailPage() {
                                     </div>
                                 </div>
 
+
+                                {/* -------------------------------------
+                                    CLINICAL DISCLAIMER
+                                    ------------------------------------- */}
 
                                 <div className="disclaimer enhanced">
                                     <ShieldAlert size={18} />
@@ -812,11 +975,16 @@ export default function PatientDetailPage() {
 
 
             {/* =================================================
-          COMPLETE CLINICAL HISTORY
-          ================================================= */}
+                COMPLETE CLINICAL HISTORY
+                ================================================= */}
 
             <section className="panel patient-record-history">
                 <div className="panel-heading">
+
+                    {/* -----------------------------------------
+                        HISTORY HEADING
+                        ----------------------------------------- */}
+
                     <div>
                         <span className="eyebrow">
                             Longitudinal record
@@ -837,9 +1005,65 @@ export default function PatientDetailPage() {
                         </p>
                     </div>
 
-                    <FileText size={20} />
+
+                    {/* -----------------------------------------
+                        CLINICAL RECORD ACTIONS
+                        ----------------------------------------- */}
+
+                    <div className="patient-record-heading-actions">
+                        <FileText size={20} />
+
+                        <div className="patient-record-actions">
+
+                            {/* CREATE A NEW LONGITUDINAL RECORD */}
+
+                            <button
+                                type="button"
+                                className="button secondary"
+                                disabled={
+                                    !patient
+                                }
+                                onClick={
+                                    () =>
+                                        setRecordModal(
+                                            'CREATE',
+                                        )
+                                }
+                            >
+                                <FilePlus2 size={16} />
+
+                                Add clinical record
+                            </button>
+
+
+                            {/* EDIT THE CURRENT/LATEST RECORD */}
+
+                            {
+                                latestRecord && (
+                                    <button
+                                        type="button"
+                                        className="button secondary"
+                                        onClick={
+                                            () =>
+                                                setRecordModal(
+                                                    'EDIT',
+                                                )
+                                        }
+                                    >
+                                        <Pencil size={16} />
+
+                                        Edit latest
+                                    </button>
+                                )
+                            }
+                        </div>
+                    </div>
                 </div>
 
+
+                {/* ---------------------------------------------
+                    HISTORY EMPTY STATE
+                    --------------------------------------------- */}
 
                 {
                     records.length
@@ -851,10 +1075,39 @@ export default function PatientDetailPage() {
                                 <h3>
                                     No historical records
                                 </h3>
+
+                                <p>
+                                    Add the patient's first clinical
+                                    record to begin longitudinal
+                                    documentation.
+                                </p>
+
+                                <button
+                                    type="button"
+                                    className="button secondary"
+                                    disabled={
+                                        !patient
+                                    }
+                                    onClick={
+                                        () =>
+                                            setRecordModal(
+                                                'CREATE',
+                                            )
+                                    }
+                                >
+                                    <FilePlus2 size={16} />
+
+                                    Add first clinical record
+                                </button>
                             </div>
                         )
                         : (
                             <div className="patient-record-table">
+
+                                {/* ---------------------------------
+                                    TABLE HEADER
+                                    --------------------------------- */}
+
                                 <div className="patient-record-row header">
                                     <span>
                                         Visit
@@ -877,6 +1130,11 @@ export default function PatientDetailPage() {
                                     </span>
                                 </div>
 
+
+                                {/* ---------------------------------
+                                    CLINICAL HISTORY ROWS
+                                    --------------------------------- */}
+
                                 {
                                     records.map(
                                         (
@@ -897,6 +1155,7 @@ export default function PatientDetailPage() {
                                                     }
                                                 </span>
 
+
                                                 <strong>
                                                     {
                                                         record
@@ -905,6 +1164,7 @@ export default function PatientDetailPage() {
                                                         '—'
                                                     }
                                                 </strong>
+
 
                                                 <span>
                                                     {
@@ -919,6 +1179,7 @@ export default function PatientDetailPage() {
                                                             : '—'
                                                     }
                                                 </span>
+
 
                                                 <span>
                                                     {
@@ -936,6 +1197,7 @@ export default function PatientDetailPage() {
                                                     }
                                                 </span>
 
+
                                                 <span>
                                                     {
                                                         record
@@ -952,6 +1214,85 @@ export default function PatientDetailPage() {
                         )
                 }
             </section>
+
+
+            {/* =================================================
+                CLINICAL RECORD CREATE / EDIT MODAL
+
+                IMPORTANT:
+                This deliberately sits at page level, outside
+                the panels above.
+
+                CREATE:
+                    Adds the returned record immediately to the
+                    local longitudinal record list.
+
+                EDIT:
+                    Replaces the edited record in local state so
+                    the latest clinical summary and history
+                    update immediately without requiring a page
+                    refresh.
+                ================================================= */}
+
+            {recordModal && (
+                <ClinicalRecordModal
+                    patientId={
+                        id
+                    }
+                    record={
+                        recordModal
+                            === 'EDIT'
+                            ? latestRecord
+                            : null
+                    }
+                    onClose={
+                        () =>
+                            setRecordModal(
+                                null,
+                            )
+                    }
+                    onSaved={
+                        (
+                            savedRecord,
+                        ) => {
+                            setRecords(
+                                (
+                                    current,
+                                ) => {
+                                    // ---------------------------------
+                                    // UPDATE EXISTING RECORD
+                                    // ---------------------------------
+
+                                    if (
+                                        recordModal
+                                        === 'EDIT'
+                                    ) {
+                                        return current.map(
+                                            (
+                                                item,
+                                            ) =>
+                                                item.id
+                                                    === savedRecord.id
+                                                    ? savedRecord
+                                                    : item,
+                                        );
+                                    }
+
+
+                                    // ---------------------------------
+                                    // ADD NEW LONGITUDINAL RECORD
+                                    // ---------------------------------
+
+                                    return [
+                                        savedRecord,
+                                        ...current,
+                                    ];
+                                },
+                            );
+                        }
+                    }
+                />
+            )}
         </>
     );
 }

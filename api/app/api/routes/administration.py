@@ -10,6 +10,7 @@ from app.core.enums import AccountStatus, UserRole
 from app.core.security import hash_password
 from app.models.entities import ClinicianPatientAssignment, Patient, User
 from app.schemas.administration import (
+    AdminPatientCreateRequest,
     AdminPatientSummaryResponse,
     AdminUserCreateRequest,
     AdminUserResponse,
@@ -901,6 +902,217 @@ def end_assignment(
 
     return assignment
 
+
+
+# =====================================================
+# CREATE SYNTHETIC PATIENT
+# =====================================================
+
+@router.post(
+    "/patients",
+    response_model=AdminPatientSummaryResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_admin_patient(
+    payload: AdminPatientCreateRequest,
+    request: Request,
+    db: DbSession,
+    current_admin: AdminUser,
+) -> Patient:
+    """
+    Create a synthetic patient identity.
+
+    Administrators create only the patient demographic /
+    administrative shell.
+
+    Clinical treatment information must be created by an
+    authorised clinician after assignment.
+    """
+
+    # -------------------------------------------------
+    # NORMALISE SYNTHETIC PATIENT NUMBER
+    # -------------------------------------------------
+
+    patient_number = (
+        payload
+        .synthetic_patient_number
+        .strip()
+        .upper()
+    )
+
+    # -------------------------------------------------
+    # PREVENT DUPLICATE PATIENT IDENTIFIERS
+    # -------------------------------------------------
+
+    existing = db.scalar(
+        select(
+            Patient.id
+        ).where(
+            Patient.synthetic_patient_number
+            == patient_number
+        )
+    )
+
+    if existing is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=(
+                "A patient with this synthetic patient "
+                "number already exists."
+            ),
+        )
+
+    # -------------------------------------------------
+    # BASIC SEX VALIDATION
+    # -------------------------------------------------
+
+    allowed_sexes = {
+        "Male",
+        "Female",
+    }
+
+    if payload.sex not in allowed_sexes:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=(
+                "Sex must be Male or Female."
+            ),
+        )
+
+    # -------------------------------------------------
+    # PREVENT FUTURE DATE OF BIRTH
+    # -------------------------------------------------
+
+    if (
+        payload.date_of_birth is not None
+        and
+        payload.date_of_birth
+        > datetime.now(UTC).date()
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=(
+                "Date of birth cannot be in the future."
+            ),
+        )
+
+    # -------------------------------------------------
+    # CREATE SYNTHETIC PATIENT
+    # -------------------------------------------------
+
+    patient = Patient(
+        synthetic_patient_number=(
+            patient_number
+        ),
+
+        first_name=(
+            payload
+            .first_name
+            .strip()
+        ),
+
+        last_name=(
+            payload
+            .last_name
+            .strip()
+        ),
+
+        date_of_birth=(
+            payload.date_of_birth
+        ),
+
+        sex=(
+            payload.sex
+        ),
+
+        state=(
+            payload
+            .state
+            .strip()
+        ),
+
+        lga=(
+            payload
+            .lga
+            .strip()
+        ),
+
+        status=(
+            payload.status
+        ),
+
+        # ---------------------------------------------
+        # CRITICAL PROTOTYPE GUARANTEE
+        # ---------------------------------------------
+
+        is_synthetic=True,
+
+        linked_user_id=None,
+
+        last_updated_by=(
+            current_admin.id
+        ),
+    )
+
+    db.add(
+        patient
+    )
+
+    db.flush()
+
+    # -------------------------------------------------
+    # AUDIT PATIENT CREATION
+    # -------------------------------------------------
+
+    ip_address, user_agent = (
+        _audit_request_metadata(
+            request
+        )
+    )
+
+    write_audit_log(
+        db,
+
+        actor_user_id=(
+            current_admin.id
+        ),
+
+        action=(
+            "SYNTHETIC_PATIENT_CREATED"
+        ),
+
+        outcome="SUCCESS",
+
+        resource_type="PATIENT",
+
+        resource_id=(
+            patient.id
+        ),
+
+        ip_address=(
+            ip_address
+        ),
+
+        user_agent=(
+            user_agent
+        ),
+
+        details={
+            "synthetic_patient_number":
+                patient.synthetic_patient_number,
+
+            "status":
+                patient.status,
+        },
+    )
+
+    db.commit()
+
+    db.refresh(
+        patient
+    )
+
+    return patient
 
 
 # =====================================================

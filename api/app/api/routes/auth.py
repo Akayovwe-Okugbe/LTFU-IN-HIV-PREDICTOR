@@ -64,7 +64,7 @@ from app.services.authentication import (
     issue_email_verification_otp,
 )
 
-from app.api.routes.authentication_phase2 import (
+from app.api.routes.authentication import (
     build_login_response,
 )
 

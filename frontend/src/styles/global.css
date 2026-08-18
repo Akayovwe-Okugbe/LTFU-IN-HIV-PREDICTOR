@@ -14982,3 +14982,1735 @@ button.clinician-priority-row:hover {
     justify-content: center;
   }
 }
+
+.patient-record-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.patient-record-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+@media (max-width: 700px) {
+  .patient-record-heading-actions {
+    width: 100%;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .patient-record-actions {
+    width: 100%;
+  }
+
+  .patient-record-actions .button {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+
+/* =====================================================
+   ACCOUNT DIRECTORY PAGINATION
+   ===================================================== */
+
+.admin-directory-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+
+  margin-top: 18px;
+  padding: 14px 18px;
+
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+
+  background: var(--surface-secondary);
+}
+
+
+.admin-pagination-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: var(--text-secondary);
+  font-size: 0.86rem;
+}
+
+
+.admin-pagination-summary strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+
+.admin-pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+
+.admin-pagination-page {
+  min-width: 110px;
+
+  text-align: center;
+
+  color: var(--text-secondary);
+
+  font-size: 0.85rem;
+}
+
+
+.admin-pagination-page strong {
+  color: var(--text-primary);
+}
+
+
+/* Small button used only by pagination */
+
+.button.small {
+  padding: 0.45rem 0.9rem;
+
+  min-height: auto;
+
+  font-size: 0.82rem;
+}
+
+
+/* =====================================================
+   CREATE PATIENT MODAL
+   ===================================================== */
+
+.modal-backdrop {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 1000;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 24px;
+
+  background: rgba(13,
+      23,
+      33,
+      0.55);
+
+  backdrop-filter: blur(6px);
+}
+
+
+.admin-patient-modal {
+  width: min(680px,
+      100%);
+
+  max-height: calc(100vh - 60px);
+
+  overflow-y: auto;
+
+  border-radius: 18px;
+
+  background: var(--surface-primary);
+
+  box-shadow:
+    0 22px 70px rgba(0,
+      0,
+      0,
+      0.22);
+
+  animation:
+    modalAppear 0.22s ease;
+}
+
+
+@keyframes modalAppear {
+
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(14px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0) scale(1);
+  }
+}
+
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 900px) {
+
+  .admin-directory-pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-pagination-controls {
+    justify-content: space-between;
+  }
+
+  .admin-pagination-page {
+    min-width: auto;
+  }
+}
+
+
+/* =====================================================
+   ADMIN — CREATE SYNTHETIC PATIENT MODAL
+   ===================================================== */
+
+.admin-modal-backdrop {
+  position: fixed;
+  inset: 0;
+
+  z-index: 1200;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  overflow-y: auto;
+
+  background:
+    rgba(13, 28, 38, 0.62);
+
+  backdrop-filter:
+    blur(7px);
+}
+
+
+.admin-patient-create-modal {
+  width:
+    min(720px,
+      100%);
+
+  max-height:
+    calc(100vh - 48px);
+
+  overflow-y: auto;
+
+  border:
+    1px solid rgba(207,
+      220,
+      228,
+      0.9);
+
+  border-radius:
+    22px;
+
+  background:
+    #ffffff;
+
+  box-shadow:
+    0 28px 80px rgba(12,
+      31,
+      43,
+      0.24);
+
+  animation:
+    adminPatientModalIn 0.2s ease-out;
+}
+
+
+/* =====================================================
+   HEADER
+   ===================================================== */
+
+.admin-patient-modal-header {
+  display: flex;
+
+  align-items:
+    flex-start;
+
+  justify-content:
+    space-between;
+
+  gap: 18px;
+
+  padding:
+    26px 28px 22px;
+
+  border-bottom:
+    1px solid #edf1f3;
+}
+
+
+.admin-patient-modal-title {
+  display: flex;
+
+  align-items:
+    flex-start;
+
+  gap: 14px;
+}
+
+
+.admin-patient-modal-icon {
+  width: 44px;
+  height: 44px;
+
+  flex: 0 0 auto;
+
+  display: grid;
+  place-items: center;
+
+  border-radius:
+    14px;
+
+  color:
+    #21718a;
+
+  background:
+    #edf8fb;
+}
+
+
+.admin-patient-modal-title h2 {
+  margin:
+    4px 0 5px;
+
+  color:
+    #21333f;
+
+  font-size:
+    1.35rem;
+
+  letter-spacing:
+    -0.025em;
+}
+
+
+.admin-patient-modal-title p {
+  max-width:
+    490px;
+
+  margin: 0;
+
+  color:
+    #758792;
+
+  font-size:
+    0.78rem;
+
+  line-height:
+    1.55;
+}
+
+
+.admin-modal-close {
+  width: 36px;
+  height: 36px;
+
+  flex: 0 0 auto;
+
+  display: grid;
+  place-items: center;
+
+  border:
+    1px solid #e4eaee;
+
+  border-radius:
+    11px;
+
+  color:
+    #72838d;
+
+  background:
+    #f8fafb;
+
+  cursor:
+    pointer;
+
+  transition:
+    0.18s ease;
+}
+
+
+.admin-modal-close:hover {
+  color:
+    #344d5c;
+
+  background:
+    #eef3f5;
+
+  transform:
+    translateY(-1px);
+}
+
+
+/* =====================================================
+   SYNTHETIC-DATA INFORMATION
+   ===================================================== */
+
+.admin-patient-synthetic-note {
+  display: flex;
+
+  align-items:
+    flex-start;
+
+  gap: 11px;
+
+  margin:
+    20px 28px 4px;
+
+  padding:
+    13px 15px;
+
+  border:
+    1px solid #dcecef;
+
+  border-radius:
+    14px;
+
+  color:
+    #347186;
+
+  background:
+    #f4fafb;
+}
+
+
+.admin-patient-synthetic-note>svg {
+  flex: 0 0 auto;
+
+  margin-top: 2px;
+}
+
+
+.admin-patient-synthetic-note div {
+  display: flex;
+
+  flex-direction:
+    column;
+
+  gap: 3px;
+}
+
+
+.admin-patient-synthetic-note strong {
+  color:
+    #355867;
+
+  font-size:
+    0.75rem;
+}
+
+
+.admin-patient-synthetic-note span {
+  color:
+    #728893;
+
+  font-size:
+    0.68rem;
+
+  line-height:
+    1.5;
+}
+
+
+/* =====================================================
+   FORM SECTIONS
+   ===================================================== */
+
+.admin-patient-form-section {
+  margin:
+    0 28px;
+
+  padding:
+    21px 0;
+
+  border-bottom:
+    1px solid #edf1f3;
+}
+
+
+.admin-patient-form-section:last-of-type {
+  border-bottom: 0;
+}
+
+
+.admin-patient-form-heading {
+  display: flex;
+
+  align-items:
+    center;
+
+  gap: 9px;
+
+  margin-bottom:
+    15px;
+
+  color:
+    #55707e;
+}
+
+
+.admin-patient-form-heading>svg {
+  color:
+    #40869c;
+}
+
+
+.admin-patient-form-heading div {
+  display: flex;
+
+  flex-direction:
+    column;
+
+  gap: 1px;
+}
+
+
+.admin-patient-form-heading strong {
+  color:
+    #344e5c;
+
+  font-size:
+    0.77rem;
+}
+
+
+.admin-patient-form-heading span {
+  color:
+    #96a4ac;
+
+  font-size:
+    0.62rem;
+}
+
+
+/* =====================================================
+   FORM FIELDS
+   ===================================================== */
+
+.admin-form-two-col {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2,
+      minmax(0,
+        1fr));
+
+  gap:
+    14px;
+}
+
+
+.admin-form-field {
+  display: flex;
+
+  flex-direction:
+    column;
+
+  gap: 7px;
+
+  color:
+    #526a78;
+
+  font-size:
+    0.71rem;
+
+  font-weight:
+    600;
+}
+
+
+.admin-form-field>span {
+  padding-left: 1px;
+}
+
+
+.admin-form-field input,
+.admin-form-field select {
+  width: 100%;
+
+  min-height:
+    44px;
+
+  padding:
+    0 13px;
+
+  border:
+    1px solid #dce5ea;
+
+  border-radius:
+    11px;
+
+  outline: none;
+
+  color:
+    #304854;
+
+  background:
+    #fbfcfd;
+
+  font: inherit;
+
+  font-size:
+    0.78rem;
+
+  font-weight:
+    500;
+
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+
+.admin-form-field select {
+  cursor:
+    pointer;
+}
+
+
+.admin-form-field input::placeholder {
+  color:
+    #acb7bd;
+}
+
+
+.admin-form-field input:hover,
+.admin-form-field select:hover {
+  border-color:
+    #c7d6dc;
+}
+
+
+.admin-form-field input:focus,
+.admin-form-field select:focus {
+  border-color:
+    #69a8ba;
+
+  background:
+    #ffffff;
+
+  box-shadow:
+    0 0 0 3px rgba(57,
+      143,
+      168,
+      0.11);
+}
+
+
+.admin-form-field small {
+  color:
+    #a0adb4;
+
+  font-size:
+    0.59rem;
+
+  font-weight:
+    400;
+}
+
+
+/* =====================================================
+   ERROR
+   ===================================================== */
+
+.admin-patient-form-error {
+  margin:
+    0 28px 16px;
+}
+
+
+/* =====================================================
+   FOOTER
+   ===================================================== */
+
+.admin-patient-modal-actions {
+  display: flex;
+
+  justify-content:
+    flex-end;
+
+  align-items:
+    center;
+
+  gap: 10px;
+
+  padding:
+    19px 28px 24px;
+
+  border-top:
+    1px solid #edf1f3;
+
+  background:
+    #fbfcfd;
+}
+
+
+/* =====================================================
+   ANIMATION
+   ===================================================== */
+
+@keyframes adminPatientModalIn {
+
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(12px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0) scale(1);
+  }
+}
+
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 680px) {
+
+  .admin-modal-backdrop {
+    align-items:
+      flex-start;
+
+    padding:
+      12px;
+  }
+
+
+  .admin-patient-create-modal {
+    max-height:
+      calc(100vh - 24px);
+
+    border-radius:
+      17px;
+  }
+
+
+  .admin-patient-modal-header {
+    padding:
+      20px;
+  }
+
+
+  .admin-patient-synthetic-note {
+    margin:
+      16px 20px 0;
+  }
+
+
+  .admin-patient-form-section {
+    margin:
+      0 20px;
+  }
+
+
+  .admin-form-two-col {
+    grid-template-columns:
+      1fr;
+  }
+
+
+  .admin-patient-modal-actions {
+    padding:
+      16px 20px 20px;
+  }
+
+
+  .admin-patient-modal-actions .button {
+    flex: 1;
+
+    justify-content:
+      center;
+  }
+}
+
+
+/* =====================================================
+   CLINICAL RECORD MODAL — BACKDROP
+   ===================================================== */
+
+.clinical-modal-backdrop {
+  position: fixed;
+  inset: 0;
+
+  z-index: 1300;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  overflow-y: auto;
+
+  background: rgba(12, 28, 38, 0.64);
+
+  backdrop-filter: blur(7px);
+}
+
+
+/* =====================================================
+   CLINICAL RECORD MODAL — CONTAINER
+   ===================================================== */
+
+.clinical-record-create-modal {
+  width: min(760px, 100%);
+
+  max-height: calc(100vh - 48px);
+
+  overflow-y: auto;
+
+  border: 1px solid #dce6eb;
+
+  border-radius: 22px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 30px 90px rgba(10, 30, 42, 0.26);
+
+  animation:
+    clinicalRecordModalIn 0.2s ease-out;
+}
+
+
+/* =====================================================
+   HEADER
+   ===================================================== */
+
+.clinical-record-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 18px;
+
+  padding: 26px 28px 22px;
+
+  border-bottom: 1px solid #edf1f3;
+}
+
+
+.clinical-record-modal-title {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 14px;
+}
+
+
+.clinical-record-modal-icon {
+  width: 45px;
+  height: 45px;
+
+  flex: 0 0 auto;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 14px;
+
+  color: #287990;
+
+  background: #edf8fb;
+}
+
+
+.clinical-record-modal-title h2 {
+  margin: 4px 0 5px;
+
+  color: #213540;
+
+  font-size: 1.35rem;
+
+  letter-spacing: -0.025em;
+}
+
+
+.clinical-record-modal-title p {
+  max-width: 520px;
+
+  margin: 0;
+
+  color: #758790;
+
+  font-size: 0.77rem;
+
+  line-height: 1.55;
+}
+
+
+.clinical-modal-close {
+  width: 36px;
+  height: 36px;
+
+  flex: 0 0 auto;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid #e3eaee;
+
+  border-radius: 11px;
+
+  color: #71838d;
+
+  background: #f8fafb;
+
+  cursor: pointer;
+
+  transition: 0.18s ease;
+}
+
+
+.clinical-modal-close:hover {
+  color: #344d5b;
+
+  background: #edf3f5;
+
+  transform: translateY(-1px);
+}
+
+
+/* =====================================================
+   INFORMATION NOTICE
+   ===================================================== */
+
+.clinical-record-notice {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 11px;
+
+  margin: 20px 28px 4px;
+
+  padding: 13px 15px;
+
+  border: 1px solid #d9eaee;
+
+  border-radius: 14px;
+
+  color: #37788a;
+
+  background: #f3fafb;
+}
+
+
+.clinical-record-notice>svg {
+  flex: 0 0 auto;
+
+  margin-top: 2px;
+}
+
+
+.clinical-record-notice div {
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+
+.clinical-record-notice strong {
+  color: #395c69;
+
+  font-size: 0.75rem;
+}
+
+
+.clinical-record-notice span {
+  color: #728994;
+
+  font-size: 0.67rem;
+
+  line-height: 1.5;
+}
+
+
+/* =====================================================
+   FORM SECTIONS
+   ===================================================== */
+
+.clinical-record-form-section {
+  margin: 0 28px;
+
+  padding: 21px 0;
+
+  border-bottom: 1px solid #edf1f3;
+}
+
+
+.clinical-record-form-section:last-of-type {
+  border-bottom: 0;
+}
+
+
+.clinical-record-section-heading {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  margin-bottom: 15px;
+
+  color: #55707e;
+}
+
+
+.clinical-record-section-heading>svg {
+  color: #40869c;
+}
+
+
+.clinical-record-section-heading div {
+  display: flex;
+  flex-direction: column;
+
+  gap: 1px;
+}
+
+
+.clinical-record-section-heading strong {
+  color: #344e5c;
+
+  font-size: 0.77rem;
+}
+
+
+.clinical-record-section-heading span {
+  color: #96a4ac;
+
+  font-size: 0.62rem;
+}
+
+
+/* =====================================================
+   FORM LAYOUT
+   ===================================================== */
+
+.clinical-form-two-col {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 14px;
+}
+
+
+.clinical-form-field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+
+  color: #526b78;
+
+  font-size: 0.71rem;
+
+  font-weight: 600;
+}
+
+
+.clinical-form-field>span {
+  padding-left: 1px;
+}
+
+
+.clinical-form-field input,
+.clinical-form-field select,
+.clinical-form-field textarea {
+  width: 100%;
+
+  border: 1px solid #dce5ea;
+
+  border-radius: 11px;
+
+  outline: none;
+
+  color: #304854;
+
+  background: #fbfcfd;
+
+  font: inherit;
+
+  font-size: 0.78rem;
+
+  font-weight: 500;
+
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+
+.clinical-form-field input,
+.clinical-form-field select {
+  min-height: 44px;
+
+  padding: 0 13px;
+}
+
+
+.clinical-form-field textarea {
+  min-height: 120px;
+
+  padding: 12px 13px;
+
+  resize: vertical;
+
+  line-height: 1.55;
+}
+
+
+.clinical-form-field select {
+  cursor: pointer;
+}
+
+
+.clinical-form-field input::placeholder,
+.clinical-form-field textarea::placeholder {
+  color: #abb7bd;
+}
+
+
+.clinical-form-field input:hover,
+.clinical-form-field select:hover,
+.clinical-form-field textarea:hover {
+  border-color: #c6d6dc;
+}
+
+
+.clinical-form-field input:focus,
+.clinical-form-field select:focus,
+.clinical-form-field textarea:focus {
+  border-color: #66a7b9;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 3px rgba(57, 143, 168, 0.11);
+}
+
+
+/* =====================================================
+   VIRAL LOAD UNIT FIELD
+   ===================================================== */
+
+.clinical-input-with-unit {
+  display: grid;
+
+  grid-template-columns:
+    auto minmax(0, 1fr) auto;
+
+  align-items: center;
+
+  gap: 8px;
+
+  min-height: 44px;
+
+  padding: 0 11px;
+
+  border: 1px solid #dce5ea;
+
+  border-radius: 11px;
+
+  background: #fbfcfd;
+
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+
+.clinical-input-with-unit:focus-within {
+  border-color: #66a7b9;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 3px rgba(57, 143, 168, 0.11);
+}
+
+
+.clinical-input-with-unit>svg {
+  color: #77909c;
+}
+
+
+.clinical-input-with-unit input {
+  min-height: 40px;
+
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  box-shadow: none;
+}
+
+
+.clinical-input-with-unit input:focus {
+  box-shadow: none;
+}
+
+
+.clinical-input-with-unit small {
+  color: #95a5ad;
+
+  font-size: 0.59rem;
+
+  white-space: nowrap;
+}
+
+
+/* =====================================================
+   CHARACTER COUNT
+   ===================================================== */
+
+.clinical-character-count {
+  align-self: flex-end;
+
+  color: #a1adb4;
+
+  font-size: 0.58rem;
+
+  font-weight: 400;
+}
+
+
+/* =====================================================
+   ERROR
+   ===================================================== */
+
+.clinical-record-form-error {
+  margin:
+    0 28px 16px;
+}
+
+
+/* =====================================================
+   ACTIONS
+   ===================================================== */
+
+.clinical-record-modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  padding: 19px 28px 24px;
+
+  border-top: 1px solid #edf1f3;
+
+  background: #fbfcfd;
+}
+
+
+/* =====================================================
+   ANIMATION
+   ===================================================== */
+
+@keyframes clinicalRecordModalIn {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(12px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0) scale(1);
+  }
+}
+
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 700px) {
+  .clinical-modal-backdrop {
+    align-items: flex-start;
+
+    padding: 12px;
+  }
+
+  .clinical-record-create-modal {
+    max-height: calc(100vh - 24px);
+
+    border-radius: 17px;
+  }
+
+  .clinical-record-modal-header {
+    padding: 20px;
+  }
+
+  .clinical-record-notice {
+    margin:
+      16px 20px 0;
+  }
+
+  .clinical-record-form-section {
+    margin:
+      0 20px;
+  }
+
+  .clinical-form-two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .clinical-record-modal-actions {
+    padding:
+      16px 20px 20px;
+  }
+
+  .clinical-record-modal-actions .button {
+    flex: 1;
+
+    justify-content: center;
+  }
+}
+
+
+/* =====================================================
+   CHANGE REQUEST — QUEUE
+   ===================================================== */
+
+.change-request-queue {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+
+.change-request-list .panel-heading p,
+.change-request-detail .panel-heading p {
+  margin: 5px 0 0;
+  color: #8797a0;
+  font-size: 0.68rem;
+  line-height: 1.5;
+}
+
+
+/* =====================================================
+   REQUEST CONTEXT
+   ===================================================== */
+
+.change-request-context {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+
+  margin-bottom: 18px;
+}
+
+
+.change-request-context>div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  padding: 12px 14px;
+
+  border: 1px solid #e4eaee;
+  border-radius: 12px;
+
+  background: #fafcfd;
+}
+
+
+.change-request-context span {
+  color: #8b9aa3;
+  font-size: 0.61rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+
+.change-request-context strong {
+  color: #405866;
+  font-size: 0.72rem;
+  overflow-wrap: anywhere;
+}
+
+
+.change-request-id {
+  font-family: monospace;
+}
+
+
+/* =====================================================
+   CURRENT → PROPOSED COMPARISON
+   ===================================================== */
+
+.change-value-comparison {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr) auto minmax(0, 1fr);
+
+  align-items: stretch;
+
+  gap: 12px;
+
+  margin: 18px 0;
+}
+
+
+.change-value-card {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  min-width: 0;
+
+  padding: 17px;
+
+  border: 1px solid #e3eaee;
+  border-radius: 15px;
+}
+
+
+.change-value-card.current {
+  background: #f8fafb;
+}
+
+
+.change-value-card.proposed {
+  border-color: #cce4e9;
+
+  background: #f1f9fa;
+}
+
+
+.change-value-card>span {
+  color: #82939d;
+  font-size: 0.63rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.055em;
+}
+
+
+.change-value-card strong {
+  color: #334f5e;
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+
+
+.change-value-card.proposed strong {
+  color: #217289;
+}
+
+
+.change-value-card small {
+  color: #9aa7ae;
+  font-size: 0.59rem;
+}
+
+
+.change-value-arrow {
+  display: grid;
+  place-items: center;
+
+  color: #7f99a5;
+
+  font-size: 1.2rem;
+}
+
+
+/* =====================================================
+   USER-SUPPLIED REASON
+   ===================================================== */
+
+.change-request-section-title {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  color: #68818f;
+}
+
+
+.change-request-section-title span {
+  font-size: 0.67rem;
+  font-weight: 700;
+}
+
+
+/* =====================================================
+   INITIAL REVIEW ACTIONS
+   ===================================================== */
+
+.change-review-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  flex-wrap: wrap;
+
+  gap: 10px;
+
+  margin-top: 20px;
+
+  padding-top: 18px;
+
+  border-top: 1px solid #edf1f3;
+}
+
+
+.button.danger-outline {
+  color: #a84e52;
+
+  border: 1px solid #e7c7c9;
+
+  background: #fffafa;
+}
+
+
+.button.danger-outline:hover {
+  color: #8f3e43;
+
+  border-color: #dbafb2;
+
+  background: #fff4f4;
+}
+
+
+.button.danger {
+  color: #ffffff;
+
+  border-color: #a94e53;
+
+  background: #a94e53;
+}
+
+
+.button.danger:hover {
+  background: #923f44;
+}
+
+
+/* =====================================================
+   REVIEW CONFIRMATION PANEL
+   ===================================================== */
+
+.change-review-panel {
+  margin-top: 20px;
+
+  padding: 17px;
+
+  border: 1px solid #dde8ec;
+  border-radius: 16px;
+
+  background: #f8fbfc;
+}
+
+
+.change-review-panel[data-decision='APPROVE'] {
+  border-color: #cae5dc;
+
+  background: #f3faf7;
+}
+
+
+.change-review-panel[data-decision='REJECT'] {
+  border-color: #ead2d3;
+
+  background: #fff8f8;
+}
+
+
+.change-review-panel-heading {
+  display: grid;
+
+  grid-template-columns:
+    auto minmax(0, 1fr) auto;
+
+  align-items: start;
+
+  gap: 11px;
+}
+
+
+.change-review-decision-icon {
+  width: 37px;
+  height: 37px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 11px;
+
+  color: #448a78;
+
+  background: #e6f5ef;
+}
+
+
+.change-review-panel[data-decision='REJECT'] .change-review-decision-icon {
+  color: #ad585c;
+
+  background: #fae8e9;
+}
+
+
+.change-review-panel-heading>div:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+
+.change-review-panel-heading strong {
+  color: #3c5664;
+  font-size: 0.8rem;
+}
+
+
+.change-review-panel-heading span {
+  color: #80919a;
+  font-size: 0.66rem;
+  line-height: 1.5;
+}
+
+
+/* =====================================================
+   REVIEW COMMENT
+   ===================================================== */
+
+.change-review-comment {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+
+  margin-top: 16px;
+
+  color: #526b78;
+
+  font-size: 0.69rem;
+  font-weight: 600;
+}
+
+
+.change-review-comment textarea {
+  width: 100%;
+
+  min-height: 100px;
+
+  padding: 11px 12px;
+
+  border: 1px solid #dce5ea;
+  border-radius: 11px;
+
+  outline: none;
+
+  resize: vertical;
+
+  color: #344e5c;
+
+  background: #ffffff;
+
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 400;
+
+  line-height: 1.55;
+}
+
+
+.change-review-comment textarea:focus {
+  border-color: #68a8b9;
+
+  box-shadow:
+    0 0 0 3px rgba(57, 143, 168, 0.11);
+}
+
+
+.change-review-comment small {
+  align-self: flex-end;
+
+  color: #a0adb4;
+
+  font-size: 0.57rem;
+  font-weight: 400;
+}
+
+
+/* =====================================================
+   REVIEW CONFIRM ACTIONS
+   ===================================================== */
+
+.change-review-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  flex-wrap: wrap;
+
+  gap: 9px;
+
+  margin-top: 15px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 760px) {
+  .change-value-comparison {
+    grid-template-columns: 1fr;
+  }
+
+  .change-value-arrow {
+    transform: rotate(90deg);
+  }
+
+  .change-request-context {
+    grid-template-columns: 1fr;
+  }
+
+  .change-review-actions,
+  .change-review-confirm-actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+
+  .change-review-actions .button,
+  .change-review-confirm-actions .button {
+    justify-content: center;
+    width: 100%;
+  }
+}

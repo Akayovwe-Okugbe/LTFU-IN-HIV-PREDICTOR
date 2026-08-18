@@ -1,20 +1,87 @@
 services:
+
   postgres:
     image: postgres:17
+
     container_name: mediscope-postgres
+
     restart: unless-stopped
+
     environment:
-      POSTGRES_DB: mediscope
-      POSTGRES_USER: mediscope
-      POSTGRES_PASSWORD: replace-me
+      POSTGRES_DB: ${POSTGRES_DB:-mediscope}
+      POSTGRES_USER: ${POSTGRES_USER:-mediscope}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
+
     volumes:
       - mediscope_postgres_data:/var/lib/postgresql/data
+
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U mediscope -d mediscope"]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-mediscope} -d ${POSTGRES_DB:-mediscope}" ]
+
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
+
+  backend:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+
+    container_name: mediscope-backend
+
+    restart: unless-stopped
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    environment:
+      APP_NAME: MEDISCOPE
+      ENVIRONMENT: production
+      DEBUG: "false"
+
+      FRONTEND_BASE_URL: ${FRONTEND_BASE_URL}
+
+      DATABASE_URL: >-
+        postgresql+psycopg://${POSTGRES_USER:-mediscope}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-mediscope}
+
+      SECRET_KEY: ${SECRET_KEY}
+      TOTP_ENCRYPTION_KEY: ${TOTP_ENCRYPTION_KEY}
+
+      JWT_ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      REFRESH_TOKEN_EXPIRE_DAYS: 7
+
+      PASSWORD_MIN_LENGTH: 12
+
+      OTP_EXPIRE_MINUTES: 10
+      OTP_MAX_ATTEMPTS: 5
+
+      PASSWORD_RESET_EXPIRE_MINUTES: 20
+
+      TOTP_ISSUER_NAME: MEDISCOPE
+      MFA_CHALLENGE_EXPIRE_MINUTES: 5
+      MFA_RECOVERY_CODE_COUNT: 10
+
+      EMAIL_FROM: ${EMAIL_FROM}
+      EMAIL_CONSOLE_BACKEND: "false"
+
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_USE_TLS: "true"
+
+      SYNTHETIC_DATA_ONLY: "true"
+      DECISION_THRESHOLD: 0.50
+
+    ports:
+      - "8000:8000"
+
 volumes:
+
   mediscope_postgres_data:
