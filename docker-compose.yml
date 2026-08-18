@@ -82,6 +82,24 @@ services:
     ports:
       - "8000:8000"
 
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000/api/v1}
+
+    container_name: mediscope-frontend
+
+    restart: unless-stopped
+
+    depends_on:
+      - backend
+
+    ports:
+      - "5173:80"
+
 volumes:
 
   mediscope_postgres_data:

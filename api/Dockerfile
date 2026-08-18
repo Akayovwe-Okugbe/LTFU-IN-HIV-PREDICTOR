@@ -36,7 +36,7 @@ ENV PYTHONUNBUFFERED=1
 #
 # work while the container itself remains rooted at the
 # repository-equivalent /workspace directory.
-ENV PYTHONPATH=/workspace/api
+ENV PYTHONPATH=/workspace:/workspace/api
 
 
 # ---------------------------------------------------------
@@ -85,6 +85,24 @@ RUN pip install \
 # ---------------------------------------------------------
 
 COPY api/app /workspace/api/app
+
+
+# ---------------------------------------------------------
+# MACHINE-LEARNING SOURCE PACKAGE
+#
+# The persisted scikit-learn / XGBoost pipelines may
+# reference project modules from the root-level `src`
+# package during joblib deserialisation and inference.
+# ---------------------------------------------------------
+
+COPY src /workspace/src
+
+
+# ---------------------------------------------------------
+# MAINTENANCE / DEMONSTRATION SCRIPTS
+# ---------------------------------------------------------
+
+COPY api/scripts /workspace/api/scripts
 
 
 # ---------------------------------------------------------
