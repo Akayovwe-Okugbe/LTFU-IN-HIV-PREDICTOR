@@ -281,21 +281,18 @@ development phases.
 # CORS CONFIGURATION
 # =====================================================
 
-# React runs on a different origin during local
-# development, so the browser requires the backend to
-# explicitly permit cross-origin requests.
+# Browser origins are supplied through environment-backed
+# application settings so deployment does not require
+# editing source code.
 #
-# We list the development origins explicitly instead of
-# using "*" because MEDISCOPE uses Authorization headers
-# and authentication credentials.
-allowed_origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
-
+# MEDISCOPE does not use "*" because authenticated
+# requests include Authorization headers and credentials.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=(
+        settings
+        .allowed_origins
+    ),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

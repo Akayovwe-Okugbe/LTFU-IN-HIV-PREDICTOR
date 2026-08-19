@@ -434,6 +434,48 @@ class Settings(BaseSettings):
         return self
 
 
+    # =================================================
+    # CORS / FRONTEND ORIGINS
+    # =================================================
+
+    # Comma-separated browser origins permitted to call
+    # the MEDISCOPE API.
+    #
+    # Example:
+    #
+    # http://localhost:5173,http://127.0.0.1:5173
+    #
+    # Production should provide the deployed frontend
+    # origin explicitly.
+    #
+    # Keeping the environment-backed value as a string
+    # avoids Pydantic Settings attempting JSON decoding
+    # before application-level parsing occurs.
+    allowed_origins_csv: str = (
+        "http://localhost:5173,"
+        "http://127.0.0.1:5173"
+    )
+
+
+    @property
+    def allowed_origins(
+        self,
+    ) -> list[str]:
+        """
+        Return the configured CORS origins as a clean list.
+
+        Empty entries and surrounding whitespace are
+        discarded.
+        """
+
+        return [
+            origin.strip()
+            for origin
+            in self.allowed_origins_csv.split(",")
+            if origin.strip()
+        ]
+
+
 # =====================================================
 # CACHED SETTINGS ACCESSOR
 # =====================================================
