@@ -106,7 +106,6 @@ dist/
 node_modules/
 frontend/node_modules/
 
-dist/
 frontend/dist/
 
 npm-debug.log*
@@ -129,3 +128,21 @@ vite.svg
 
 .AppleDouble
 .LSOverride
+
+# =========================================================
+# RESEARCH DATA
+#
+# Local research datasets and generated processed datasets
+# are intentionally excluded from version control.
+# Directory README files remain tracked to document the
+# expected data layout and reproduction workflow.
+# =========================================================
+
+data/raw/*
+!data/raw/README.md
+
+data/processed/*
+!data/processed/README.md
+
+data/external/*
+!data/external/README.md

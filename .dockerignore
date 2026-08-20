@@ -45,3 +45,19 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Test / development artefacts
+tests/
+api/tests/
+requirements-dev.txt
+
+# Coverage / static analysis
+.coverage
+htmlcov/
+.mypy_cache/
+.pyright/
+.ruff_cache/
+
+# Temporary files
+*.tmp
+*.bak
